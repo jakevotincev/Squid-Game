@@ -5,5 +5,5 @@ package ru.jakev.backend.entities;
  * @since 25.06.2023
  */
 public enum Role {
-    CHIEF, MANAGER, PLAYER, SOLDIER, WORKER
+    GLAVNIY, MANAGER, PLAYER, SOLDIER, WORKER
 }

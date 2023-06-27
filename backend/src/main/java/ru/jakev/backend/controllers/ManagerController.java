@@ -1,11 +1,8 @@
 package ru.jakev.backend.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import ru.jakev.backend.messages.CriteriaMessage;
@@ -19,8 +16,8 @@ import ru.jakev.backend.messages.CriteriaMessage;
 public class ManagerController {
 
     @MessageMapping("/sendCriteria")
-    @SendTo("/chief/messages")
-    public CriteriaMessage sendCriteria(@Payload CriteriaMessage message) throws JsonProcessingException {
+    @SendTo("/glavniy/messages")
+    public CriteriaMessage sendCriteria(@Payload CriteriaMessage message) {
         return message;
     }
 }

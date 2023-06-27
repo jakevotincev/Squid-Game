@@ -10,7 +10,7 @@ import ru.jakev.backend.messages.ConfirmMessage;
  * @since 26.06.2023
  */
 @Controller
-public class ChiefController {
+public class GlavniyController {
 
     @MessageMapping("/sendAnswer")
     @SendTo("/manager/messages")
