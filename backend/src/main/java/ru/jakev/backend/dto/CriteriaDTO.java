@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
  * @author evotintsev
  * @since 27.06.2023
  */
-@NoArgsConstructor
 //todo: make immutable
 public class CriteriaDTO {
     private int playersNumber;
     private String criteria;
     private long gameId;
+
+    public CriteriaDTO() {
+    }
 
     public int getPlayersNumber() {
         return playersNumber;

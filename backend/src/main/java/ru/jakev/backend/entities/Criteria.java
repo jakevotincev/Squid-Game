@@ -15,7 +15,7 @@ public class Criteria {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "game_id", referencedColumnName = "id")
     @Nonnull
     private Game game;
 

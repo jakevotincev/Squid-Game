@@ -12,9 +12,8 @@ import ru.jakev.backend.entities.Criteria;
  */
 @Mapper(componentModel = "spring")
 public interface CriteriaMapper {
-    @InheritInverseConfiguration
-    Criteria criteriaDtoToCriteria(CriteriaDTO criteriaDTO);
-
     @Mapping(source = "game.id", target = "gameId")
     CriteriaDTO criteriaToCriteriaDto(Criteria criteria);
+    @InheritInverseConfiguration
+    Criteria criteriaDtoToCriteria(CriteriaDTO criteriaDTO);
 }
