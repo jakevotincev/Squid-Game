@@ -5,8 +5,7 @@ function setConnected(connected) {
     $("#disconnect").prop("disabled", !connected);
     if (connected) {
         $("#conversation").show();
-    }
-    else {
+    } else {
         $("#conversation").hide();
     }
     $("#greetings").html("");
@@ -18,7 +17,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/glavniy/messages', function (greeting) {
+        stompClient.subscribe('/manager/messages', function (greeting) {
             showGreeting(greeting);
         });
     });
@@ -33,18 +32,34 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send("/app/sendCriteria", {}, JSON.stringify({'playersNumber': 5, 'criteria': 'pidors'}));
+    const confirmMessage = {
+        confirm: true,
+        criteria: {
+            playersNumber: 5,
+            criteria: 'her',
+            gameId: 1
+        },
+        declineReason: null
+
+    }
+    stompClient.send("/app/sendAnswer", {}, JSON.stringify(confirmMessage));
 }
 
 function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + JSON.parse(message.body).criteria + "</td></tr>");
+    $("#greetings").append("<tr><td>" + JSON.parse(message.body).toString() + "</td></tr>");
 }
 
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $("#connect").click(function () {
+        connect();
+    });
+    $("#disconnect").click(function () {
+        disconnect();
+    });
+    $("#send").click(function () {
+        sendName();
+    });
 });

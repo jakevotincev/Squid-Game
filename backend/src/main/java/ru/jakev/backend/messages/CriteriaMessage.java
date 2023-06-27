@@ -1,31 +1,19 @@
 package ru.jakev.backend.messages;
 
+import ru.jakev.backend.dto.CriteriaDTO;
+
 /**
  * @author evotintsev
  * @since 26.06.2023
  */
 public class CriteriaMessage {
-    private int playersNumber;
-    private String criteria;
+    private CriteriaDTO criteria;
 
-    public CriteriaMessage(int playersNumber, String criteria) {
-        this.playersNumber = playersNumber;
-        this.criteria = criteria;
-    }
-
-    public int getPlayersNumber() {
-        return playersNumber;
-    }
-
-    public void setPlayersNumber(int playersNumber) {
-        this.playersNumber = playersNumber;
-    }
-
-    public String getCriteria() {
+    public CriteriaDTO getCriteria() {
         return criteria;
     }
 
-    public void setCriteria(String criteria) {
+    public void setCriteria(CriteriaDTO criteria) {
         this.criteria = criteria;
     }
 }
