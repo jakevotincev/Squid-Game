@@ -27,4 +27,9 @@ public class CriteriaServiceImpl implements CriteriaService {
     public Criteria saveCriteria(CriteriaDTO criteriaDTO) {
         return criteriaRepository.save(criteriaMapper.criteriaDtoToCriteria(criteriaDTO));
     }
+
+    @Override
+    public int getPayersNumber() {
+        return criteriaRepository.findByGameId(1L).get().getPlayersNumber();
+    }
 }

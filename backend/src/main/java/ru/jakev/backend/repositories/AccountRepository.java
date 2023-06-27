@@ -1,13 +1,11 @@
 package ru.jakev.backend.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.jakev.backend.entities.Form;
+import ru.jakev.backend.entities.Account;
 
 /**
  * @author evotintsev
  * @since 27.06.2023
  */
-public interface FormRepository extends JpaRepository<Form, Long> {
-    @Override
-    long count();
+public interface AccountRepository extends JpaRepository<Account, Integer> {
 }

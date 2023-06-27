@@ -142,7 +142,7 @@ public class FormRepositoryStub implements FormRepository {
 
     @Override
     public long count() {
-        return 0;
+        return forms.size();
     }
 
     @Override

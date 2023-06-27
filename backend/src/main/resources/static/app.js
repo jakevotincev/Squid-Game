@@ -35,7 +35,7 @@ function sendName() {
     const confirmMessage = {
         confirm: true,
         criteria: {
-            playersNumber: 5,
+            playersNumber: 2,
             criteria: 'her',
             gameId: 1
         },
@@ -46,7 +46,7 @@ function sendName() {
 }
 
 function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + JSON.parse(message.body).toString() + "</td></tr>");
+    $("#greetings").append("<tr><td>" + JSON.parse(message.body) + "</td></tr>");
 }
 
 $(function () {

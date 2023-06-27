@@ -9,4 +9,6 @@ import ru.jakev.backend.entities.Criteria;
  */
 public interface CriteriaService {
     Criteria saveCriteria(CriteriaDTO criteriaDTO);
+
+    int getPayersNumber();
 }
