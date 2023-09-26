@@ -1,5 +1,8 @@
 package ru.jakev.backend.listeners;
 
+import org.springframework.messaging.converter.GsonMessageConverter;
+import org.springframework.messaging.converter.JsonbMessageConverter;
+import org.springframework.messaging.converter.SimpleMessageConverter;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ru.jakev.backend.messages.NotificationMessage;
 import ru.jakev.backend.messages.NotificationMessageType;
@@ -14,12 +17,12 @@ public class FormListener implements Listener {
 
     public FormListener(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
+        simpMessagingTemplate.setMessageConverter(new GsonMessageConverter());
     }
 
     @Override
     public void eventHappened() {
         //todo: add change state
-        //todo: ошибка при отправке сообщения
         simpMessagingTemplate.convertAndSend("/manager/messages",
                 new NotificationMessage(NotificationMessageType.ALL_FORMS_COLLECTED));
     }

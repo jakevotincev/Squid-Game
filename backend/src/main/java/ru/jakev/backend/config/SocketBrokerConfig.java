@@ -15,14 +15,20 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class SocketBrokerConfig implements
         WebSocketMessageBrokerConfigurer {
 
+    private final UserHandshakeHandler userHandshakeHandler;
+
+    public SocketBrokerConfig(UserHandshakeHandler userHandshakeHandler) {
+        this.userHandshakeHandler = userHandshakeHandler;
+    }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/glavniy", "/manager");
+        config.enableSimpleBroker("/glavniy", "/manager", "/worker");
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/squid-game-socket").withSockJS();
+        registry.addEndpoint("/squid-game-socket").setHandshakeHandler(userHandshakeHandler).setAllowedOriginPatterns("*");
     }
 }

@@ -3,6 +3,8 @@ package ru.jakev.backend.services;
 import ru.jakev.backend.dto.CriteriaDTO;
 import ru.jakev.backend.entities.Criteria;
 
+import java.util.Optional;
+
 /**
  * @author evotintsev
  * @since 27.06.2023
@@ -10,5 +12,5 @@ import ru.jakev.backend.entities.Criteria;
 public interface CriteriaService {
     Criteria saveCriteria(CriteriaDTO criteriaDTO);
 
-    int getPayersNumber();
+    Optional<Criteria> getCriteria(long gameId);
 }

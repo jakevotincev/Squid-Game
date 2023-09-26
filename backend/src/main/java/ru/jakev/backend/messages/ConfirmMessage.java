@@ -9,7 +9,7 @@ import ru.jakev.backend.dto.CriteriaDTO;
 public class ConfirmMessage {
     private boolean confirm;
 
-    CriteriaDTO criteria;
+    private CriteriaDTO criteria;
     private String declineReason;
 
     public boolean isConfirm() {

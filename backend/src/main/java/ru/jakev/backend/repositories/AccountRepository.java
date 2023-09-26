@@ -8,4 +8,5 @@ import ru.jakev.backend.entities.Account;
  * @since 27.06.2023
  */
 public interface AccountRepository extends JpaRepository<Account, Integer> {
+    Account findByName(String username);
 }

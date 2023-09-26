@@ -11,6 +11,8 @@ import ru.jakev.backend.mappers.FormMapper;
 import ru.jakev.backend.repositories.FormRepository;
 import ru.jakev.backend.services.FormService;
 
+import java.util.List;
+
 /**
  * @author evotintsev
  * @since 27.06.2023
@@ -41,6 +43,11 @@ public class FormServiceImpl implements FormService {
                 formListener.eventHappened();
             }
             return true;
+    }
+
+    @Override
+    public List<FormDTO> getAllForms() {
+        return formRepository.findAll().stream().map(formMapper::formToFormDto).toList();
     }
 
     private boolean isAllFormsCollected(){

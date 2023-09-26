@@ -7,6 +7,8 @@ import ru.jakev.backend.mappers.CriteriaMapper;
 import ru.jakev.backend.repositories.CriteriaRepository;
 import ru.jakev.backend.services.CriteriaService;
 
+import java.util.Optional;
+
 /**
  * @author evotintsev
  * @since 27.06.2023
@@ -15,7 +17,6 @@ import ru.jakev.backend.services.CriteriaService;
 public class CriteriaServiceImpl implements CriteriaService {
     private final CriteriaRepository criteriaRepository;
     private final CriteriaMapper criteriaMapper;
-
 
     public CriteriaServiceImpl(CriteriaRepository criteriaRepository, CriteriaMapper criteriaMapper) {
         this.criteriaRepository = criteriaRepository;
@@ -29,7 +30,7 @@ public class CriteriaServiceImpl implements CriteriaService {
     }
 
     @Override
-    public int getPayersNumber() {
-        return criteriaRepository.findByGameId(1L).get().getPlayersNumber();
+    public Optional<Criteria> getCriteria(long gameId) {
+        return criteriaRepository.findByGameId(gameId);
     }
 }
