@@ -27,6 +27,7 @@ public class GlobalContext {
         this.criteriaService = criteriaService;
     }
 
+    //пофиксить на брать количество игроков а не игроков по критериям
     public Integer getPlayersNumber() {
         if (playersCount == null) {
             Criteria criteria = criteriaService.getCriteria(1).orElse(null);

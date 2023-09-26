@@ -69,7 +69,7 @@ public class ManagerController {
     }
 
 
-    //user should subscribe to /user/worker/messages path
+    //user should subscribe to /user/worker/messages path!!!!!!
     @GetMapping("/sendCriteriaAndFormsToWorkers")
     public void sendCriteriaAndFormsToWorkers() {
         //todo: перенести этот код в другое место
