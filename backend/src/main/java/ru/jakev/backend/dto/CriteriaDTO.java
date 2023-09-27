@@ -1,7 +1,5 @@
 package ru.jakev.backend.dto;
 
-import lombok.NoArgsConstructor;
-
 /**
  * @author evotintsev
  * @since 27.06.2023

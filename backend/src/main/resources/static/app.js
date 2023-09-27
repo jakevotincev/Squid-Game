@@ -11,14 +11,23 @@ function setConnected(connected) {
     $("#greetings").html("");
 }
 
+function getFromInput(inputName){
+    return document.getElementById(inputName).value;
+}
+
 function connect() {
-    var socket = new SockJS('/squid-game-socket');
+    let connectionAddr = 'ws://localhost:8080/squid-game-socket?username=';
+    connectionAddr = connectionAddr.concat(getFromInput('username'));
+
+    let subscribeAddr = getFromInput('sub_address')
+
+    let socket = new WebSocket(connectionAddr);
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/manager/messages', function (greeting) {
-            showGreeting(greeting);
+        stompClient.subscribe(subscribeAddr, function (greeting) {
+            showMessage(greeting);
         });
     });
 }
@@ -31,22 +40,18 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName() {
-    const confirmMessage = {
-        confirm: true,
-        criteria: {
-            playersNumber: 5,
-            criteria: 'her',
-            gameId: 1
-        },
-        declineReason: null
-
+function sendMessage() {
+    let sendDist = getFromInput('send_dist');
+    let message = getFromInput('send_obj');
+    if (message !== ''){
+        message = JSON.parse(getFromInput('send_obj'));
     }
-    stompClient.send("/app/sendAnswer", {}, JSON.stringify(confirmMessage));
+
+    stompClient.send(sendDist, {}, JSON.stringify(message));
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + JSON.parse(message.body).toString() + "</td></tr>");
+function showMessage(message) {
+    $("#message").append("<tr><td>" + JSON.parse(message.body) + "</td></tr>");
 }
 
 $(function () {
@@ -60,6 +65,6 @@ $(function () {
         disconnect();
     });
     $("#send").click(function () {
-        sendName();
+        sendMessage();
     });
 });
