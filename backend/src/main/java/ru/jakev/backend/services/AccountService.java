@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface AccountService {
     //todo: возвращать дто здесь и везде в сервисах
     Optional<Account> getAccount(String username);
+
+    void updateAccountParticipation(int accountId, boolean participated);
 }
