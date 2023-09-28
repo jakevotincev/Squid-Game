@@ -80,6 +80,7 @@ public class ManagerController {
         AtomicInteger playersNumber = new AtomicInteger(criteriaDTO.getPlayersNumber());
         Map<UserPrincipal, List<FormDTO>> distributedForms = FormUtils.distributeForms(workers, forms);
 
+        //todo: добавить сохранение количества форм для валидации
         distributedForms.forEach((userPrincipal, formDTOS) -> {
             int acceptedFormsCount = FormUtils.calculateAcceptedFormsCount(criteriaDTO.getPlayersNumber(),
                     workers.size(), playersNumber.get());

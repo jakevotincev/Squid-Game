@@ -22,6 +22,9 @@ public class Account {
     @OneToOne(mappedBy = "account")
     private Form form;
 
+    @Nonnull
+    private Boolean participatesInGame;
+
     public Form getForm() {
         return form;
     }
@@ -56,5 +59,14 @@ public class Account {
 
     public void setRole(@Nonnull Role role) {
         this.role = role;
+    }
+
+    @Nonnull
+    public Boolean getParticipatesInGame() {
+        return participatesInGame;
+    }
+
+    public void setParticipatesInGame(@Nonnull Boolean participatesInGame) {
+        this.participatesInGame = participatesInGame;
     }
 }

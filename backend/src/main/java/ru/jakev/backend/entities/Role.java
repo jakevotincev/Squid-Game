@@ -5,5 +5,15 @@ package ru.jakev.backend.entities;
  * @since 25.06.2023
  */
 public enum Role {
-    GLAVNIY, MANAGER, PLAYER, SOLDIER, WORKER
+    GLAVNIY("GLAVNIY"), MANAGER("MANAGER"), PLAYER("PLAYER"), SOLDIER("SOLDIER"), WORKER("WORKER");
+
+    private final String role;
+
+    Role(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }
