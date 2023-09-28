@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 import ru.jakev.backend.GlobalContext;
-import ru.jakev.backend.entities.Account;
+import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.services.AccountService;
 
 import java.security.Principal;
@@ -43,7 +43,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
             LOG.error("Username header doesn't exists");
             return null;
         }
-        Account account = accountService.getAccount(username).orElse(null);
+        AccountDTO account = accountService.getAccount(username).orElse(null);
         //todo: что будет если зайдет аноним?
         if (account == null) {
             LOG.error("User {} not found", username);

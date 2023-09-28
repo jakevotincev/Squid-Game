@@ -4,6 +4,7 @@ import com.sun.security.auth.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.entities.Account;
 import ru.jakev.backend.entities.Criteria;
 import ru.jakev.backend.entities.Role;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 @Component
 public class GlobalContext {
     private final CriteriaService criteriaService;
-    private final Map<Account, UserPrincipal> connectedUsers = new HashMap<>();
+    private final Map<AccountDTO, UserPrincipal> connectedUsers = new HashMap<>();
     private final Set<Integer> acceptedForms = new HashSet<>();
 
     private final Logger LOG = LoggerFactory.getLogger(FormListener.class);
@@ -42,7 +43,7 @@ public class GlobalContext {
         return criteria != null ? criteria.getPlayersNumber() : 0;
     }
 
-    public void addConnectedUser(Account account, UserPrincipal userPrincipal) {
+    public void addConnectedUser(AccountDTO account, UserPrincipal userPrincipal) {
         connectedUsers.put(account, userPrincipal);
     }
 
@@ -50,16 +51,16 @@ public class GlobalContext {
         return connectedUsers.get(account);
     }
 
-    public Account getAccount(UserPrincipal userPrincipal) {
+    public AccountDTO getAccount(UserPrincipal userPrincipal) {
         return connectedUsers.entrySet().stream().filter((entry)-> entry.getValue()
                 .equals(userPrincipal)).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
-    public Set<Account> getConnectedAccounts() {
+    public Set<AccountDTO> getConnectedAccounts() {
         return connectedUsers.keySet();
     }
 
-    public Set<UserPrincipal> getConnectedUsersByCriteria(Predicate<Account> predicate) {
+    public Set<UserPrincipal> getConnectedUsersByCriteria(Predicate<AccountDTO> predicate) {
         return connectedUsers.entrySet().stream()
                 .filter((entry) -> predicate.test(entry.getKey())).map(Map.Entry::getValue)
                 .collect(Collectors.toSet());

@@ -32,9 +32,19 @@ public class FormListener {
     public void formAccepted(int playerId) {
         //todo: add change state
         if (globalContext.acceptForm(playerId)){
-            NotificationMessage message = new NotificationMessage(NotificationMessageType.FORMS_SELECTION_COMPLETED);
-               simpMessagingTemplate.convertAndSend("/manager/messages", message);
-               simpMessagingTemplate.convertAndSend("/glavniy/messages", message);
+            sendFormsSelectionCompletedMessage();
         }
+    }
+
+    public boolean stopFromSelection() {
+        //todo: add change state + prohibit sending forms
+        sendFormsSelectionCompletedMessage();
+        return true;
+    }
+
+    private void sendFormsSelectionCompletedMessage(){
+        NotificationMessage message = new NotificationMessage(NotificationMessageType.FORMS_SELECTION_COMPLETED);
+        simpMessagingTemplate.convertAndSend("/manager/messages", message);
+        simpMessagingTemplate.convertAndSend("/glavniy/messages", message);
     }
 }
