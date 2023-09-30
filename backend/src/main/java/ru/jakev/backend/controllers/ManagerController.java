@@ -22,6 +22,7 @@ import ru.jakev.backend.services.CriteriaService;
 import ru.jakev.backend.services.FormService;
 import ru.jakev.backend.services.GameService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,12 +72,12 @@ public class ManagerController {
     @GetMapping("/sendCriteriaAndFormsToWorkers")
     public void sendCriteriaAndFormsToWorkers() {
         //todo: перенести этот код в другое место
-        Set<UserPrincipal> workers = globalContext.getConnectedUsersByCriteria(account -> account.getRole() == Role.WORKER);
+        Set<Principal> workers = globalContext.getConnectedUsersByCriteria(account -> account.getRole() == Role.WORKER);
         List<FormDTO> forms = formService.getAllForms();
         Criteria criteria = criteriaService.getCriteria(1).orElse(null);
         CriteriaDTO criteriaDTO = criteriaMapper.criteriaToCriteriaDto(criteria);
         AtomicInteger playersNumber = new AtomicInteger(criteriaDTO.getPlayersNumber());
-        Map<UserPrincipal, List<FormDTO>> distributedForms = FormUtils.distributeForms(workers, forms);
+        Map<Principal, List<FormDTO>> distributedForms = FormUtils.distributeForms(workers, forms);
 
         //todo: добавить сохранение количества форм для валидации
         distributedForms.forEach((userPrincipal, formDTOS) -> {

@@ -1,20 +1,19 @@
 package ru.jakev.backend;
 
-import com.sun.security.auth.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.jakev.backend.dto.AccountDTO;
-import ru.jakev.backend.entities.Account;
 import ru.jakev.backend.entities.Criteria;
 import ru.jakev.backend.entities.Role;
-import ru.jakev.backend.listeners.FormListener;
 import ru.jakev.backend.services.CriteriaService;
 
-import java.util.HashMap;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -25,46 +24,63 @@ import java.util.stream.Collectors;
 @Component
 public class GlobalContext {
     private final CriteriaService criteriaService;
-    private final Map<AccountDTO, UserPrincipal> connectedUsers = new HashMap<>();
+    //todo: thing about make thread safe
+    private final Map<Principal, AccountDTO> connectedUsers = new ConcurrentHashMap<>();
     private final Set<Integer> acceptedForms = new HashSet<>();
+    private final Logger LOG = LoggerFactory.getLogger(GlobalContext.class);
 
-    private final Logger LOG = LoggerFactory.getLogger(FormListener.class);
 
-    public GlobalContext(CriteriaService criteriaService) {
+    public GlobalContext(CriteriaService criteriaService,
+                         @Value("${show_user_stats.enabled}") Boolean showUserStatsEnabled,
+                         @Value("${show_user_stats.period}") int period) {
         this.criteriaService = criteriaService;
+        if (showUserStatsEnabled) {
+            ScheduledExecutorService userStatsExecutorService = Executors.newScheduledThreadPool(1);
+            userStatsExecutorService.scheduleAtFixedRate(this::showLog, 0, period, TimeUnit.SECONDS);
+        }
+    }
+
+    private void showLog() {
+        LOG.info("\n Connected users info: \n count: {} \n{}", connectedUsers.size(),
+                getConnectedUsersString());
     }
 
     public int getConnectedPlayersCount() {
         return getConnectedUsersByCriteria(account -> account.getRole() == Role.PLAYER).size();
     }
 
-    public int getAcceptedPlayersCount(){
+    public int getAcceptedPlayersCount() {
         Criteria criteria = criteriaService.getCriteria(1).orElse(null);
         return criteria != null ? criteria.getPlayersNumber() : 0;
     }
 
-    public void addConnectedUser(AccountDTO account, UserPrincipal userPrincipal) {
-        connectedUsers.put(account, userPrincipal);
+    public void addConnectedUser(Principal userPrincipal, AccountDTO account) {
+        connectedUsers.put(userPrincipal, account);
     }
 
-    public UserPrincipal getUser(Account account) {
-        return connectedUsers.get(account);
+    public void removeConnectedUser(Principal userPrincipal) {
+        connectedUsers.remove(userPrincipal);
     }
 
-    public AccountDTO getAccount(UserPrincipal userPrincipal) {
-        return connectedUsers.entrySet().stream().filter((entry)-> entry.getValue()
-                .equals(userPrincipal)).findFirst().map(Map.Entry::getKey).orElse(null);
+
+    public AccountDTO getAccount(Principal userPrincipal) {
+        return connectedUsers.get(userPrincipal);
     }
 
-    public Set<AccountDTO> getConnectedAccounts() {
-        return connectedUsers.keySet();
-    }
-
-    public Set<UserPrincipal> getConnectedUsersByCriteria(Predicate<AccountDTO> predicate) {
+    public Set<Principal> getConnectedUsersByCriteria(Predicate<AccountDTO> predicate) {
         return connectedUsers.entrySet().stream()
-                .filter((entry) -> predicate.test(entry.getKey())).map(Map.Entry::getValue)
+                .filter((entry) -> predicate.test(entry.getValue())).map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
 
+    }
+
+    private String getConnectedUsersString() {
+        StringBuilder connectedUsersStr = new StringBuilder();
+        connectedUsers.forEach((key, value) -> {
+            connectedUsersStr.append(String.format(" User id:%s name:%s role:%s\n", value.getId(), value.getName(), value.getRole()));
+        });
+
+        return connectedUsersStr.isEmpty() ? "" : connectedUsersStr.substring(0, connectedUsersStr.length() - 1);
     }
 
     /**
