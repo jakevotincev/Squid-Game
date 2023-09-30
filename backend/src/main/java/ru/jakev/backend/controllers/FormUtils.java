@@ -14,7 +14,7 @@ public final class FormUtils {
         double pSize = principals.size();
         double fSize = forms.size();
         Deque<FormDTO> formsQueue = new ArrayDeque<>(forms);
-        //todo: пока работает только с нормальными данными, нежно тестирование
+        //todo: пока работает только с нормальными данными, нужно тестирование
         int formsPerPrincipal = (int) Math.ceil(fSize / pSize);
         Map<UserPrincipal, List<FormDTO>> distributedForms = new HashMap<>();
         for (UserPrincipal principal : principals) {

@@ -6,7 +6,8 @@ package ru.jakev.backend.messages;
  */
 public enum NotificationMessageType {
     ALL_FORMS_COLLECTED("ALL_FORMS_COLLECTED"),
-    FORMS_SELECTION_COMPLETED("FORMS_SELECTION_COMPLETED");
+    FORMS_SELECTION_COMPLETED("FORMS_SELECTION_COMPLETED"),
+    GAME_STARTED("GAME_STARTED");
 
     private final String type;
 
