@@ -10,4 +10,11 @@ public class NotificationMessage {
     public NotificationMessage(NotificationMessageType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "NotificationMessage{" +
+                "type=" + type +
+                '}';
+    }
 }

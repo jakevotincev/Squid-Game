@@ -26,4 +26,12 @@ public class FormDTO {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "FormDTO{" +
+                "playerId=" + playerId +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

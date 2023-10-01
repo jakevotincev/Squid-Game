@@ -3,6 +3,7 @@ package ru.jakev.backend.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.jakev.backend.listeners.FormListener;
@@ -19,6 +20,7 @@ import java.util.List;
  * @since 26.06.2023
  */
 @RestController
+@CrossOrigin
 public class GlavniyController {
 
     private final CriteriaService criteriaService;

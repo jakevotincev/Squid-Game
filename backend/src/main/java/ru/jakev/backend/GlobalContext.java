@@ -13,7 +13,10 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -56,10 +59,22 @@ public class GlobalContext {
 
     public void addConnectedUser(Principal userPrincipal, AccountDTO account) {
         connectedUsers.put(userPrincipal, account);
+        showLog();
     }
 
     public void removeConnectedUser(Principal userPrincipal) {
         connectedUsers.remove(userPrincipal);
+        showLog();
+    }
+
+    public Principal getPrincipalById(long accountId) {
+        Principal principal = connectedUsers.entrySet().stream().filter(entry -> entry.getValue().getId() == accountId)
+                .map(Map.Entry::getKey).findFirst().orElse(null);
+
+        if (principal == null) {
+            throw new IllegalArgumentException(String.format("Account with id:%s not connected", accountId));
+        }
+        return principal;
     }
 
 

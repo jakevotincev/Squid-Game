@@ -1,5 +1,6 @@
 package ru.jakev.backend.messages;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
 public interface WebSocketMessageSender {
     void sendMessage(String destination, Object message);
     void sendMessage(List<String> destinations, Object message);
-    void sendMessageToUser(String username, String destination, Object message);
+    void sendMessageToUser(Principal user, String destination, Object message);
 
 
 }

@@ -1,6 +1,7 @@
 package ru.jakev.backend.controllers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import ru.jakev.backend.services.AccountService;
  * @since 29.09.2023
  */
 @RestController
+@CrossOrigin
 public class AccountController {
 
     private final AccountService accountService;
