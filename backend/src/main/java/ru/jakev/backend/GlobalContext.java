@@ -10,9 +10,7 @@ import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.services.CriteriaService;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +28,7 @@ public class GlobalContext {
     //todo: thing about make thread safe
     private final Map<Principal, AccountDTO> connectedUsers = new ConcurrentHashMap<>();
     private final Set<Integer> acceptedForms = new HashSet<>();
+    private final Map<Principal, AccountDTO> participateInGamePlayers = new HashMap<>();
     private final Logger LOG = LoggerFactory.getLogger(GlobalContext.class);
 
 
@@ -52,7 +51,7 @@ public class GlobalContext {
         return getConnectedUsersByCriteria(account -> account.getRole() == Role.PLAYER).size();
     }
 
-    public int getAcceptedPlayersCount() {
+    public int getShouldBeAcceptedPlayersCount() {
         Criteria criteria = criteriaService.getCriteria(1).orElse(null);
         return criteria != null ? criteria.getPlayersNumber() : 0;
     }
@@ -65,6 +64,18 @@ public class GlobalContext {
     public void removeConnectedUser(Principal userPrincipal) {
         connectedUsers.remove(userPrincipal);
         showLog();
+    }
+
+    public void addParticipateInGamePlayer(Principal playerPrincipal, AccountDTO playerAccount){
+        participateInGamePlayers.put(playerPrincipal, playerAccount);
+    }
+
+    public Map<Principal, AccountDTO> getParticipateInGamePlayers() {
+        return participateInGamePlayers;
+    }
+
+    public Map<Principal, AccountDTO> getConnectedUsers() {
+        return connectedUsers;
     }
 
     public Principal getPrincipalById(long accountId) {
@@ -105,6 +116,6 @@ public class GlobalContext {
     public boolean acceptForm(int playerId) {
         acceptedForms.add(playerId);
         //todo: подумать как защититься от ситуации, когда отправили больше форм чем надо
-        return getAcceptedPlayersCount() == acceptedForms.size();
+        return getShouldBeAcceptedPlayersCount() == acceptedForms.size();
     }
 }

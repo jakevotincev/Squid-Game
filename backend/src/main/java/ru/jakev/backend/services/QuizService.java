@@ -11,5 +11,5 @@ import java.util.Map;
  */
 public interface QuizService {
     List<QuizDTO> getQuestionsWithPossibleAnswers(int gameId, int roundId);
-    boolean checkAnswer(long questionId, String answer);
+    boolean checkAnswer(long playerId, long questionId, String answer);
 }

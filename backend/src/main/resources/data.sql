@@ -44,3 +44,8 @@ on conflict do nothing;
 insert into quiz (id, question, answers, game_id, round_id)
 values (3, 'Кто из этих персонажей не дружит с Гарри Поттером?', '{"Драко Малфой":true,"Рон Уизли":false,"Гурмиона Грейнджер":false,"Невил Долгопупс":false}', 1, 1)
 on conflict do nothing;
+
+insert into account (id, name, role, participates_in_game)
+values (10, 'jeka', 'SOLDIER', true)
+on conflict do nothing;
+
