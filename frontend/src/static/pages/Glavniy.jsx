@@ -1,13 +1,16 @@
 
 import React, { Component } from 'react';
 import { Client } from '@stomp/stompjs';
-
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 class Glavniy extends Component {
 
   state = {
     criteriaMsg: null,
-    decline: ''
+    decline: '',
+    connected: false,
+    criteriaMsgIsReceived: false
   }
   handleChange = (event) => {
     // 👇 Get input value from "event"
@@ -15,14 +18,14 @@ class Glavniy extends Component {
 
 
   }
-  componentDidMount() {
+  componentDidMount = () => {
     console.log('Component did mount');
     // The compat mode syntax is totally different, converting to v5 syntax
     // Client is imported from '@stomp/stompjs'
     this.client = new Client();
 
     this.client.configure({
-      brokerURL: 'ws://localhost:8080/squid-game-socket',
+      brokerURL: 'ws://localhost:8080/squid-game-socket?username=glavniy',
       onConnect: () => {
         console.log('onConnect');
         this.handleSend();
@@ -34,7 +37,10 @@ class Glavniy extends Component {
     });
 
     this.client.activate();
+
+
   }
+
 
 
 
@@ -47,11 +53,10 @@ class Glavniy extends Component {
         console.log(sad.criteria.playersNumber);
         console.log(sad.criteria.criteria);
         this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
+        this.setState({criteriaMsgIsReceived: true});
+        console.log(this.state.criteriaMsgIsReceived);
       });
 
-      // this.client.subscribe('/topic/manager/messages', message => {
-      //   alert(message.body);
-      // });
     } else {
       // Queue a retry
       setTimeout(() => { this.handleSend() }, 100)
@@ -65,7 +70,7 @@ class Glavniy extends Component {
       criteria: {
         playersNumber: 5,
         criteria: 'ref',
-        gameId: 1
+        gameId: 2
       },
       declineReason: null
     }
@@ -90,34 +95,45 @@ class Glavniy extends Component {
         <div className="App">
           <header className="App-header">
 
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <div className="ManagerMessage" id="managerMessage">
-            <p>
-              Сообщение от менеджера : {this.state.criteriaMsg ? this.state.criteriaMsg : 'no data'}
-              </p><p>
-              Вы согласны с такими условиями старта игры?
-            </p>
-            <p>
-              <button id="yesBtn"  onClick={this.clickHandler}>Yes</button>
-              <button id="noBtn" onClick={this.clickHandler2}>No</button>
-            </p>
-            <p>
-              <form>
-                <label>Причина отказа :</label>
-                <input type ="text" id="decline" name="decline" placeholder="Введите причину отказа" onChange={this.handleChange}/>
-              </form>
-            </p>
-            </div>
-            <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
+            {/*<Popup trigger={<button> Сообщение от манагера </button>}*/}
+            {/*       position="right centre">*/}
+            {/*<div className="ManagerMessage" id="managerMessage">*/}
+            {/*<p>*/}
+            {/*  Сообщение от менеджера : {this.state.criteriaMsg ? this.state.criteriaMsg : 'no data'}*/}
+            {/*  </p><p>*/}
+            {/*  Вы согласны с такими условиями старта игры?*/}
+            {/*</p>*/}
+            {/*<p>*/}
+            {/*  <button id="yesBtn"  onClick={this.clickHandler}>Yes</button>*/}
+            {/*  <button id="noBtn" onClick={this.clickHandler2}>No</button>*/}
+            {/*</p>*/}
+            {/*<p>*/}
+            {/*  <form>*/}
+            {/*    <label>Причина отказа :</label>*/}
+            {/*    <input type ="text" id="decline" name="decline" placeholder="Введите причину отказа" onChange={this.handleChange}/>*/}
+            {/*  </form>*/}
+            {/*</p>*/}
+            {/*</div>*/}
+            {/*</Popup>*/}
+            {this.state.criteriaMsgIsReceived === true &&
+                <div className="ManagerMessagee" id="managerMessagee">
+                  <p>
+                    Сообщение от менеджера : {this.state.criteriaMsg ? this.state.criteriaMsg : 'no data'}
+                  </p><p>
+                  Вы согласны с такими условиями старта игры?
+                </p>
+                  <p>
+                    <button id="yesBtn"  onClick={this.clickHandler}>Yes</button>
+                    <button id="noBtn" onClick={this.clickHandler2}>No</button>
+                  </p>
+                  <p>
+                    <form>
+                      <label>Причина отказа :</label>
+                      <input type ="text" id="decline" name="decline" placeholder="Введите причину отказа" onChange={this.handleChange}/>
+                    </form>
+                  </p>
+                </div>
+            }
           </header>
         </div>
     );

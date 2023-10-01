@@ -12,6 +12,7 @@ import reportWebVitals from './reportWebVitals';
 import $ from 'https://code.jquery.com/jquery-3.7.0.js';
 import SockJS from 'https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js';
 import Stomp from 'https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js';
+import Worker from "./static/pages/Worker";
 
 export default function App() {
     return (
@@ -21,6 +22,7 @@ export default function App() {
                     <Route path="glavniy" element={<Glavniy />} />
                     <Route path="manager" element={<Manager />} />
                     <Route path="Participant" element={<Participant />} />
+                    <Route path="Worker" element={<Worker />} />
                 </Route>
             </Routes>
         </BrowserRouter>
@@ -29,9 +31,9 @@ export default function App() {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <App />
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {useRef} from 'react';
 import {Client} from "@stomp/stompjs";
 import { useState } from 'react';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 class Manager extends Component{
 
 
@@ -9,7 +11,9 @@ class Manager extends Component{
         glavniyAnswer: null,
         crit: '',
         numb: '',
-        slovo: ''
+        slovo: '',
+        allAnketasIsCollected: false,
+        answerStatus: null
     }
 
 
@@ -32,7 +36,7 @@ class Manager extends Component{
         this.client = new Client();
 
         this.client.configure({
-            brokerURL: 'ws://localhost:8080/squid-game-socket',
+            brokerURL: 'ws://localhost:8080/squid-game-socket?username=manager',
             onConnect: () => {
                 console.log('onConnect');
                 this.handleSend();
@@ -48,16 +52,25 @@ class Manager extends Component{
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
             this.client.subscribe('/manager/messages', message => {
+
                 console.log(JSON.parse(message.body));
                 this.setState({glavniyAnswer: message.body});
-                const sad = JSON.parse(message.body);
+                let sad = JSON.parse(message.body);
+                this.setState({answerStatus: sad.confirm});
+                console.log(this.state.answerStatus);
                 if (sad.confirm) {
                     this.state.slovo = 'Критерии утверждены';
                 }else{
-                    this.state.slovo = 'Переделывай, причина отказа : ' + sad.decline;
+                    this.state.slovo = 'Переделывай, причина отказа : ';
+                    this.state.slovo=  this.state.slovo.concat(sad.declineReason);
+                }
+                if (sad.type === "ALL_FORMS_COLLECTED"){
+                    this.setState({allAnketasIsCollected: true});
                 }
             });
-
+            this.client.subscribe('/user/worker/messages', message => {
+                console.log(JSON.parse(message.body));
+            })
 
         } else {
             // Queue a retry
@@ -73,7 +86,19 @@ class Manager extends Component{
             criteria: this.state.crit,
             gameId: 1}
         }
-        this.client.publish({destination: '/app/sendCriteria', body: JSON.stringify(criteriaMsg) });
+
+        this.client.publish({destination: '/app//sendCriteriaToGlavniy', body: JSON.stringify(criteriaMsg) });
+
+    }
+    sendAnketasHandler = () => {
+        fetch('http://localhost:8080/sendCriteriaAndFormsToWorkers',{
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: 'GET',
+            mode: 'no-cors'
+        }).then(() => alert("Все пиздато"))
+
     }
 
 
@@ -100,10 +125,19 @@ class Manager extends Component{
           </div>
         <br/><br/><br/>
         <div>
+            <Popup trigger={<button> Сообщение от босса </button>}
+                   position="right centre">
             <p>
             Ваш босс ответил : {this.state.slovo}
             </p>
+            </Popup>
         </div>
+        {this.state.allAnketasIsCollected === true &&
+            // !(this.state.answerStatus) &&
+            <div>
+                <button type="submit" onClick={this.sendAnketasHandler}>Отправить анкеты рабочим</button>
+            </div>
+        }
       </div>
 
     );
