@@ -49,6 +49,7 @@ public class FormServiceImpl implements FormService {
     }
 
     private boolean isAllFormsCollected(){
+        //todo: исправить юзкейс если какие то типы отправят формы, потом ливнут и формы других игроков посчитаются за других
         long formsCount = formRepository.count();
         return formsCount == globalContext.getConnectedPlayersCount();
     }

@@ -1,8 +1,8 @@
 package ru.jakev.backend.controllers;
 
-import com.sun.security.auth.UserPrincipal;
 import ru.jakev.backend.dto.FormDTO;
 
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -10,14 +10,14 @@ import java.util.*;
  * @since 26.09.2023
  */
 public final class FormUtils {
-    public static Map<UserPrincipal, List<FormDTO>> distributeForms(Set<UserPrincipal> principals, List<FormDTO> forms) {
+    public static Map<Principal, List<FormDTO>> distributeForms(Set<Principal> principals, List<FormDTO> forms) {
         double pSize = principals.size();
         double fSize = forms.size();
         Deque<FormDTO> formsQueue = new ArrayDeque<>(forms);
-        //todo: пока работает только с нормальными данными, нежно тестирование
+        //todo: пока работает только с нормальными данными, нужно тестирование
         int formsPerPrincipal = (int) Math.ceil(fSize / pSize);
-        Map<UserPrincipal, List<FormDTO>> distributedForms = new HashMap<>();
-        for (UserPrincipal principal : principals) {
+        Map<Principal, List<FormDTO>> distributedForms = new HashMap<>();
+        for (Principal principal : principals) {
             List<FormDTO> formsForPrincipal = new ArrayList<>();
             for (int i = 0; i < formsPerPrincipal; i++) {
                 FormDTO form = formsQueue.poll();

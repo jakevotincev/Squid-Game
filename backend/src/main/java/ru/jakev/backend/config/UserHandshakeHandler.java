@@ -1,6 +1,7 @@
 package ru.jakev.backend.config;
 
 import com.sun.security.auth.UserPrincipal;
+import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.server.ServerHttpRequest;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 import ru.jakev.backend.GlobalContext;
-import ru.jakev.backend.entities.Account;
+import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.services.AccountService;
 
 import java.security.Principal;
@@ -32,10 +33,9 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
         this.accountService = accountService;
     }
 
-    //todo: add unlogin handle
     @Override
-    protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
-                                      Map<String, Object> attributes) {
+    protected Principal determineUser(ServerHttpRequest request, @Nonnull WebSocketHandler wsHandler,
+                                      @Nonnull Map<String, Object> attributes) {
         String randomId = UUID.randomUUID().toString();
         Map<String, String> paramsMap = getQueryMap(request.getURI().getQuery());
         String username = paramsMap.get("username");
@@ -43,7 +43,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
             LOG.error("Username header doesn't exists");
             return null;
         }
-        Account account = accountService.getAccount(username).orElse(null);
+        AccountDTO account = accountService.getAccount(username).orElse(null);
         //todo: что будет если зайдет аноним?
         if (account == null) {
             LOG.error("User {} not found", username);
@@ -51,8 +51,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
         }
         LOG.info("User {} connected", username);
 
-        //todo: нах это надо?
-        globalContext.addConnectedUser(account, new UserPrincipal(randomId));
+        globalContext.addConnectedUser(new UserPrincipal(randomId), account);
 
         return new UserPrincipal(randomId);
     }
