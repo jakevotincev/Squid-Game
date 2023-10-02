@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import ru.jakev.backend.GlobalContext;
 import ru.jakev.backend.messages.DefaultWebSocketMessageSender;
 import ru.jakev.backend.messages.WebSocketMessageSender;
 
@@ -21,9 +22,11 @@ public class SocketBrokerConfig implements
         WebSocketMessageBrokerConfigurer {
 
     private final UserHandshakeHandler userHandshakeHandler;
+    private final GlobalContext globalContext;
 
-    public SocketBrokerConfig(UserHandshakeHandler userHandshakeHandler) {
+    public SocketBrokerConfig(UserHandshakeHandler userHandshakeHandler, GlobalContext globalContext) {
         this.userHandshakeHandler = userHandshakeHandler;
+        this.globalContext = globalContext;
     }
 
     @Override
@@ -40,6 +43,6 @@ public class SocketBrokerConfig implements
     @Bean
     public WebSocketMessageSender simpMessagingTemplate(SimpMessagingTemplate simpMessagingTemplate){
         simpMessagingTemplate.setMessageConverter(new GsonMessageConverter());
-        return new DefaultWebSocketMessageSender(simpMessagingTemplate);
+        return new DefaultWebSocketMessageSender(simpMessagingTemplate, globalContext);
     }
 }

@@ -88,9 +88,7 @@ public class ManagerController {
             selectionMessage.setForms(formDTOS);
             selectionMessage.setAcceptedFormsCount(acceptedFormsCount);
             playersNumber.addAndGet(-acceptedFormsCount);
-            LOG.info("Sending {} forms to {}, message: {}", formDTOS.size(),
-                    globalContext.getAccount(userPrincipal).getName(), selectionMessage);
-            webSocketMessageSender.sendMessageToUser(userPrincipal.getName(), "/worker/messages", selectionMessage);
+            webSocketMessageSender.sendMessageToUser(userPrincipal, "/worker/messages", selectionMessage);
         });
     }
 }

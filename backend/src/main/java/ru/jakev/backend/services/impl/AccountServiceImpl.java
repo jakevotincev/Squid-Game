@@ -40,4 +40,14 @@ public class AccountServiceImpl implements AccountService {
     public void updateAccountParticipation(int accountId, boolean participated) {
         accountRepository.updateAccountParticipationById(accountId, participated);
     }
+
+    @Override
+    public boolean isAccountParticipatesInGame(Integer accountId) {
+        Account account = accountRepository.findById(accountId).orElse(null);
+        if (account == null){
+            throw new IllegalArgumentException(String.format("Account with id=%s not found", accountId));
+        }
+
+        return account.getParticipatesInGame();
+    }
 }

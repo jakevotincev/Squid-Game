@@ -31,9 +31,9 @@ public class QuizController {
     }
 
     //todo: add send message to soldiers if bad answer
-    //todo: add player id
-    @GetMapping("/checkAnswer/{q_id}/{answer}")
-    public ResponseEntity<Boolean> checkAnswer(@PathVariable("q_id") int id, @PathVariable("answer") String answer) {
-        return ResponseEntity.ok(quizService.checkAnswer(id, answer.trim()));
+    @GetMapping("/checkAnswer/{p_id}/{q_id}/{answer}")
+    public ResponseEntity<Boolean> checkAnswer(@PathVariable("p_id") int playerId, @PathVariable("q_id") int id,
+                                               @PathVariable("answer") String answer) {
+        return ResponseEntity.ok(quizService.checkAnswer(playerId, id, answer.trim()));
     }
 }

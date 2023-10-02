@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
     @Query(value = "select q from Quiz q where q.game.id=:g_id and q.roundId=:r_id")
-    List<Quiz> findAllByGameId(@Param("g_id") int gameId, @Param("r_id") int roundId);
-
+    List<Quiz> findAllByGameAndRoundId(@Param("g_id") int gameId, @Param("r_id") int roundId);
     Optional<Quiz> findById(Long id);
+    int countAllByGameIdAndRoundId(Long game_id, Integer roundId);
 }

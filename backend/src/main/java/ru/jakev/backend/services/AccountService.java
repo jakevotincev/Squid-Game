@@ -1,7 +1,6 @@
 package ru.jakev.backend.services;
 
 import ru.jakev.backend.dto.AccountDTO;
-import ru.jakev.backend.entities.Account;
 
 import java.util.Optional;
 
@@ -14,4 +13,6 @@ public interface AccountService {
     Optional<AccountDTO> getAccount(String username);
 
     void updateAccountParticipation(int accountId, boolean participated);
+
+    boolean isAccountParticipatesInGame(Integer accountId);
 }
