@@ -4,7 +4,8 @@ import {Client} from "@stomp/stompjs";
 class Participant extends Component{
     state = {
         nickname: "",
-        content: ""
+        content: "",
+        playerId: null
 }
     handleChange = (event) => {
         // 👇 Get input value from "event"
@@ -31,6 +32,24 @@ class Participant extends Component{
         return url
     }
     componentDidMount = () => {
+        let url = "http://localhost:8080/account/";
+        url = url.concat(this.state.nickname)
+        fetch(url,{
+            headers: {
+                // "Content-Type": "application/json"
+            },
+            method: 'GET',
+            mode: 'cors'
+        }).then(
+            res => {res.json().then(data =>{
+
+                 this.setState({playerId: data.id})
+                console.log(JSON.stringify(data))
+            })
+            }
+
+        )
+        console.log(this.state.playerId);
         if (this.state.nickname !== ""){
         // setTimeout(() => { this.componentDidMount() }, 2000);
         console.log('Component did mount');
@@ -67,8 +86,9 @@ class Participant extends Component{
     clickHandler = () => {
         console.log(this.state.nickname);
         console.log(this.state.content);
+        console.log(this.state.playerId);
         const anketa ={
-            playerId: 4,
+            playerId: this.state.playerId,
             content: this.state.content
         }
         // this.client.publish({destination: '/app/sendCriteria', body: JSON.stringify(anketa) });

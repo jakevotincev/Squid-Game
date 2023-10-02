@@ -82,7 +82,8 @@ class Manager extends Component{
         console.log(this.state.crit);
         console.log(this.state.numb);
         const criteriaMsg ={
-        criteria : {playersNumber: this.state.numb,
+        criteria : {
+            playersNumber: this.state.numb,
             criteria: this.state.crit,
             gameId: 1}
         }

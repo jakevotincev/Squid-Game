@@ -5,12 +5,16 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
 class Glavniy extends Component {
-
+// todo interupt players selections get /interruptPlayersSelection on button
+  //todo on receive message forms selection completed notify him
+  //todo add button game started get /startgame
   state = {
     criteriaMsg: null,
     decline: '',
     connected: false,
-    criteriaMsgIsReceived: false
+    criteriaMsgIsReceived: false,
+    playersNumber: null,
+    criteria: null
   }
   handleChange = (event) => {
     // 👇 Get input value from "event"
@@ -50,6 +54,8 @@ class Glavniy extends Component {
         console.log(JSON.parse(message.body));
 
         const sad = JSON.parse(message.body);
+        this.setState({playersNumber: sad.criteria.playersNumber});
+        this.setState({criteria: sad.criteria.criteria});
         console.log(sad.criteria.playersNumber);
         console.log(sad.criteria.criteria);
         this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
@@ -68,8 +74,8 @@ class Glavniy extends Component {
     const confirmMessage ={
       confirm: true,
       criteria: {
-        playersNumber: 5,
-        criteria: 'ref',
+        playersNumber: this.state.playersNumber,
+        criteria: this.state.criteria,
         gameId: 2
       },
       declineReason: null
@@ -81,8 +87,8 @@ class Glavniy extends Component {
     const confirmMessage ={
       confirm: false,
       criteria: {
-        playersNumber: 5,
-        criteria: 'ref',
+        playersNumber: this.state.playersNumber,
+        criteria: this.state.criteria,
         gameId: 1
       },
       declineReason: this.state.decline
@@ -95,26 +101,7 @@ class Glavniy extends Component {
         <div className="App">
           <header className="App-header">
 
-            {/*<Popup trigger={<button> Сообщение от манагера </button>}*/}
-            {/*       position="right centre">*/}
-            {/*<div className="ManagerMessage" id="managerMessage">*/}
-            {/*<p>*/}
-            {/*  Сообщение от менеджера : {this.state.criteriaMsg ? this.state.criteriaMsg : 'no data'}*/}
-            {/*  </p><p>*/}
-            {/*  Вы согласны с такими условиями старта игры?*/}
-            {/*</p>*/}
-            {/*<p>*/}
-            {/*  <button id="yesBtn"  onClick={this.clickHandler}>Yes</button>*/}
-            {/*  <button id="noBtn" onClick={this.clickHandler2}>No</button>*/}
-            {/*</p>*/}
-            {/*<p>*/}
-            {/*  <form>*/}
-            {/*    <label>Причина отказа :</label>*/}
-            {/*    <input type ="text" id="decline" name="decline" placeholder="Введите причину отказа" onChange={this.handleChange}/>*/}
-            {/*  </form>*/}
-            {/*</p>*/}
-            {/*</div>*/}
-            {/*</Popup>*/}
+
             {this.state.criteriaMsgIsReceived === true &&
                 <div className="ManagerMessagee" id="managerMessagee">
                   <p>
