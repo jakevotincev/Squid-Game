@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-// todo change selection message to string
+
 class Worker extends Component{
     state = {
         nickname: "",
@@ -11,7 +11,7 @@ class Worker extends Component{
         playersNumber: null,
         anketa_Id: null,
         anketa_content: null,
-        isChecked: false,
+        msgRecieved: true,
         anketa: [{}],
         gameId: null
     }
@@ -79,6 +79,7 @@ class Worker extends Component{
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
             this.client.subscribe('/user/worker/messages', message => {
+
                 console.log(JSON.parse(message.body));
                 let formsMsg = JSON.parse(message.body);
                 console.log(formsMsg);
@@ -98,15 +99,11 @@ class Worker extends Component{
                     this.setState({anketa_content: formsMsg.forms[i].content});
                     let li = document.createElement("li");
                     let yesCheckBox = document.createElement('input');
-                    let noCheckBox = document.createElement('input');
                     let yesLabel = document.createElement('label');
-                    yesLabel.innerHTML = " Yes";
-                    let noLabel = document.createElement('label');
-                    noLabel.innerHTML = " NO";
+                    let emptyStr = document.createElement('br');
+                    yesLabel.innerHTML = "    Принять анкету";
                     yesCheckBox.type="checkbox";
-                    noCheckBox.type="checkbox";
                     yesCheckBox.value="Yes";
-                    noCheckBox.value="No";
                     yesCheckBox.checked=false;
                     console.log("anketka",curr_anketa);
                     yesCheckBox.addEventListener('change',ev => {
@@ -124,18 +121,23 @@ class Worker extends Component{
                     // })
                     let id = formsMsg.forms[i].playerId;
                     let content = formsMsg.forms[i].content;
-                    let str = "Id игрока : "+ id +", Анкета игрока : "+ content;
+                    let str = "Id игрока : "+ id +", Анкета игрока : "+ content+ "     ";
                     li.appendChild(document.createTextNode(str));
+                    li.appendChild(emptyStr);
                     li.appendChild(yesLabel);
                     li.appendChild(yesCheckBox);
-                    li.appendChild(noLabel);
-                    li.appendChild(noCheckBox);
+                    // li.appendChild(noLabel);
+                    // li.appendChild(noCheckBox);
                     anketaArea.appendChild(li);
                     console.log(curr_anketa);
+
                 }
                 return allAnketas
             })
-            ;
+            this.client.subscribe('/worker/messages', message => {
+                console.log('govnomapping ',JSON.parse(message.body));
+            })
+
         } else {
             // Queue a retry
             setTimeout(() => { this.handleSend() }, 100)
@@ -150,8 +152,9 @@ class Worker extends Component{
             <label>Никнейм: </label>
             <input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>
             <br/>
+
             <div id="worker_interface">
-                <div id="conditions">
+                <div id="conditions" >
                     <p>
                         Количество анкет, которые необходимо принять : {this.state.acceptedForms}
                     </p>
@@ -167,9 +170,11 @@ class Worker extends Component{
                     <ul id="anketas_list">
 
                     </ul>
-                    Id игрока : {this.state.anketa_Id}, Анкета игрока : {this.state.anketa_content}
+
                 </div>
+
             </div>
+
             <button type="submit" onClick={this.handleFinalClick}>Завершить отбор анкет</button>
         </div>
     );

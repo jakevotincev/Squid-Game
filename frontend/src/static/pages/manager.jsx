@@ -57,7 +57,7 @@ class Manager extends Component{
                 this.setState({glavniyAnswer: message.body});
                 let sad = JSON.parse(message.body);
                 this.setState({answerStatus: sad.confirm});
-                console.log(this.state.answerStatus);
+                // console.log(this.state.answerStatus);
                 if (sad.confirm) {
                     this.state.slovo = 'Критерии утверждены';
                 }else{

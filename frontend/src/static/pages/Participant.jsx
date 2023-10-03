@@ -5,7 +5,10 @@ class Participant extends Component{
     state = {
         nickname: "",
         content: "",
-        playerId: null
+        playerId: null,
+        showAnketa: true,
+        showQuiz: false,
+        quiz: [{}]
 }
     handleChange = (event) => {
         // 👇 Get input value from "event"
@@ -78,6 +81,105 @@ class Participant extends Component{
             this.client.subscribe('/glavniy/messages', message => {
                 console.log(JSON.parse(message.body));
                 });
+
+            this.client.subscribe('/user/player/messages', message => {
+                console.log('message',JSON.parse(message.body));
+                let sad = JSON.parse(message.body);
+                if (sad.type === 'GAME_STARTED'){
+                    this.setState({showAnketa: false});
+                    this.setState({showQuiz: true});
+                    fetch('http://localhost:8080/questions',{
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        method: 'GET',
+                        mode: 'cors'
+                    }).then(res => res.json().then(data =>{
+                        console.log('data', JSON.stringify(data))
+                        this.setState({quiz: data});
+                        let quizz = data;
+                        let quizArea = document.getElementById('quiz');
+                        // todo remove hardcode
+                         for (let i=0; i<quizz.length;i++){
+                            let curr_id = quizz[i].id;
+                            let curr_question = quizz[i].question;
+                            let curr_answers = quizz[i].answers;
+                            let curr_otvet;
+                            let str = "Вопрос №"+curr_id+".  "+curr_question;
+                            let emptyStr = document.createElement('br');
+                            let text = document.createTextNode(str);
+                            let radioBtnDiv = document.createElement('div');
+                            let checkAnswerBtn = document.createElement('button');
+                            checkAnswerBtn.type="submit";
+                            checkAnswerBtn.innerHTML="Отправить ответ";
+                            console.log("curr_answers",curr_answers);
+                            let isAnswerCorrect;
+                            for (let i=0; i<curr_answers.length;i++){
+                                let label = document.createElement("label");
+                                label.innerText = curr_answers[i];
+                                let input = document.createElement("input");
+                                input.type = "radio";
+                                input.name = "colour";
+                                input.value = curr_answers[i];
+                                const radioButtons = document.querySelectorAll('input[name="colour"]');
+                                input.addEventListener('click', (event) => {
+                                   if (event.currentTarget.checked){
+                                   curr_otvet = curr_answers[i];
+                                }
+                                });
+
+                                label.appendChild(input);
+                                radioBtnDiv.appendChild(label);
+                                radioBtnDiv.appendChild(emptyStr);
+                                radioBtnDiv.appendChild(checkAnswerBtn);
+
+                            }
+                            quizArea.appendChild(text);
+                            quizArea.appendChild(emptyStr);
+                            quizArea.appendChild(radioBtnDiv);
+                            quizArea.appendChild(emptyStr);
+                            checkAnswerBtn.addEventListener('click',(ev)=>{
+                                 console.log('curr_otvet',curr_otvet);
+                                 let destination = "http://localhost:8080/checkAnswer/";
+                                 destination = destination.concat(this.state.playerId);
+                                 destination = destination.concat('/');
+                                 let quest_id = curr_id.toString();
+                                 quest_id = quest_id.concat('/');
+                                 destination = destination.concat(quest_id);
+                                 destination = destination.concat(curr_otvet);
+                                 console.log("dist",destination);
+
+                                 fetch(destination,{
+                                     headers: {
+                                         // "Content-Type": "application/json"
+                                     },
+                                     method: 'GET',
+                                     mode: 'cors'
+                                 }).then(
+                                     res => res.text().then(resData => {
+                                         isAnswerCorrect = resData;
+                                         console.log(isAnswerCorrect);
+                                         if (isAnswerCorrect === 'true')
+                                         {console.log('answer true')}
+                                         else{console.log('answer false')}
+                                     })
+                                 )
+                             })
+                            console.log('isCorrect', isAnswerCorrect);
+                            if (isAnswerCorrect === 'true')
+                            {console.log('answer true')}
+                            else{break}
+
+                        }
+                        console.log(this.state.quiz)
+                    }))
+                    console.log('quizzz',this.state.quiz)
+                }
+            })
+            this.client.subscribe('/player/messages', message => {
+                console.log('govnomapping',JSON.parse(message.body));
+
+            })
         } else {
             // Queue a retry
             setTimeout(() => { this.handleSend() }, 100)
@@ -106,6 +208,7 @@ class Participant extends Component{
         <div id="participant_page" align="center">
             <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
             <h1>This is participant page</h1>
+            {this.state.showAnketa === true &&
             <div id="anketa" align="center">
                 <h3>Пожалуйте заполните анекту участника</h3>
                 <label>Никнейм: </label>
@@ -116,6 +219,11 @@ class Participant extends Component{
                 <br/><br/>
                 <button type="submit" onClick={this.clickHandler}>Отправить</button>
             </div>
+            }
+            {this.state.showQuiz === true &&
+            <div id="quiz">
+                Игра началась<br/>
+            </div>}
         </div>
     );
     }

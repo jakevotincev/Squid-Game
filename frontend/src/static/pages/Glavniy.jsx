@@ -5,16 +5,16 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
 class Glavniy extends Component {
-// todo interupt players selections get /interruptPlayersSelection on button
-  //todo on receive message forms selection completed notify him
-  //todo add button game started get /startgame
+// todo fix before start game error
   state = {
     criteriaMsg: null,
     decline: '',
     connected: false,
     criteriaMsgIsReceived: false,
     playersNumber: null,
-    criteria: null
+    criteria: null,
+    allAnketasIsCollected: false,
+    showInterruptionBtn: false
   }
   handleChange = (event) => {
     // 👇 Get input value from "event"
@@ -51,16 +51,22 @@ class Glavniy extends Component {
   handleSend = () => {
     if (this.client.webSocket.readyState === WebSocket.OPEN) {
       this.client.subscribe('/glavniy/messages', message => {
-        console.log(JSON.parse(message.body));
+        console.log('message: ',JSON.parse(message.body));
 
-        const sad = JSON.parse(message.body);
+        let sad = JSON.parse(message.body);
+        if (sad.type === 'FORMS_SELECTION_COMPLETED'){
+          this.setState({criteriaMsgIsReceived: false});
+          this.setState({showInterruptionBtn: false});
+          this.setState({allAnketasIsCollected: true});
+        }
         this.setState({playersNumber: sad.criteria.playersNumber});
         this.setState({criteria: sad.criteria.criteria});
-        console.log(sad.criteria.playersNumber);
-        console.log(sad.criteria.criteria);
+        console.log('playersNumber :',sad.criteria.playersNumber);
+        console.log('criteria',sad.criteria.criteria);
         this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
         this.setState({criteriaMsgIsReceived: true});
-        console.log(this.state.criteriaMsgIsReceived);
+        console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
+
       });
 
     } else {
@@ -68,6 +74,25 @@ class Glavniy extends Component {
       setTimeout(() => { this.handleSend() }, 100)
     }
   };
+  interuptPlayersSelection = () =>{
+    fetch('http://localhost:8080/interruptPlayersSelection',{
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: 'GET',
+      mode: 'no-cors'
+    }).then(() => alert("И я кричу АСТАНАВИТЕСЬ"))
+  }
+
+  startGame = () =>{
+    fetch('http://localhost:8080/startGame',{
+      headers: {
+        "Content-Type": "application/json"
+      },
+      method: 'GET',
+      mode: 'no-cors'
+    }).then(() => alert("Game has started)"))
+  }
 
   clickHandler = () => {
     // const sad = JSON.parse(message.body);
@@ -76,11 +101,12 @@ class Glavniy extends Component {
       criteria: {
         playersNumber: this.state.playersNumber,
         criteria: this.state.criteria,
-        gameId: 2
+        gameId: 1
       },
       declineReason: null
     }
     this.client.publish({destination: '/app/sendAnswer', body: JSON.stringify(confirmMessage)});
+    this.setState({showInterruptionBtn: true});
   }
   clickHandler2 = () => {
     // const sad = JSON.parse(message.body);
@@ -103,7 +129,7 @@ class Glavniy extends Component {
 
 
             {this.state.criteriaMsgIsReceived === true &&
-                <div className="ManagerMessagee" id="managerMessagee">
+                <div className="ManagerMessagee" id="managerMessagee" align="center">
                   <p>
                     Сообщение от менеджера : {this.state.criteriaMsg ? this.state.criteriaMsg : 'no data'}
                   </p><p>
@@ -114,12 +140,22 @@ class Glavniy extends Component {
                     <button id="noBtn" onClick={this.clickHandler2}>No</button>
                   </p>
                   <p>
-                    <form>
                       <label>Причина отказа :</label>
                       <input type ="text" id="decline" name="decline" placeholder="Введите причину отказа" onChange={this.handleChange}/>
-                    </form>
                   </p>
                 </div>
+
+            }
+            {this.state.showInterruptionBtn === true &&
+                <button type="submit" onClick={this.interuptPlayersSelection}>Прервать отбор анкет участников</button>
+            }
+            {this.state.allAnketasIsCollected === true &&
+            <div id="Start_of_the_game" align="center">
+              <p>
+                <h2>Анкеты участников игры в кальмара отобраны</h2>
+              </p>
+              <button type="submit" onClick={this.startGame}>Начать игру</button>
+            </div>
             }
           </header>
         </div>

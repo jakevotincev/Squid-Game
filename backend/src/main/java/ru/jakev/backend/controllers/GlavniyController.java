@@ -70,7 +70,7 @@ public class GlavniyController {
         NotificationMessage message = new NotificationMessage(NotificationMessageType.GAME_STARTED);
 
         globalContext.getParticipateInGamePlayers().forEach(((principal, accountDTO) -> {
-            webSocketMessageSender.sendMessageToUser(principal, "player/messages", message);
+            webSocketMessageSender.sendMessageToUser(principal, "/player/messages", message);
         }));
         webSocketMessageSender.sendMessage(List.of("/manager/messages",
                 "/soldier/messages",
