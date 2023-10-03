@@ -8,7 +8,7 @@ class Participant extends Component{
         playerId: null,
         showAnketa: true,
         showQuiz: false,
-        quiz: [{}]
+        quiz: null
 }
     handleChange = (event) => {
         // 👇 Get input value from "event"
@@ -31,7 +31,6 @@ class Participant extends Component{
         console.log(username);
         let url= 'ws://localhost:8080/squid-game-socket?username=';
         url = url.concat(this.state.nickname);
-        let url2 = 'ws://localhost:8080/squid-game-socket?username=Грудыгло';
         return url
     }
     componentDidMount = () => {
@@ -96,11 +95,13 @@ class Participant extends Component{
                         mode: 'cors'
                     }).then(res => res.json().then(data =>{
                         console.log('data', JSON.stringify(data))
-                        this.setState({quiz: data});
+                        console.log('dataobj',data)
                         let quizz = data;
                         let quizArea = document.getElementById('quiz');
                         // todo remove hardcode
-                         for (let i=0; i<data.length;i++){
+                        let isAnswerCorrect;
+                        let counter = quizz.length
+                         for (let i=0; i<counter;i++){
                             let curr_id = quizz[i].id;
                             let curr_question = quizz[i].question;
                             let curr_answers = quizz[i].answers;
@@ -113,7 +114,7 @@ class Participant extends Component{
                             checkAnswerBtn.type="submit";
                             checkAnswerBtn.innerHTML="Отправить ответ";
                             console.log("curr_answers",curr_answers);
-                            let isAnswerCorrect;
+
                             for (let i=0; i<curr_answers.length;i++){
                                 let label = document.createElement("label");
                                 label.innerText = curr_answers[i];
@@ -130,6 +131,7 @@ class Participant extends Component{
 
                                 label.appendChild(input);
                                 radioBtnDiv.appendChild(label);
+                                radioBtnDiv.appendChild(emptyStr);
                                 radioBtnDiv.appendChild(emptyStr);
                                 radioBtnDiv.appendChild(checkAnswerBtn);
 
@@ -160,20 +162,27 @@ class Participant extends Component{
                                          isAnswerCorrect = resData;
                                          console.log(isAnswerCorrect);
                                          if (isAnswerCorrect === 'true')
-                                         {console.log('answer true')}
-                                         else{console.log('answer false')}
+                                         {  console.log('answer true')
+
+                                             }
+                                         else if(isAnswerCorrect === 'false'){
+                                             this.setState({quiz: 'Вы ошиблись, скоро вас убьют'});
+                                             this.setState({showQuiz: false})
+                                             console.log('answer false')
+
+                                         }
                                      })
                                  )
                              })
-                            console.log('isCorrect', isAnswerCorrect);
-                            if (isAnswerCorrect === 'true')
-                            {console.log('answer true')}
-                            else{break}
 
                         }
                         console.log(this.state.quiz)
                     }))
                     console.log('quizzz',this.state.quiz)
+                }
+                if (sad.type === 'QUALIFIED_TO_NEXT_ROUND_MESSAGE'){
+                    this.setState({quiz: 'Вы прошли в следующий раунд'})
+                    this.setState({showQuiz: false})
                 }
             })
             this.client.subscribe('/player/messages', message => {
@@ -224,6 +233,10 @@ class Participant extends Component{
             <div id="quiz">
                 Игра началась<br/>
             </div>}
+            {this.state.quiz !=null &&
+                <div>
+                    {this.state.quiz}
+                </div>}
         </div>
     );
     }

@@ -13,6 +13,7 @@ import $ from 'https://code.jquery.com/jquery-3.7.0.js';
 import SockJS from 'https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js';
 import Stomp from 'https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js';
 import Worker from "./static/pages/Worker";
+import Soldier from "./static/pages/Soldier";
 
 export default function App() {
     return (
@@ -23,6 +24,7 @@ export default function App() {
                     <Route path="manager" element={<Manager />} />
                     <Route path="Participant" element={<Participant />} />
                     <Route path="Worker" element={<Worker />} />
+                    <Route path="Soldier" element={<Soldier />} />
                 </Route>
             </Routes>
         </BrowserRouter>
