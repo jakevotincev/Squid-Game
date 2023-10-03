@@ -100,7 +100,7 @@ class Participant extends Component{
                         let quizz = data;
                         let quizArea = document.getElementById('quiz');
                         // todo remove hardcode
-                         for (let i=0; i<quizz.length;i++){
+                         for (let i=0; i<data.length;i++){
                             let curr_id = quizz[i].id;
                             let curr_question = quizz[i].question;
                             let curr_answers = quizz[i].answers;
