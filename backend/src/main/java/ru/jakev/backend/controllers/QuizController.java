@@ -30,7 +30,6 @@ public class QuizController {
         return ResponseEntity.ok(result);
     }
 
-    //todo: add send message to soldiers if bad answer
     @GetMapping("/checkAnswer/{p_id}/{q_id}/{answer}")
     public ResponseEntity<Boolean> checkAnswer(@PathVariable("p_id") int playerId, @PathVariable("q_id") int id,
                                                @PathVariable("answer") String answer) {
