@@ -1,5 +1,7 @@
 package ru.jakev.backend.listeners;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.jakev.backend.GlobalContext;
 import ru.jakev.backend.entities.Role;
@@ -10,10 +12,7 @@ import ru.jakev.backend.messages.WebSocketMessageSender;
 import ru.jakev.backend.services.AccountService;
 
 import java.security.Principal;
-import java.util.ArrayDeque;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class GameListener {
+    private final Logger LOG = LoggerFactory.getLogger(GameListener.class);
 
     //todo: think about thread safe
     private final Map<Long, Integer> playerIdToAnswersMap = new ConcurrentHashMap<>();
@@ -93,7 +93,8 @@ public class GameListener {
                 soldierIdToScoreMap.clear();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
+            Arrays.stream(e.getStackTrace()).forEach(stackTraceElement -> LOG.error(stackTraceElement.toString()));
             return false;
         }
         return true;
