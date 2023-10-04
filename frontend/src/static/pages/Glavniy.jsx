@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Client } from '@stomp/stompjs';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
+import "./pagestyle.css";
 
 class Glavniy extends Component {
 // todo fix before start game error

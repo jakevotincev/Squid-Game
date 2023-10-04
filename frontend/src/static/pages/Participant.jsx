@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
+import "./pagestyle.css"
 
 class Participant extends Component{
     state = {
@@ -215,11 +216,12 @@ class Participant extends Component{
     }
     render(){return(
         <div id="participant_page" align="center">
-            <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
+            
             <h1>This is participant page</h1>
+            <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
             {this.state.showAnketa === true &&
-            <div id="anketa" align="center">
-                <h3>Пожалуйте заполните анекту участника</h3>
+            <div class="participant" id="anketa" align="center">
+                <h3>Пожалуйста, заполните анекту участника</h3>
                 <label>Никнейм: </label>
                 <input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>
                 <br/>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
+import "./pagestyle.css";
 
 class Worker extends Component{
     state = {
@@ -145,10 +146,10 @@ class Worker extends Component{
     };
 
     render(){return(
-        <div>
-            <h2>THis is worker page</h2>
+        <div class="participant" align="center">
+            <h1>This is worker page</h1>
             <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
-            <h3>Пожалуйте введите свой никнейм </h3>
+            <h3>Пожалуйста, введите свой никнейм </h3>
             <label>Никнейм: </label>
             <input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>
             <br/>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
+import "./pagestyle.css";
 
 class Soldier extends Component {
 
@@ -117,13 +118,14 @@ class Soldier extends Component {
     render(){return(
         <div id="soldier_page" align="center">
             <div id="connect">
+            
             <h1>This is soldier page</h1>
             <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
             <br/>
-            <label>Никнейм: </label>
+            <label class="participant">Никнейм: </label>
             <input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>
             </div>
-            <div id="preys">
+            <div class="participant" id="preys">
                 <p>
                     Имя жертвы: {this.state.preyName}
                 </p>

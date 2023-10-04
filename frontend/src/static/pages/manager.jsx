@@ -4,6 +4,7 @@ import {Client} from "@stomp/stompjs";
 import { useState } from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
+import "./pagestyle.css";
 class Manager extends Component{
 
 
@@ -107,8 +108,6 @@ class Manager extends Component{
 
     <div id="manager_page">
           <h1>This is manager page</h1>
-
-
           <div className="Criteria_Message" id="criteria_message">
               <h3>Критерии</h3>
               <br />
@@ -123,16 +122,17 @@ class Manager extends Component{
               </form>
               <br/>
               <button type="submit"  onClick={this.clickHandler}>Отправить</button>
-          </div>
-        <br/><br/><br/>
-        <div>
+              <div class="bossmsg">
             <Popup trigger={<button> Сообщение от босса </button>}
                    position="right centre">
             <p>
             Ваш босс ответил : {this.state.slovo}
             </p>
             </Popup>
-        </div>
+                </div>
+          </div>
+        <br/><br/><br/>
+        
         {this.state.allAnketasIsCollected === true &&
             // !(this.state.answerStatus) &&
             <div>
