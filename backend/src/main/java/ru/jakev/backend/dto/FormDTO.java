@@ -5,17 +5,17 @@ package ru.jakev.backend.dto;
  * @since 27.06.2023
  */
 public class FormDTO {
-    private long playerId;
+    private int playerId;
     private String content;
 
     public FormDTO() {
     }
 
-    public long getPlayerId() {
+    public int getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(long playerId) {
+    public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 
@@ -25,5 +25,13 @@ public class FormDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "FormDTO{" +
+                "playerId=" + playerId +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

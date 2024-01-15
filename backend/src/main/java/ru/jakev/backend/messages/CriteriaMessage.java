@@ -16,4 +16,11 @@ public class CriteriaMessage {
     public void setCriteria(CriteriaDTO criteria) {
         this.criteria = criteria;
     }
+
+    @Override
+    public String toString() {
+        return "CriteriaMessage{" +
+                "criteria=" + criteria +
+                '}';
+    }
 }

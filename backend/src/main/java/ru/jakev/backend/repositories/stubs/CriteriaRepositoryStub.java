@@ -179,4 +179,9 @@ public class CriteriaRepositoryStub implements CriteriaRepository {
     public Page<Criteria> findAll(Pageable pageable) {
         return null;
     }
+
+    @Override
+    public Optional<Criteria> findByGameId(Long id) {
+        return Optional.of(criteria.get(1L));
+    }
 }

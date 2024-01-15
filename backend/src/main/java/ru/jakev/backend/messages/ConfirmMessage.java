@@ -9,7 +9,7 @@ import ru.jakev.backend.dto.CriteriaDTO;
 public class ConfirmMessage {
     private boolean confirm;
 
-    CriteriaDTO criteria;
+    private CriteriaDTO criteria;
     private String declineReason;
 
     public boolean isConfirm() {
@@ -34,5 +34,14 @@ public class ConfirmMessage {
 
     public void setCriteria(CriteriaDTO criteria) {
         this.criteria = criteria;
+    }
+
+    @Override
+    public String toString() {
+        return "ConfirmMessage{" +
+                "confirm=" + confirm +
+                ", criteria=" + criteria +
+                ", declineReason='" + declineReason + '\'' +
+                '}';
     }
 }

@@ -8,4 +8,6 @@ import ru.jakev.backend.entities.Form;
  * @since 27.06.2023
  */
 public interface FormRepository extends JpaRepository<Form, Long> {
+    @Override
+    long count();
 }

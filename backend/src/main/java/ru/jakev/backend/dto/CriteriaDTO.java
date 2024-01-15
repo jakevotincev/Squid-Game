@@ -1,7 +1,5 @@
 package ru.jakev.backend.dto;
 
-import lombok.NoArgsConstructor;
-
 /**
  * @author evotintsev
  * @since 27.06.2023
@@ -37,5 +35,14 @@ public class CriteriaDTO {
 
     public void setGameId(long gameId) {
         this.gameId = gameId;
+    }
+
+    @Override
+    public String toString() {
+        return "CriteriaDTO{" +
+                "playersNumber=" + playersNumber +
+                ", criteria='" + criteria + '\'' +
+                ", gameId=" + gameId +
+                '}';
     }
 }

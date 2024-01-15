@@ -1,0 +1,25 @@
+h1 {
+    color: rgb(226, 19, 199);
+    text-align: center;
+}
+
+h2 {
+    color: rgb(0, 0, 204);
+}
+
+h3 {
+    color: rgb(0, 0, 204);
+}
+
+h4 {
+    color: rgb(0, 0, 204);
+}
+
+.bossmsg {
+    margin-right: 30%;
+    margin-top: 5%;
+}
+
+.participant {
+    color: rgb(0, 0, 204);
+}

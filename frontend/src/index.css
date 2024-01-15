@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: aqua;
+  background-color: rgb(56, 4, 56);
 }
 
 code {
@@ -23,7 +23,7 @@ code {
    color: #0000cc;
    /*display: none;*/
    position: absolute;
-   top: 0;
+   top: 90px;
    right: 0;
    bottom: 0;
    left: 0;

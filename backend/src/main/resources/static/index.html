@@ -7,7 +7,7 @@
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-  <script src="./app.js"></script>
+  <script src="/app.js"></script>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
@@ -28,8 +28,14 @@
     <div class="col-md-6">
       <form class="form-inline">
         <div class="form-group">
-          <label for="name">What is your name?</label>
-          <input type="text" id="name" class="form-control" placeholder="Your name here...">
+          <label for="username">username=</label>
+          <input type="text" id="username" class="form-control" placeholder="Your name here...">
+          <label for="sub_address">subscribe address=</label>
+          <input type="text" id="sub_address" class="form-control" placeholder="Your name here...">
+          <label for="send_dist">send_dist=</label>
+          <input type="text" id="send_dist" class="form-control" placeholder="Your name here...">
+          <label for="send_obj">send_obj=</label>
+          <input type="text" id="send_obj" class="form-control" placeholder="Your name here...">
         </div>
         <button id="send" class="btn btn-default" type="submit">Send</button>
       </form>
@@ -40,10 +46,10 @@
       <table id="conversation" class="table table-striped">
         <thead>
         <tr>
-          <th>Greetings</th>
+          <th>Message:</th>
         </tr>
         </thead>
-        <tbody id="greetings">
+        <tbody id="message">
         </tbody>
       </table>
     </div>
