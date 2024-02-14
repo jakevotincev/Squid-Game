@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import AccountService from "../../services/account.service";
 import {Client} from "@stomp/stompjs";
 import "./pagestyle.css"
 
-class Participant extends Component{
+class Participant extends Component {
     state = {
         nickname: "",
         content: "",
@@ -13,110 +14,102 @@ class Participant extends Component{
 }
     handleChange = (event) => {
         // 👇 Get input value from "event"
-        this.setState({nickname : event.target.value});
+        this.setState({nickname: event.target.value});
 
 
     }
     handleChange2 = (event) => {
         // 👇 Get input value from "event"
-        this.setState({content : event.target.value});
+        this.setState({content: event.target.value});
 
 
     }
 
-    getFromInputz(inputName){
+    getFromInputz(inputName) {
         return document.getElementById(inputName).value;
     }
+
     getNickname() {
         let username = this.getFromInputz('nick');
         console.log(username);
-        let url= 'ws://localhost:8080/squid-game-socket?username=';
+        let url = 'ws://localhost:8080/squid-game-socket?username=';
         url = url.concat(this.state.nickname);
         return url
     }
-    componentDidMount = () => {
-        let url = "http://localhost:8080/account/";
-        url = url.concat(this.state.nickname)
-        fetch(url,{
-            headers: {
-                // "Content-Type": "application/json"
-            },
-            method: 'GET',
-            mode: 'cors'
-        }).then(
-            res => {res.json().then(data =>{
 
-                 this.setState({playerId: data.id})
-                console.log(JSON.stringify(data))
-            })
-            }
-
-        )
-        console.log(this.state.playerId);
-        if (this.state.nickname !== ""){
-        // setTimeout(() => { this.componentDidMount() }, 2000);
-        console.log('Component did mount');
-        console.log(this.state.nickname);
-        // The compat mode syntax is totally different, converting to v5 syntax
-        // Client is imported from '@stomp/stompjs'
-        this.client = new Client();
-
-        this.client.configure({
-            brokerURL: this.getNickname(),
-            onConnect: () => {
-                console.log('onConnect');
-                this.handleSend();
-            },
-            // Helps during debugging, remove in production
-            debug: (str) => {
-                console.log(new Date(), str);
-            }
-        });
-
-        this.client.activate();}
-
+    setAccount = () => {
+        AccountService.getAccountId(this.state.nickname).then(data => {
+            console.log(data);
+            this.setState({playerId: data.id})
+        })
     }
+
+    connect = () => {
+        this.setAccount();
+
+        if (this.state.nickname !== "") {
+            // setTimeout(() => { this.componentDidMount() }, 2000);
+            console.log('Component did mount');
+            console.log(this.state.nickname);
+            // The compat mode syntax is totally different, converting to v5 syntax
+            // Client is imported from '@stomp/stompjs'
+            this.client = new Client();
+
+            this.client.configure({
+                brokerURL: this.getNickname(),
+                onConnect: () => {
+                    console.log('onConnect');
+                    this.handleSend();
+                },
+                // Helps during debugging, remove in production
+                debug: (str) => {
+                    console.log(new Date(), str);
+                }
+            });
+
+            this.client.activate();
+        }
+    }
+
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
             this.client.subscribe('/glavniy/messages', message => {
                 console.log(JSON.parse(message.body));
-                });
+            });
 
             this.client.subscribe('/user/player/messages', message => {
-                console.log('message',JSON.parse(message.body));
+                console.log('message', JSON.parse(message.body));
                 let sad = JSON.parse(message.body);
-                if (sad.type === 'GAME_STARTED'){
+                if (sad.type === 'GAME_STARTED') {
                     this.setState({showAnketa: false});
                     this.setState({showQuiz: true});
-                    fetch('http://localhost:8080/questions',{
+                    fetch('http://localhost:8080/questions', {
                         headers: {
                             "Content-Type": "application/json"
                         },
                         method: 'GET',
                         mode: 'cors'
-                    }).then(res => res.json().then(data =>{
+                    }).then(res => res.json().then(data => {
                         console.log('data', JSON.stringify(data))
-                        console.log('dataobj',data)
+                        this.setState({quiz: data});
                         let quizz = data;
                         let quizArea = document.getElementById('quiz');
                         // todo remove hardcode
-                        let isAnswerCorrect;
-                        let counter = quizz.length
-                         for (let i=0; i<counter;i++){
+                        for (let i = 0; i < quizz.length; i++) {
                             let curr_id = quizz[i].id;
                             let curr_question = quizz[i].question;
                             let curr_answers = quizz[i].answers;
                             let curr_otvet;
-                            let str = "Вопрос №"+curr_id+".  "+curr_question;
+                            let str = "Вопрос №" + curr_id + ".  " + curr_question;
                             let emptyStr = document.createElement('br');
                             let text = document.createTextNode(str);
                             let radioBtnDiv = document.createElement('div');
                             let checkAnswerBtn = document.createElement('button');
-                            checkAnswerBtn.type="submit";
-                            checkAnswerBtn.innerHTML="Отправить ответ";
-                            console.log("curr_answers",curr_answers);
-
-                            for (let i=0; i<curr_answers.length;i++){
+                            checkAnswerBtn.type = "submit";
+                            checkAnswerBtn.innerHTML = "Отправить ответ";
+                            console.log("curr_answers", curr_answers);
+                            let isAnswerCorrect;
+                            for (let i = 0; i < curr_answers.length; i++) {
                                 let label = document.createElement("label");
                                 label.innerText = curr_answers[i];
                                 let input = document.createElement("input");
@@ -125,9 +118,9 @@ class Participant extends Component{
                                 input.value = curr_answers[i];
                                 const radioButtons = document.querySelectorAll('input[name="colour"]');
                                 input.addEventListener('click', (event) => {
-                                   if (event.currentTarget.checked){
-                                   curr_otvet = curr_answers[i];
-                                }
+                                    if (event.currentTarget.checked) {
+                                        curr_otvet = curr_answers[i];
+                                    }
                                 });
 
                                 label.appendChild(input);
@@ -141,45 +134,46 @@ class Participant extends Component{
                             quizArea.appendChild(emptyStr);
                             quizArea.appendChild(radioBtnDiv);
                             quizArea.appendChild(emptyStr);
-                            checkAnswerBtn.addEventListener('click',(ev)=>{
-                                 console.log('curr_otvet',curr_otvet);
-                                 let destination = "http://localhost:8080/checkAnswer/";
-                                 destination = destination.concat(this.state.playerId);
-                                 destination = destination.concat('/');
-                                 let quest_id = curr_id.toString();
-                                 quest_id = quest_id.concat('/');
-                                 destination = destination.concat(quest_id);
-                                 destination = destination.concat(curr_otvet);
-                                 console.log("dist",destination);
+                            checkAnswerBtn.addEventListener('click', (ev) => {
+                                console.log('curr_otvet', curr_otvet);
+                                let destination = "http://localhost:8080/checkAnswer/";
+                                destination = destination.concat(this.state.playerId);
+                                destination = destination.concat('/');
+                                let quest_id = curr_id.toString();
+                                quest_id = quest_id.concat('/');
+                                destination = destination.concat(quest_id);
+                                destination = destination.concat(curr_otvet);
+                                console.log("dist", destination);
 
-                                 fetch(destination,{
-                                     headers: {
-                                         // "Content-Type": "application/json"
-                                     },
-                                     method: 'GET',
-                                     mode: 'cors'
-                                 }).then(
-                                     res => res.text().then(resData => {
-                                         isAnswerCorrect = resData;
-                                         console.log(isAnswerCorrect);
-                                         if (isAnswerCorrect === 'true')
-                                         {  console.log('answer true')
-
-                                             }
-                                         else if(isAnswerCorrect === 'false'){
-                                             this.setState({quiz: 'Вы ошиблись, скоро вас убьют'});
-                                             this.setState({showQuiz: false})
-                                             console.log('answer false')
-
-                                         }
-                                     })
-                                 )
-                             })
+                                fetch(destination, {
+                                    headers: {
+                                        // "Content-Type": "application/json"
+                                    },
+                                    method: 'GET',
+                                    mode: 'cors'
+                                }).then(
+                                    res => res.text().then(resData => {
+                                        isAnswerCorrect = resData;
+                                        console.log(isAnswerCorrect);
+                                        if (isAnswerCorrect === 'true') {
+                                            console.log('answer true')
+                                        } else {
+                                            console.log('answer false')
+                                        }
+                                    })
+                                )
+                            })
+                            console.log('isCorrect', isAnswerCorrect);
+                            if (isAnswerCorrect === 'true') {
+                                console.log('answer true')
+                            } else {
+                                break
+                            }
 
                         }
                         console.log(this.state.quiz)
                     }))
-                    console.log('quizzz',this.state.quiz)
+                    console.log('quizzz', this.state.quiz)
                 }
                 if (sad.type === 'QUALIFIED_TO_NEXT_ROUND_MESSAGE'){
                     this.setState({quiz: 'Вы прошли в следующий раунд'})
@@ -187,19 +181,21 @@ class Participant extends Component{
                 }
             })
             this.client.subscribe('/player/messages', message => {
-                console.log('govnomapping',JSON.parse(message.body));
+                console.log('govnomapping', JSON.parse(message.body));
 
             })
         } else {
             // Queue a retry
-            setTimeout(() => { this.handleSend() }, 100)
+            setTimeout(() => {
+                this.handleSend()
+            }, 100)
         }
     };
     clickHandler = () => {
         console.log(this.state.nickname);
         console.log(this.state.content);
         console.log(this.state.playerId);
-        const anketa ={
+        const anketa = {
             playerId: this.state.playerId,
             content: this.state.content
         }
@@ -216,7 +212,7 @@ class Participant extends Component{
     }
     render(){return(
         <div id="participant_page" align="center">
-            
+
             <h1>This is participant page</h1>
             <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
             {this.state.showAnketa === true &&

@@ -46,7 +46,7 @@ class Glavniy extends Component {
 
   }
 
-
+  //todo: 1. проверить баг с началом игры
 
 
   handleSend = () => {
@@ -59,15 +59,15 @@ class Glavniy extends Component {
           this.setState({criteriaMsgIsReceived: false});
           this.setState({showInterruptionBtn: false});
           this.setState({allAnketasIsCollected: true});
+        }else {
+          this.setState({playersNumber: sad.criteria.playersNumber});
+          this.setState({criteria: sad.criteria.criteria});
+          console.log('playersNumber :',sad.criteria.playersNumber);
+          console.log('criteria',sad.criteria.criteria);
+          this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
+          this.setState({criteriaMsgIsReceived: true});
+          console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
         }
-        this.setState({playersNumber: sad.criteria.playersNumber});
-        this.setState({criteria: sad.criteria.criteria});
-        console.log('playersNumber :',sad.criteria.playersNumber);
-        console.log('criteria',sad.criteria.criteria);
-        this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
-        this.setState({criteriaMsgIsReceived: true});
-        console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
-
       });
 
     } else {
