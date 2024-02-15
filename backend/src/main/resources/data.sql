@@ -53,3 +53,6 @@ insert into account (id, name, role, participates_in_game)
 values (11, 'dima', 'SOLDIER', true)
 on conflict do nothing;
 
+delete from criteria;
+delete from form;
+

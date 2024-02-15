@@ -107,7 +107,7 @@ class Soldier extends Component {
                 "Content-Type": "application/json"
             },
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'cors',
             body: JSON.stringify(soldierMsg)
             // body data type must match "Content-Type" header
 
