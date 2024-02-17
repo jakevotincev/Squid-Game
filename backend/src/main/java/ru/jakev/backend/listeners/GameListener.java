@@ -76,7 +76,6 @@ public class GameListener {
                 Long winnerId = winnerEntry.getKey();
                 soldierIdToScoreMap.remove(winnerId);
 
-                //todo: пофиксить ошибку при выстреле, Account with id:0 not connected
                 Principal soldier = globalContext.getPrincipalById(winnerId);
                 Principal killedPlayer = globalContext.getPrincipalById(playerId);
                 NotificationMessage message = new NotificationMessage(NotificationMessageType.PLAYER_KILLED_MESSAGE);
