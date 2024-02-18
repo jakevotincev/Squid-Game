@@ -39,6 +39,6 @@ public class DefaultWebSocketMessageSender implements WebSocketMessageSender {
     @Override
     public void sendMessageToUser(Principal user, String destination, Object message) {
         simpMessagingTemplate.convertAndSendToUser(user.getName(), destination, message);
-        LOG.info("Send message {} to {}, user: {}", message, destination, globalContext.getAccount(user).getName());
+        LOG.info("Send message {} to {}, user: {}", message, destination, globalContext.getAccount(user).getUsername());
     }
 }

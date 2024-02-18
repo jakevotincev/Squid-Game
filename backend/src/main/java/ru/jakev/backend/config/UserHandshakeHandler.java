@@ -43,7 +43,7 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
             LOG.error("Username header doesn't exists");
             return null;
         }
-        AccountDTO account = accountService.getAccount(username).orElse(null);
+        AccountDTO account = accountService.getAccountByUsername(username).orElse(null);
         //todo: что будет если зайдет аноним?
         if (account == null) {
             LOG.error("User {} not found", username);

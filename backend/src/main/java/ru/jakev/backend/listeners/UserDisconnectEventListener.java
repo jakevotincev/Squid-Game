@@ -30,7 +30,7 @@ public class UserDisconnectEventListener implements ApplicationListener<SessionD
         if (user != null) {
             AccountDTO account = globalContext.getAccount(user);
             if (account != null) {
-                LOG.info("{} disconnected", account.getName());
+                LOG.info("{} disconnected", account.getUsername());
             }
 
             globalContext.removeConnectedUser(user);

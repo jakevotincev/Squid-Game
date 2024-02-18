@@ -9,7 +9,8 @@ import ru.jakev.backend.entities.Role;
 //todo: make immutable
 public class AccountDTO {
     private Integer id;
-    private String name;
+    private String username;
+    private String password;
     private Role role;
 
     public AccountDTO() {
@@ -23,16 +24,24 @@ public class AccountDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPassword() {
+        return password;
     }
 
     public Role getRole() {
         return role;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setRole(Role role) {
@@ -43,7 +52,8 @@ public class AccountDTO {
     public String toString() {
         return "AccountDTO{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
     }

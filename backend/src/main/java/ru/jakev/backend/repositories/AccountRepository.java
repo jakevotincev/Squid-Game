@@ -13,7 +13,7 @@ import java.util.Optional;
  * @since 27.06.2023
  */
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    Account findByName(String username);
+    Account findByUsername(String username);
 
     @Modifying
     @Query("update Account a set a.participatesInGame=:participatesInGame where a.id=:id")

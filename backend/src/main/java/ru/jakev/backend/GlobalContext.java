@@ -103,7 +103,7 @@ public class GlobalContext {
     private String getConnectedUsersString() {
         StringBuilder connectedUsersStr = new StringBuilder();
         connectedUsers.forEach((key, value) -> {
-            connectedUsersStr.append(String.format(" User id:%s name:%s role:%s\n", value.getId(), value.getName(), value.getRole()));
+            connectedUsersStr.append(String.format(" User id:%s name:%s role:%s\n", value.getId(), value.getUsername(), value.getRole()));
         });
 
         return connectedUsersStr.isEmpty() ? "" : connectedUsersStr.substring(0, connectedUsersStr.length() - 1);

@@ -112,7 +112,7 @@ public class GameListener {
 
         KillPlayerMessage message = new KillPlayerMessage();
         message.setPlayerId(playerId);
-        message.setPlayerName(globalContext.getAccount(globalContext.getPrincipalById(playerId)).getName());
+        message.setPlayerName(globalContext.getAccount(globalContext.getPrincipalById(playerId)).getUsername());
         webSocketMessageSender.sendMessage("/soldier/messages", message);
     }
 }

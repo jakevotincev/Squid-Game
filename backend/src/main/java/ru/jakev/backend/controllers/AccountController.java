@@ -27,7 +27,7 @@ public class AccountController {
         if (username == null || username.isBlank()) {
             return ResponseEntity.badRequest().body("Username not set");
         }
-        AccountDTO account = accountService.getAccount(username).orElse(null);
+        AccountDTO account = accountService.getAccountByUsername(username).orElse(null);
         return account == null ? ResponseEntity.badRequest().body(String.format("Account with username = %s not found", username)) :
                 ResponseEntity.ok(account);
     }
