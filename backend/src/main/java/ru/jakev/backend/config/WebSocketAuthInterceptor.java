@@ -54,9 +54,7 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
                 UserDetails userDetails = accountService
                         .loadUserByUsername(username);
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    accessor.setUser(new UserPrincipal(username));
-                } else {
+                if (!jwtService.isTokenValid(jwt, userDetails)) {
                     LOG.error("Token is not valid");
                     throw new SecurityException("Token is not valid");
                 }
