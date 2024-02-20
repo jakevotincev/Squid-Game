@@ -11,7 +11,7 @@ function setConnected(connected) {
     $("#greetings").html("");
 }
 
-function getFromInput(inputName){
+function getFromInput(inputName) {
     return document.getElementById(inputName).value;
 }
 
@@ -19,17 +19,23 @@ function connect() {
     let connectionAddr = 'ws://localhost:8080/squid-game-socket?username=';
     connectionAddr = connectionAddr.concat(getFromInput('username'));
 
-    let subscribeAddr = getFromInput('sub_address')
+    let subscribeAddr = getFromInput('sub_address');
+    let token = getFromInput('token');
+    console.log(token);
 
     let socket = new WebSocket(connectionAddr);
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        setConnected(true);
-        console.log('Connected: ' + frame);
-        stompClient.subscribe(subscribeAddr, function (greeting) {
-            showMessage(greeting);
+    stompClient.connect(
+        {
+            'Authorization': 'Bearer ' + token
+        },
+        function (frame) {
+            setConnected(true);
+            console.log('Connected: ' + frame);
+            stompClient.subscribe(subscribeAddr, function (greeting) {
+                showMessage(greeting);
+            });
         });
-    });
 }
 
 function disconnect() {
@@ -43,11 +49,16 @@ function disconnect() {
 function sendMessage() {
     let sendDist = getFromInput('send_dist');
     let message = getFromInput('send_obj');
-    if (message !== ''){
+    if (message !== '') {
         message = JSON.parse(getFromInput('send_obj'));
     }
 
-    stompClient.send(sendDist, {}, JSON.stringify(message));
+    let token = getFromInput('token');
+
+    stompClient.send(sendDist,
+        {
+            'Authorization': 'Bearer ' + token
+        }, JSON.stringify(message));
 }
 
 function showMessage(message) {

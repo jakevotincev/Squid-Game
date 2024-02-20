@@ -12,6 +12,7 @@ public class AccountDTO {
     private String username;
     private String password;
     private Role role;
+    private Boolean participatesInGame;
 
     public AccountDTO() {
     }
@@ -36,6 +37,10 @@ public class AccountDTO {
         return role;
     }
 
+    public Boolean getParticipatesInGame() {
+        return participatesInGame;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -46,6 +51,10 @@ public class AccountDTO {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setParticipatesInGame(Boolean participatesInGame) {
+        this.participatesInGame = participatesInGame;
     }
 
     @Override

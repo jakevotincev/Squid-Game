@@ -22,6 +22,7 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    //todo: сделать защиту от получения данных других аккаунтов и убрать пароль из ответа
     @GetMapping("/account/{username}")
     public ResponseEntity<?> getAccount(@PathVariable("username") String username) {
         if (username == null || username.isBlank()) {

@@ -40,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
         account.setUsername(authRequestDTO.getUsername());
         account.setPassword(passwordEncoder.encode(authRequestDTO.getPassword()));
         account.setRole(Role.UNDEFINED);
+        account.setParticipatesInGame(false);
 
         return accountService.saveAccount(account);
     }
