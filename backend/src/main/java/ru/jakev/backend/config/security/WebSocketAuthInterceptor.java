@@ -1,4 +1,4 @@
-package ru.jakev.backend.config;
+package ru.jakev.backend.config.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
