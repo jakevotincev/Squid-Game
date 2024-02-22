@@ -8,7 +8,6 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
-import ru.jakev.backend.GlobalContext;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.services.AccountService;
 
@@ -24,19 +23,15 @@ import java.util.UUID;
 @Component
 public class UserHandshakeHandler extends DefaultHandshakeHandler {
     private final Logger LOG = LoggerFactory.getLogger(UserHandshakeHandler.class);
-
-    private final GlobalContext globalContext;
     private final AccountService accountService;
 
-    public UserHandshakeHandler(GlobalContext globalContext, AccountService accountService) {
-        this.globalContext = globalContext;
+    public UserHandshakeHandler(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @Override
     protected Principal determineUser(ServerHttpRequest request, @Nonnull WebSocketHandler wsHandler,
                                       @Nonnull Map<String, Object> attributes) {
-        String randomId = UUID.randomUUID().toString();
         Map<String, String> paramsMap = getQueryMap(request.getURI().getQuery());
         String username = paramsMap.get("username");
         if (username == null) {
@@ -49,11 +44,8 @@ public class UserHandshakeHandler extends DefaultHandshakeHandler {
             LOG.error("User {} not found", username);
             return null;
         }
-        LOG.info("User {} connected", username);
 
-        globalContext.addConnectedUser(new UserPrincipal(randomId), account);
-
-        return new UserPrincipal(randomId);
+        return new UserPrincipal(username);
     }
 
     public static Map<String, String> getQueryMap(String query) {

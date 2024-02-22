@@ -7,8 +7,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.dto.AuthRequestDTO;
+import ru.jakev.backend.entities.Account;
 import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.services.AccountService;
 import ru.jakev.backend.services.AuthService;
@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean register(AuthRequestDTO authRequestDTO) {
-        AccountDTO account = new AccountDTO();
+        Account account = new Account();
         account.setUsername(authRequestDTO.getUsername());
         account.setPassword(passwordEncoder.encode(authRequestDTO.getPassword()));
         account.setRole(Role.UNDEFINED);

@@ -33,8 +33,12 @@ function connect() {
             setConnected(true);
             console.log('Connected: ' + frame);
             stompClient.subscribe(subscribeAddr, function (greeting) {
-                showMessage(greeting);
-            });
+                    showMessage(greeting)
+                },
+                {
+                    'Authorization': 'Bearer ' + token
+                }
+            );
         });
 }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.entities.Criteria;
 import ru.jakev.backend.entities.Role;
+import ru.jakev.backend.listeners.UsersStatusNotifier;
 import ru.jakev.backend.services.CriteriaService;
 
 import java.security.Principal;
@@ -30,12 +31,13 @@ public class GlobalContext {
     private final Set<Integer> acceptedForms = new HashSet<>();
     private final Map<Principal, AccountDTO> participateInGamePlayers = new HashMap<>();
     private final Logger LOG = LoggerFactory.getLogger(GlobalContext.class);
-
+    private final UsersStatusNotifier usersStatusNotifier;
 
     public GlobalContext(CriteriaService criteriaService,
                          @Value("${show_user_stats.enabled}") Boolean showUserStatsEnabled,
-                         @Value("${show_user_stats.period}") int period) {
+                         @Value("${show_user_stats.period}") int period, UsersStatusNotifier usersStatusNotifier) {
         this.criteriaService = criteriaService;
+        this.usersStatusNotifier = usersStatusNotifier;
         if (showUserStatsEnabled) {
             ScheduledExecutorService userStatsExecutorService = Executors.newScheduledThreadPool(1);
             userStatsExecutorService.scheduleAtFixedRate(this::showLog, 0, period, TimeUnit.SECONDS);
@@ -58,11 +60,13 @@ public class GlobalContext {
 
     public void addConnectedUser(Principal userPrincipal, AccountDTO account) {
         connectedUsers.put(userPrincipal, account);
+        usersStatusNotifier.userStatusChanged(new ArrayList<>(connectedUsers.values()));
         showLog();
     }
 
     public void removeConnectedUser(Principal userPrincipal) {
         connectedUsers.remove(userPrincipal);
+        usersStatusNotifier.userStatusChanged(new ArrayList<>(connectedUsers.values()));
         showLog();
     }
 

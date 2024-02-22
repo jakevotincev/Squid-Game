@@ -54,21 +54,31 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean saveAccount(AccountDTO accountDTO) {
+    public boolean saveAccount(Account account) {
         try {
             getAccountByUsername(
-                    accountDTO.getUsername()).ifPresent(account -> {
+                    account.getUsername()).ifPresent(acc -> {
                 throw new IllegalArgumentException(
-                        String.format("Account with username=%s already exists", accountDTO.getUsername()));
+                        String.format("Account with username=%s already exists", account.getUsername()));
             });
 
-            accountRepository.save(accountMapper.accountDTOtoAccount(accountDTO));
+            accountRepository.save(account);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public void updateAccountRole(AccountDTO account) {
+        Account accountToUpdate = accountRepository.findById(account.getId()).orElse(null);
+        if (accountToUpdate == null) {
+            throw new UsernameNotFoundException(String.format("Account with id=%s not found", account.getId()));
+        }
+
+        accountRepository.updateAccountRole(account.getId(), account.getRole());
     }
 
     @Override

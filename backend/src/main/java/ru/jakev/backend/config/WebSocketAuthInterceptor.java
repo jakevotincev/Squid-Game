@@ -1,6 +1,5 @@
 package ru.jakev.backend.config;
 
-import com.sun.security.auth.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
@@ -11,7 +10,6 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.jakev.backend.GlobalContext;
 import ru.jakev.backend.services.AccountService;
 import ru.jakev.backend.services.JwtService;
 
@@ -24,14 +22,12 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
     private final JwtService jwtService;
     private final AccountService accountService;
-    private final GlobalContext globalContext;
-
     private final Logger LOG = LoggerFactory.getLogger(WebSocketAuthInterceptor.class);
 
-    public WebSocketAuthInterceptor(JwtService jwtService, AccountService accountService, GlobalContext globalContext) {
+    public WebSocketAuthInterceptor(JwtService jwtService, AccountService accountService
+    ) {
         this.jwtService = jwtService;
         this.accountService = accountService;
-        this.globalContext = globalContext;
     }
 
     //todo: подумать над ексепшон хэндлингом
@@ -41,13 +37,15 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         final var accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         final var cmd = accessor.getCommand();
-        String jwt = null;
-        if (StompCommand.CONNECT == cmd || StompCommand.SEND == cmd || StompCommand.SUBSCRIBE == cmd||
-                StompCommand.DISCONNECT == cmd) {
+        String jwt;
+        if (StompCommand.CONNECT == cmd || StompCommand.SEND == cmd || StompCommand.SUBSCRIBE == cmd) {
             try {
                 final var requestTokenHeader = accessor.getFirstNativeHeader("Authorization");
                 if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer")) {
                     jwt = requestTokenHeader.substring(7);
+                } else {
+                    LOG.error("Invalid token format");
+                    throw new SecurityException("Invalid token format");
                 }
 
                 String username = jwtService.extractUserName(jwt);
@@ -59,7 +57,6 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
                     throw new SecurityException("Token is not valid");
                 }
             } catch (Exception e) {
-                globalContext.removeConnectedUser(accessor.getUser());
                 LOG.error("Error while authenticate message", e);
                 throw new SecurityException("Error while processing message");
             }

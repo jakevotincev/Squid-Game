@@ -16,11 +16,9 @@ import java.util.List;
 public class DefaultWebSocketMessageSender implements WebSocketMessageSender {
     private final Logger LOG = LoggerFactory.getLogger(GameListener.class);
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final GlobalContext globalContext;
 
-    public DefaultWebSocketMessageSender(SimpMessagingTemplate simpMessagingTemplate, GlobalContext globalContext) {
+    public DefaultWebSocketMessageSender(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.globalContext = globalContext;
     }
 
     @Override
@@ -39,6 +37,6 @@ public class DefaultWebSocketMessageSender implements WebSocketMessageSender {
     @Override
     public void sendMessageToUser(Principal user, String destination, Object message) {
         simpMessagingTemplate.convertAndSendToUser(user.getName(), destination, message);
-        LOG.info("Send message {} to {}, user: {}", message, destination, globalContext.getAccount(user).getUsername());
+        LOG.info("Send message {} to {}, user: {}", message, destination, user);
     }
 }
