@@ -1,4 +1,4 @@
-package ru.jakev.backend.config;
+package ru.jakev.backend.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.jakev.backend.config.security.JwtAuthenticationFilter;
 import ru.jakev.backend.services.AccountService;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
