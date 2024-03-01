@@ -21,4 +21,5 @@ public interface AccountService extends UserDetailsService {
     boolean saveAccount(Account accountDTO);
 
     void updateAccountRole(AccountDTO account);
+    Optional<Account> getAccountReferenceById(int id);
 }

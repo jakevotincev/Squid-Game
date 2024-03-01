@@ -5,16 +5,16 @@ package ru.jakev.backend.messages;
  * @since 02.10.2023
  */
 public class KillPlayerMessage {
-    private long playerId;
+    private int playerId;
     private String playerName;
     private int score;
-    private long soldierId;
+    private int soldierId;
 
-    public long getPlayerId() {
+    public int getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(long playerId) {
+    public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
 
@@ -34,11 +34,11 @@ public class KillPlayerMessage {
         this.score = score;
     }
 
-    public long getSoldierId() {
+    public int getSoldierId() {
         return soldierId;
     }
 
-    public void setSoldierId(long solierId) {
+    public void setSoldierId(int solierId) {
         this.soldierId = solierId;
     }
 

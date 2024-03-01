@@ -82,6 +82,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Optional<Account> getAccountReferenceById(int id) {
+        //todo: exception handling?
+        Account account = accountRepository.getReferenceById(id);
+        return Optional.of(account);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountRepository.findByUsername(username);
         if (account == null) {

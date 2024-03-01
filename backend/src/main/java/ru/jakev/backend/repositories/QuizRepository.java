@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.jakev.backend.entities.Quiz;
+import ru.jakev.backend.entities.QuizType;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +14,9 @@ import java.util.Optional;
  * @since 01.10.2023
  */
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
-    @Query(value = "select q from Quiz q where q.game.id=:g_id and q.roundId=:r_id")
-    List<Quiz> findAllByGameAndRoundId(@Param("g_id") int gameId, @Param("r_id") int roundId);
+    @Query(value = "select q from Quiz q where q.game.id=:g_id and q.roundId=:r_id and q.quizType=:quiz_type")
+    List<Quiz> findAllByGameAndRoundIdAndQuizType(@Param("g_id") int gameId, @Param("r_id") int roundId,
+                                                  @Param("quiz_type") QuizType quizType);
     Optional<Quiz> findById(Long id);
-    int countAllByGameIdAndRoundId(Long game_id, Integer roundId);
+    int countAllByGameIdAndRoundIdAndQuizType(Long game_id, Integer roundId, QuizType quizType);
 }

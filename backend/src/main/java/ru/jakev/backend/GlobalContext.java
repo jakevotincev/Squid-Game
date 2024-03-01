@@ -74,6 +74,10 @@ public class GlobalContext {
         participateInGamePlayers.put(playerPrincipal, playerAccount);
     }
 
+    public void removeParticipateInGamePlayer(Principal playerPrincipal){
+        participateInGamePlayers.remove(playerPrincipal);
+    }
+
     public Map<Principal, AccountDTO> getParticipateInGamePlayers() {
         return participateInGamePlayers;
     }

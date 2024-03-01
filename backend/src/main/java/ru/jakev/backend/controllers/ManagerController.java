@@ -3,6 +3,7 @@ package ru.jakev.backend.controllers;
 import com.sun.security.auth.UserPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,9 +16,7 @@ import ru.jakev.backend.entities.Criteria;
 import ru.jakev.backend.entities.Game;
 import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.mappers.CriteriaMapper;
-import ru.jakev.backend.messages.CriteriaMessage;
-import ru.jakev.backend.messages.SelectionMessage;
-import ru.jakev.backend.messages.WebSocketMessageSender;
+import ru.jakev.backend.messages.*;
 import ru.jakev.backend.services.CriteriaService;
 import ru.jakev.backend.services.FormService;
 import ru.jakev.backend.services.GameService;
@@ -90,5 +89,13 @@ public class ManagerController {
             playersNumber.addAndGet(-acceptedFormsCount);
             webSocketMessageSender.sendMessageToUser(userPrincipal, "/worker/messages", selectionMessage);
         });
+    }
+
+    @GetMapping("/startLunch")
+    public ResponseEntity<?> startLunch() {
+        //todo: проверка и смена фазы
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.LUNCH_STARTED);
+        webSocketMessageSender.sendMessage(List.of("/worker/messages", "/player/messages", "/glavniy/messages"), notificationMessage);
+        return ResponseEntity.ok().build();
     }
 }
