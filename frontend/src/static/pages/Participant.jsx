@@ -185,6 +185,17 @@ class Participant extends Component{
                     this.setState({quiz: 'Вы прошли в следующий раунд'})
                     this.setState({showQuiz: false})
                 }
+                if (sad.type === 'KICKED_FROM_GAME_MESSAGE') {
+                    this.setState({showAnketa: false});
+                    this.setState({quiz: 'Вы не прошли отбор для участия'})
+                }
+                if (sad.type === 'QUALIFIED_TO_GAME_MESSAGE') {
+                    this.setState({showAnketa: false});
+                    this.setState({quiz: 'Вы  прошли отбор для участия в игре'})
+                }
+                if (sad.type === 'PLAYER_KILLED_MESSAGE') {
+                    this.setState({quiz: 'ВАС убили, ВЫ проиграли'})
+                }
             })
             this.client.subscribe('/player/messages', message => {
                 console.log('govnomapping',JSON.parse(message.body));

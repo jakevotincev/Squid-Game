@@ -1,5 +1,5 @@
 .mainnavig {
-    background-color: rgb(56, 4, 56);;
+    background-color: lightblue;
     overflow: hidden;
 }
 
@@ -10,10 +10,10 @@
     padding: 15px 15px;
     font-size: 20px;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background-color: rgb(56, 4, 56);
+    background-color: lightblue;
 }
 
 .mainnavig li:hover {
-    background-color: rgb(77, 39, 77);
+    background-color: lightsalmon;
     color: transparent;
 }
