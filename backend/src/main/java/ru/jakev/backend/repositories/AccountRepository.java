@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.jakev.backend.entities.Account;
+import ru.jakev.backend.entities.Role;
 
 import java.util.Optional;
 
@@ -18,6 +19,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Modifying
     @Query("update Account a set a.participatesInGame=:participatesInGame where a.id=:id")
     void updateAccountParticipationById(@Param("id") Integer id, @Param("participatesInGame") boolean participatesInGame);
+
+    @Modifying()
+    @Query("update Account a set a.role=:role where a.id=:id")
+    void updateAccountRole(@Param("id") Integer id, @Param("role") Role role);
 
     Optional<Account> findById(Integer id);
 }

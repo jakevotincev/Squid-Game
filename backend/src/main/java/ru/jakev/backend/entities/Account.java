@@ -17,7 +17,9 @@ public class Account implements UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
+    @Nonnull
     private String username;
+    @Nonnull
     private String password;
     @Nonnull
     @Enumerated(EnumType.STRING)

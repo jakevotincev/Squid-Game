@@ -1,4 +1,4 @@
-package ru.jakev.backend.config;
+package ru.jakev.backend.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +45,7 @@ public class SecurityConfiguration {
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())

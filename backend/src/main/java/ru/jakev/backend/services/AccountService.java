@@ -2,6 +2,7 @@ package ru.jakev.backend.services;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.jakev.backend.dto.AccountDTO;
+import ru.jakev.backend.entities.Account;
 
 import java.util.Optional;
 
@@ -17,5 +18,7 @@ public interface AccountService extends UserDetailsService {
 
     boolean isAccountParticipatesInGame(Integer accountId);
 
-    boolean saveAccount(AccountDTO accountDTO);
+    boolean saveAccount(Account accountDTO);
+
+    void updateAccountRole(AccountDTO account);
 }

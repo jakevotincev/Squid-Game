@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 01.10.2023
  */
 @Component
+//todo: maybe change name to round listener
 public class GameListener {
     private final Logger LOG = LoggerFactory.getLogger(GameListener.class);
 

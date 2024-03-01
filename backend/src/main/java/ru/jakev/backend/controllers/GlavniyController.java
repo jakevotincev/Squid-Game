@@ -6,15 +6,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.jakev.backend.GlobalContext;
+import ru.jakev.backend.game.RoleDistributionManager;
 import ru.jakev.backend.listeners.FormListener;
+import ru.jakev.backend.listeners.PhaseListener;
 import ru.jakev.backend.messages.ConfirmMessage;
-import ru.jakev.backend.messages.NotificationMessage;
-import ru.jakev.backend.messages.NotificationMessageType;
-import ru.jakev.backend.messages.WebSocketMessageSender;
 import ru.jakev.backend.services.CriteriaService;
-
-import java.util.List;
 
 /**
  * @author evotintsev
@@ -26,17 +22,18 @@ public class GlavniyController {
 
     private final CriteriaService criteriaService;
     private final FormListener formListener;
-    private final WebSocketMessageSender webSocketMessageSender;
-    private final GlobalContext globalContext;
+    private final RoleDistributionManager roleDistributionManager;
+    private final PhaseListener phaseListener;
     private final static String INTERRUPT_SELECTION_ERROR_MESSAGE = "Error while interrupt form selection";
     private final static String GAME_STARTED_MESSAGE = "Game successfully started";
+    private final static String INVALID_USERS_NUMBER_MESSAGE = "Invalid number of UNDEFINED users";
 
     public GlavniyController(CriteriaService criteriaService, FormListener formListener,
-                             WebSocketMessageSender webSocketMessageSender, GlobalContext globalContext) {
+                             RoleDistributionManager roleDistributionManager, PhaseListener phaseListener) {
         this.criteriaService = criteriaService;
         this.formListener = formListener;
-        this.webSocketMessageSender = webSocketMessageSender;
-        this.globalContext = globalContext;
+        this.roleDistributionManager = roleDistributionManager;
+        this.phaseListener = phaseListener;
     }
 
     @MessageMapping("/sendAnswer")
@@ -60,20 +57,18 @@ public class GlavniyController {
     @GetMapping("/startGame")
     public ResponseEntity<String> startGame() {
         //todo: add check and change phase
-        sendGameStartedMessages();
+        phaseListener.gameStarted();
 
         return ResponseEntity.ok().body(GAME_STARTED_MESSAGE);
     }
 
-    private void sendGameStartedMessages() {
-        //todo: поменять это на что то получше
-        NotificationMessage message = new NotificationMessage(NotificationMessageType.GAME_STARTED);
-
-        globalContext.getParticipateInGamePlayers().forEach(((principal, accountDTO) -> {
-            webSocketMessageSender.sendMessageToUser(principal, "/player/messages", message);
-        }));
-        webSocketMessageSender.sendMessage(List.of("/manager/messages",
-                "/soldier/messages",
-                "/worker/messages"), message);
+    @GetMapping("/startRolesDistribution")
+    public ResponseEntity<String> startRolesDistribution() {
+        if (roleDistributionManager.distributeRoles()) {
+            phaseListener.rolesDistributed();
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().body(INVALID_USERS_NUMBER_MESSAGE);
+        }
     }
 }
