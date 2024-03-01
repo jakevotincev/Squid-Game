@@ -1,4 +1,4 @@
-
+// todo огда он нажал кнопка начать распределение ролей если 8 = коннектед
 import React, { Component } from 'react';
 import { Client } from '@stomp/stompjs';
 import Popup from 'reactjs-popup';

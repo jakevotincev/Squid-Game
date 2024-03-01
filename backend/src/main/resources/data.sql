@@ -6,6 +6,9 @@ insert into game (id)
 values (1)
 on conflict do nothing;
 
+insert into account (id, username, password, role, participates_in_game)
+values (3, 'Дедух', '$2a$10$e4RX/eA.G9GYCX.tiXWe0uNw7pTHXx7Phf2GbLSYykGSRHEJuYQO.', 'UNDEFINED', false)
+on conflict do nothing;
 -- insert into account (id, name, role, participates_in_game)
 -- values (2, 'manager', 'MANAGER', true)
 -- on conflict do nothing;

@@ -14,6 +14,7 @@ import SockJS from 'https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/s
 import Stomp from 'https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js';
 import Worker from "./static/pages/Worker";
 import Soldier from "./static/pages/Soldier";
+import Auth from "./static/pages/Auth";
 
 export default function App() {
     return (
@@ -25,6 +26,7 @@ export default function App() {
                     <Route path="Participant" element={<Participant />} />
                     <Route path="Worker" element={<Worker />} />
                     <Route path="Soldier" element={<Soldier />} />
+                    <Route path="Auth" element={<Auth />} />
                 </Route>
             </Routes>
         </BrowserRouter>
