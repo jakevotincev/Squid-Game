@@ -3,7 +3,6 @@ package ru.jakev.backend.messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import ru.jakev.backend.GlobalContext;
 import ru.jakev.backend.listeners.GameListener;
 
 import java.security.Principal;

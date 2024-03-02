@@ -9,6 +9,8 @@ import ru.jakev.backend.services.AccountService;
 import ru.jakev.backend.services.GameService;
 import ru.jakev.backend.services.ScoreService;
 
+import java.util.Optional;
+
 /**
  * @author evotintsev
  * @since 01.03.2024
@@ -41,5 +43,10 @@ public class ScoreServiceImpl implements ScoreService {
         score.setAccount(account);
         score.setGame(game);
         scoreRepository.save(score);
+    }
+
+    @Override
+    public Optional<Score> getScoreByUserId(int userId) {
+        return scoreRepository.findByAccountId(userId);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import ru.jakev.backend.entities.Account;
 import ru.jakev.backend.entities.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,4 +26,5 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     void updateAccountRole(@Param("id") Integer id, @Param("role") Role role);
 
     Optional<Account> findById(Integer id);
+    List<Account> findAllByRole(Role role);
 }

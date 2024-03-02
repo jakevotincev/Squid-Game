@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.entities.Account;
+import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.mappers.AccountMapper;
 import ru.jakev.backend.repositories.AccountRepository;
 import ru.jakev.backend.services.AccountService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -86,6 +88,16 @@ public class AccountServiceImpl implements AccountService {
         //todo: exception handling?
         Account account = accountRepository.getReferenceById(id);
         return Optional.of(account);
+    }
+
+    @Override
+    public Optional<Account> getAccountById(int id) {
+        return accountRepository.findById(id);
+    }
+
+    @Override
+    public List<Account> getAccountsByRole(Role role) {
+        return accountRepository.findAllByRole(role);
     }
 
     @Override

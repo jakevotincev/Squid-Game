@@ -25,7 +25,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 //@EnableMethodSecurity
 public class SecurityConfiguration {
-
     private final AccountService accountService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -45,7 +44,7 @@ public class SecurityConfiguration {
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
-                        .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket").permitAll()
+                        .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket", "/phase/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())

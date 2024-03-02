@@ -15,7 +15,8 @@ public enum NotificationMessageType {
     MISS_MESSAGE("MISS_MESSAGE"),
     ROLES_DISTRIBUTED("ROLES_DISTRIBUTED"),
     LUNCH_STARTED("LUNCH_STARTED"),
-    FOOD_PREPARED("FOOD_PREPARED");
+    FOOD_PREPARED("FOOD_PREPARED"),
+    LUNCH_END("LUNCH_END");
 
     private final String type;
 

@@ -1,13 +1,16 @@
-package ru.jakev.backend;
+package ru.jakev.backend.game;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.jakev.backend.dto.AccountDTO;
+import ru.jakev.backend.entities.Account;
 import ru.jakev.backend.entities.Criteria;
 import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.listeners.UsersStatusNotifier;
+import ru.jakev.backend.mappers.AccountMapper;
+import ru.jakev.backend.services.AccountService;
 import ru.jakev.backend.services.CriteriaService;
 
 import java.security.Principal;
@@ -32,12 +35,17 @@ public class GlobalContext {
     private final Map<Principal, AccountDTO> participateInGamePlayers = new HashMap<>();
     private final Logger LOG = LoggerFactory.getLogger(GlobalContext.class);
     private final UsersStatusNotifier usersStatusNotifier;
+    private final AccountService accountService;
+    private final AccountMapper accountMapper;
 
     public GlobalContext(CriteriaService criteriaService,
                          @Value("${show_user_stats.enabled}") Boolean showUserStatsEnabled,
-                         @Value("${show_user_stats.period}") int period, UsersStatusNotifier usersStatusNotifier) {
+                         @Value("${show_user_stats.period}") int period, UsersStatusNotifier usersStatusNotifier, AccountService accountService,
+                         AccountMapper accountMapper) {
         this.criteriaService = criteriaService;
         this.usersStatusNotifier = usersStatusNotifier;
+        this.accountService = accountService;
+        this.accountMapper = accountMapper;
         if (showUserStatsEnabled) {
             ScheduledExecutorService userStatsExecutorService = Executors.newScheduledThreadPool(1);
             userStatsExecutorService.scheduleAtFixedRate(this::showLog, 0, period, TimeUnit.SECONDS);
@@ -79,6 +87,12 @@ public class GlobalContext {
     }
 
     public Map<Principal, AccountDTO> getParticipateInGamePlayers() {
+        //todo: нужно только для тестов
+        if (participateInGamePlayers.isEmpty()) {
+            accountService.getAccountsByRole(Role.PLAYER).stream().filter(Account::getParticipatesInGame).forEach(account -> {
+                participateInGamePlayers.put(getPrincipalById(account.getId()), accountMapper.accountToAccountDTO(account));
+            });
+        }
         return participateInGamePlayers;
     }
 

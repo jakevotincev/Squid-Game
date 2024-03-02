@@ -3,7 +3,7 @@ package ru.jakev.backend.listeners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.jakev.backend.GlobalContext;
+import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.messages.KillPlayerMessage;
 import ru.jakev.backend.messages.NotificationMessage;
@@ -46,6 +46,7 @@ public class GameListener {
     public void playerAnswered(int playerId, boolean isCorrect, int questionCount) {
         Principal principal = globalContext.getPrincipalById(playerId);
         //todo: нет защиты от отправки одного и того же ответа
+        //todo: добавить переход в междуигровую фазу когда все юзеры сыграли и всех убили
         if (isCorrect) {
             playerIdToAnswersMap.merge(playerId, 1, Integer::sum);
             if (playerIdToAnswersMap.get(playerId) == questionCount) {

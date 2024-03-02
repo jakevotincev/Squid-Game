@@ -13,4 +13,5 @@ public interface FormService {
 
     //todo: change to get by game id
     List<FormDTO> getAllForms();
+    boolean isAllFormsCollected();
 }

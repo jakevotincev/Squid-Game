@@ -6,6 +6,16 @@ import ru.jakev.backend.dto.CriteriaDTO;
  * @author evotintsev
  * @since 26.06.2023
  */
+//    example
+//    {
+//        "confirm" : true,
+//        "criteria" : {
+//            "playersNumber" : 3,
+//            "criteria" : "criteria",
+//            "gameId" : 1
+//        },
+//        "declineReason" : "declineReason"
+//    }
 public class ConfirmMessage {
     private boolean confirm;
 
