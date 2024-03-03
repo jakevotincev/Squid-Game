@@ -58,7 +58,7 @@ on conflict do nothing;
 -- on conflict do nothing;
 --
 -- insert into account (id, username, password, role, participates_in_game)
--- values (4, 'grudiglo', '$2a$10$3ZWZNrLKiVZe6WCxArCm8.fjL.D3InTi14KOc63QGCpgb/2R3JDjW', 'UNDEFINED', false)
+-- values (4, 'grudoglo', '$2a$10$3ZWZNrLKiVZe6WCxArCm8.fjL.D3InTi14KOc63QGCpgb/2R3JDjW', 'UNDEFINED', false)
 -- on conflict do nothing;
 --
 -- insert into account (id, username, password, role, participates_in_game)
@@ -66,7 +66,7 @@ on conflict do nothing;
 -- on conflict do nothing;
 --
 -- insert into account (id, username, password, role, participates_in_game)
--- values (8, 'cicirinda', '$2a$10$U2ynS/TwY7kW1T4a/5vjM.VadDIkJPNiBb4MgS/CCuiu70Lyw1LS2', 'UNDEFINED', false)
+-- values (8, 'chicherinda', '$2a$10$U2ynS/TwY7kW1T4a/5vjM.VadDIkJPNiBb4MgS/CCuiu70Lyw1LS2', 'UNDEFINED', false)
 -- on conflict do nothing;
 --
 -- insert into account (id, username, password, role, participates_in_game)
