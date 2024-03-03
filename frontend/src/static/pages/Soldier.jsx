@@ -101,7 +101,11 @@ class Soldier extends Component {
                 console.log('private ',JSON.parse(message.body));
                 let msg = JSON.parse((message.body))
                 if (msg.type === 'PLAYER_KILLED_MESSAGE') {
-                    this.setState({killStatusMsg: 'Вы убили игрока'+ this.state.preyName})
+                    this.setState({killStatusMsg: 'Вы убили игрока '+ this.state.preyName})
+                    this.setState({showKillStatusMsg: true})
+                }
+                if (msg.type === 'MISS_MESSAGE') {
+                    this.setState({killStatusMsg: 'Вы промахнулись игрока '+ this.state.preyName} + 'бил кто-то другой')
                     this.setState({showKillStatusMsg: true})
                 }
             }, headers)

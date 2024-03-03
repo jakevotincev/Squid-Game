@@ -16,7 +16,8 @@ class Glavniy extends Component {
     criteria: null,
     allAnketasIsCollected: false,
     showInterruptionBtn: false,
-    showMapRolesBtn: false
+    showMapRolesBtn: false,
+    kolvoUserov: 0
   }
   handleChange = (event) => {
     // 👇 Get input value from "event"
@@ -67,11 +68,14 @@ class Glavniy extends Component {
           this.setState({allAnketasIsCollected: true});
         }
         if (sad.type === 'USERS_STATUS_MESSAGE') {
+          this.setState({kolvoUserov: sad.connectedUsers.length})
           if (sad.connectedUsers.length >= 10) {
             this.setState({showMapRolesBtn: true})
+            this.setState({kolvoUserov: sad.connectedUsers.length})
           }
         }
         else {
+          this.setState({showMapRolesBtn: false})
           this.setState({playersNumber: sad.criteria.playersNumber});
           this.setState({criteria: sad.criteria.criteria});
           console.log('playersNumber :',sad.criteria.playersNumber);
@@ -158,6 +162,7 @@ class Glavniy extends Component {
               <button onClick={this.mapRole}>Распределить роли и начать игру</button>
             </div>
             }
+            <div>Кол-во законнекченных пользователей : {this.state.kolvoUserov}</div>
 
             {this.state.criteriaMsgIsReceived === true &&
                 <div className="ManagerMessagee" id="managerMessagee" align="center">

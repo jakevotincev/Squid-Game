@@ -94,17 +94,17 @@ class Manager extends Component{
             gameId: 1}
         }
 
-        this.client.publish({destination: '/app//sendCriteriaToGlavniy', headers: { Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(criteriaMsg) });
+        this.client.publish({destination: '/app/sendCriteriaToGlavniy', headers: { Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(criteriaMsg) });
 
     }
     sendAnketasHandler = () => {
         fetch('http://localhost:8080/sendCriteriaAndFormsToWorkers',{
             headers: {
-                "Content-Type": "application/json",
+                // "Content-Type": "application/json",
                 'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
             },
             method: 'GET',
-            mode: 'no-cors'
+            mode: 'cors'
         }).then(() => alert("Все пиздато"))
 
     }

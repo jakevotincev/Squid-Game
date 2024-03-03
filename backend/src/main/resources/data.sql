@@ -1,5 +1,8 @@
 delete
+from form;
+delete
 from account;
+
 
 insert into account (id, username, password, role, participates_in_game)
 values (1, 'glavniy', '$2a$10$xLs.zzlixfDdXyrsRvjccumHrmrKaHgtNHplLeYtEuhpCzbIRq9Te', 'GLAVNIY', true)
