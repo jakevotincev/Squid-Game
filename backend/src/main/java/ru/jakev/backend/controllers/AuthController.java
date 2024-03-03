@@ -6,6 +6,9 @@ import ru.jakev.backend.dto.AuthRequestDTO;
 import ru.jakev.backend.dto.AuthResponseDTO;
 import ru.jakev.backend.services.AuthService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author evotintsev
  * @since 18.02.2024
@@ -15,6 +18,7 @@ import ru.jakev.backend.services.AuthService;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
+    private final static Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -31,6 +35,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) {
+        LOG.info("huynu");
         String token = authService.login(authRequestDTO);
         //todo: add return auth response dto
         return token != null ? ResponseEntity.ok(new AuthResponseDTO(token)) :

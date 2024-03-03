@@ -24,6 +24,9 @@ function Navbar() {
                 <li>
                     <Link to="/Soldier">Soldier</Link>
                 </li>
+                <li>
+                    <Link to="/Auth">Auth</Link>
+                </li>
             </ul>
         </nav>
     );
