@@ -40,7 +40,7 @@ class Manager extends Component{
         this.client.configure({
             brokerURL: 'ws://localhost:8080/squid-game-socket?username=manager',
             connectHeaders: {
-                Authorization: 'Bearer ' + localStorage.getItem('glavniy')
+                Authorization: 'Bearer ' + localStorage.getItem('manager')
             },
             onConnect: () => {
                 console.log('onConnect');

@@ -36,10 +36,6 @@ class Worker extends Component{
         return url
     }
     componentDidMount = () => {
-        const trytest = this.props.location.state
-        const trytest1 = this.props.location.pathname
-        console.log(trytest, trytest1)
-        console.log('nick', this.props.location)
         if (this.props.location.state !== ""){
             console.log('Component did mount');
             console.log(this.state.nickname);
@@ -50,7 +46,7 @@ class Worker extends Component{
             this.client.configure({
                 brokerURL: this.getNickname(),
                 connectHeaders: {
-                    Authorization: 'Bearer ' + localStorage.getItem(`${this.state.nickname}`)
+                    Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
                 },
                 onConnect: () => {
                     console.log('onConnect');
@@ -95,7 +91,7 @@ class Worker extends Component{
 
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
-            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location}`)}
+            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
             this.client.subscribe('/user/worker/messages', message => {
 
                 console.log(JSON.parse(message.body));
