@@ -6,7 +6,7 @@ import Glavniy from "./Glavniy";
 import Participant from "./Participant";
 import Worker from "./Worker";
 import Soldier from "./Soldier";
-
+//todo бработка статуса запроса, если ок вывести , ели не ок вывести
 class Auth extends Component {
     state ={
         login: '',

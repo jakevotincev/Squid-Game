@@ -90,9 +90,9 @@ class Participant extends Component{
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
             const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
-            this.client.subscribe('/glavniy/messages', message => {
-                console.log(JSON.parse(message.body));
-            }, headers);
+            // this.client.subscribe('/glavniy/messages', message => {
+            //     console.log(JSON.parse(message.body));
+            // }, headers);
 
             this.client.subscribe('/user/player/messages', message => {
                 console.log('message',JSON.parse(message.body));
