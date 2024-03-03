@@ -1,7 +1,7 @@
 package ru.jakev.backend.services.impl;
 
 import org.springframework.stereotype.Service;
-import ru.jakev.backend.GlobalContext;
+import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.dto.FormDTO;
 import ru.jakev.backend.entities.Form;
 import ru.jakev.backend.listeners.FormListener;
@@ -36,11 +36,11 @@ public class FormServiceImpl implements FormService {
         Form form = formMapper.formDtoToform(formDTO);
         //todo: add check account exist
 
-            formRepository.save(form);
-            if (isAllFormsCollected()){
-                formListener.allFormsCollected();
-            }
-            return true;
+        formRepository.save(form);
+        if (isAllFormsCollected()) {
+            formListener.allFormsCollected();
+        }
+        return true;
     }
 
     @Override
@@ -48,8 +48,9 @@ public class FormServiceImpl implements FormService {
         return formRepository.findAll().stream().map(formMapper::formToFormDto).toList();
     }
 
-    private boolean isAllFormsCollected(){
+    public boolean isAllFormsCollected() {
         //todo: исправить юзкейс если какие то типы отправят формы, потом ливнут и формы других игроков посчитаются за других
+        //todo: поменять на сравнение количества форм с количеством зареганых игроков
         long formsCount = formRepository.count();
         return formsCount == globalContext.getConnectedPlayersCount();
     }

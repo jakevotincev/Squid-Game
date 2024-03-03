@@ -39,26 +39,12 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable).cors(CorsConfigurer::disable)
-//                // Настройка доступа к конечным точкам
-//                .authorizeHttpRequests(request -> request
-//                        // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
-//                        .requestMatchers(HttpMethod.OPTIONS,"/").permitAll()
-//                        .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket", "/account/**").permitAll()
-//                        .anyRequest().authenticated())
-//                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-//                .authenticationProvider(authenticationProvider())
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable).cors(CorsConfigurer::disable)
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
-                        // Можно указать конкретный путь, * - 1 уровень вложенности,  - любое количество уровней вложенности
+                        // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket", "/phase/**").permitAll()
                         .anyRequest().authenticated())

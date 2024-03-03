@@ -1,9 +1,10 @@
 package ru.jakev.backend.listeners;
 
 import org.springframework.stereotype.Component;
-import ru.jakev.backend.GlobalContext;
+import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.entities.Role;
+import ru.jakev.backend.game.PhaseManager;
 import ru.jakev.backend.messages.NotificationMessage;
 import ru.jakev.backend.messages.NotificationMessageType;
 import ru.jakev.backend.messages.WebSocketMessageSender;
@@ -25,39 +26,51 @@ public class FormListener {
     private final WebSocketMessageSender webSocketMessageSender;
     private final AccountService accountService;
     private final GlobalContext globalContext;
+    private final PhaseManager phaseManager;
 
     public FormListener(WebSocketMessageSender webSocketMessageSender, AccountService accountService,
-                        GlobalContext globalContext) {
+                        GlobalContext globalContext, PhaseManager phaseManager) {
         this.webSocketMessageSender = webSocketMessageSender;
         this.accountService = accountService;
         this.globalContext = globalContext;
+        this.phaseManager = phaseManager;
     }
 
     public void allFormsCollected() {
-        //todo: add change state
         webSocketMessageSender.sendMessage("/manager/messages",
                 new NotificationMessage(NotificationMessageType.ALL_FORMS_COLLECTED));
     }
 
     public void formAccepted(int playerId) {
-        //todo: add change state
         if (globalContext.acceptForm(playerId)) {
             sendFormsSelectionCompletedMessage();
+            // go to LUNCH_START_WAITING
+            //todo: потенциальная ошибка если главнй прервет селекшон и воркеры доотправят, но по идее на фронте не должно воспроизводиться
+            phaseManager.startNextPhase();
         }
     }
 
+    //todo: пофиксить нулевое количество игроков при интеррапте
+    //todo: пофиксил но хз норм ли это будет работать
     public boolean stopFormSelection() {
-        //todo: add change state + prohibit sending forms
+        // go to LUNCH_START_WAITING
+
+        if (globalContext.getAcceptedFormsCount() == 0) {
+            return false;
+        }
+
+        phaseManager.startNextPhase();
         sendFormsSelectionCompletedMessage();
         return true;
     }
+
 
     private void sendFormsSelectionCompletedMessage() {
         Set<Map.Entry<Principal, AccountDTO>> connectedPlayers = globalContext.getConnectedUsers().entrySet().stream()
                 .filter(entry -> entry.getValue().getRole() == Role.PLAYER).collect(Collectors.toSet());
         connectedPlayers.forEach(playerEntry -> {
             NotificationMessageType type;
-            if (accountService.isAccountParticipatesInGame(playerEntry.getValue().getId())){
+            if (accountService.isAccountParticipatesInGame(playerEntry.getValue().getId())) {
                 type = NotificationMessageType.QUALIFIED_TO_GAME_MESSAGE;
                 globalContext.addParticipateInGamePlayer(playerEntry.getKey(), playerEntry.getValue());
             } else {

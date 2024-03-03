@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
-    private final static Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -35,7 +34,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) {
-        LOG.info("huynu");
         String token = authService.login(authRequestDTO);
         //todo: add return auth response dto
         return token != null ? ResponseEntity.ok(new AuthResponseDTO(token)) :

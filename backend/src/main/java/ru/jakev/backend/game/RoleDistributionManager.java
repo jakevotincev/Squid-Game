@@ -2,7 +2,6 @@ package ru.jakev.backend.game;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.jakev.backend.GlobalContext;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.services.AccountService;

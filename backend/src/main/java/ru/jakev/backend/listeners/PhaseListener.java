@@ -1,7 +1,7 @@
 package ru.jakev.backend.listeners;
 
 import org.springframework.stereotype.Component;
-import ru.jakev.backend.GlobalContext;
+import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.entities.Role;
 import ru.jakev.backend.messages.*;
 

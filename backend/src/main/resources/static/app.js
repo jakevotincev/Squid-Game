@@ -39,6 +39,14 @@ function connect() {
                     'Authorization': 'Bearer ' + token
                 }
             );
+            stompClient.subscribe("/user".concat(subscribeAddr), function (greeting) {
+                    showMessage(greeting)
+                    console.log(greeting);
+                },
+                {
+                    'Authorization': 'Bearer ' + token
+                }
+            );
         });
 }
 
@@ -66,7 +74,7 @@ function sendMessage() {
 }
 
 function showMessage(message) {
-    $("#message").append("<tr><td>" + JSON.parse(message.body) + "</td></tr>");
+    $("#message").append("<tr><td>" + message.body + "</td></tr>");
 }
 
 $(function () {

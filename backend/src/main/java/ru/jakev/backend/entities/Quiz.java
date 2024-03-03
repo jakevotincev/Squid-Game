@@ -1,5 +1,6 @@
 package ru.jakev.backend.entities;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 
 import java.util.Map;
@@ -22,6 +23,9 @@ public class Quiz {
     @Column(columnDefinition = "text")
     @Convert(converter = JsonConverter.class)
     private Map<String, Boolean> answers;
+    @Nonnull
+    @Enumerated(EnumType.STRING)
+    private QuizType quizType;
 
     public void setId(Long id) {
         this.id = id;
@@ -61,5 +65,25 @@ public class Quiz {
 
     public void setAnswers(Map<String, Boolean> answers) {
         this.answers = answers;
+    }
+
+    public QuizType getQuizType() {
+        return quizType;
+    }
+
+    public void setQuizType(QuizType quizType) {
+        this.quizType = quizType;
+    }
+
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "id=" + id +
+                ", game=" + game +
+                ", roundId=" + roundId +
+                ", question='" + question + '\'' +
+                ", answers=" + answers +
+                ", quizType=" + quizType +
+                '}';
     }
 }

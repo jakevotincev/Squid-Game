@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
-import ru.jakev.backend.GlobalContext;
+import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.services.AccountService;
 

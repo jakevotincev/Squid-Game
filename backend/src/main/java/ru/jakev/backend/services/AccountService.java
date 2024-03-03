@@ -3,7 +3,9 @@ package ru.jakev.backend.services;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.jakev.backend.dto.AccountDTO;
 import ru.jakev.backend.entities.Account;
+import ru.jakev.backend.entities.Role;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -21,4 +23,8 @@ public interface AccountService extends UserDetailsService {
     boolean saveAccount(Account accountDTO);
 
     void updateAccountRole(AccountDTO account);
+    Optional<Account> getAccountReferenceById(int id);
+
+    Optional<Account> getAccountById(int id);
+    List<Account> getAccountsByRole(Role role);
 }
