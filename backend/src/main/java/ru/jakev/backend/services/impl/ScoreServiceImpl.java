@@ -69,24 +69,19 @@ public class ScoreServiceImpl implements ScoreService {
         Role role = account.getRole();
 
         if (role == Role.GLAVNIY || role == Role.MANAGER) {
-            List<Score> playerScores = scoreRepository.findAll();
-            playerScores.forEach(score -> {
-                //todo: супер хреновая производительность, переделать
-                Account playerAccount = accountService.getAccountById(score.getAccount().getId()).orElse(null);
-
-                if (playerAccount == null) {
-                    throw new IllegalArgumentException("Account with id=" + score.getAccount().getId() + " not found");
+            //todo: супер хреновая производительность, переделать
+            List<Account> accounts = accountService.getAllAccounts();
+            accounts.forEach(userAccount -> {
+                if (userAccount.getRole() != Role.GLAVNIY && userAccount.getRole() != Role.MANAGER) {
+                    Score score = scoreRepository.findByAccountId(userAccount.getId()).orElse(null);
+                    results.put(accountMapper.accountToAccountDTO(userAccount), score == null ? 0 : score.getScore());
                 }
-
-                results.put(accountMapper.accountToAccountDTO(playerAccount), score.getScore());
             });
         } else {
-            List<Account> accounts =  accountService.getAccountsByRole(role);
+            List<Account> accounts = accountService.getAccountsByRole(role);
             accounts.forEach(acc -> {
                 Score score = scoreRepository.findByAccountId(acc.getId()).orElse(null);
-                if (score != null) {
-                    results.put(accountMapper.accountToAccountDTO(acc), score.getScore());
-                }
+                results.put(accountMapper.accountToAccountDTO(acc), score == null ? 0 : score.getScore());
             });
         }
 

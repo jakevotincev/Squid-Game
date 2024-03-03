@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean isAccountParticipatesInGame(Integer accountId) {
         Account account = accountRepository.findById(accountId).orElse(null);
-        if (account == null){
+        if (account == null) {
             throw new UsernameNotFoundException(String.format("Account with id=%s not found", accountId));
         }
 
@@ -98,6 +98,11 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> getAccountsByRole(Role role) {
         return accountRepository.findAllByRole(role);
+    }
+
+    @Override
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
     }
 
     @Override

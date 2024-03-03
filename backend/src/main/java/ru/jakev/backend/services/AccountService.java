@@ -27,4 +27,5 @@ public interface AccountService extends UserDetailsService {
 
     Optional<Account> getAccountById(int id);
     List<Account> getAccountsByRole(Role role);
+    List<Account> getAllAccounts();
 }
