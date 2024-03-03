@@ -135,7 +135,6 @@ public class ManagerController {
         }
 
         NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.START_ROUND_PREPARING);
-        //todo: do we need to send it to glavniy?
         webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
         notifyParticipateInGamePlayers(notificationMessage);
 
@@ -143,6 +142,40 @@ public class ManagerController {
             //go to ROUND_PREPARE_AND_TRAINING
             phaseManager.startNextPhase();
         }
+        return ResponseEntity.ok().build();
+    }
+
+    //todo: объеджинить с методом выше
+    @GetMapping("/startTraining")
+    public ResponseEntity<?> startTraining() {
+        if (phaseManager.isActionNotPermitted(EnumSet.of(GamePhase.ROUND_PREPARE_AND_TRAINING_WAITING, GamePhase.ROUND_PREPARE_AND_TRAINING))) {
+            return ResponseEntity.badRequest().body(
+                    String.format("This action not permitted now. Current game phase is %s", phaseManager.getCurrentPhase()));
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.START_TRAINING);
+        webSocketMessageSender.sendMessage(List.of("/soldier/messages", "/glavniy/messages"), notificationMessage);
+        notifyParticipateInGamePlayers(notificationMessage);
+
+        if (phaseManager.getCurrentPhase() == GamePhase.ROUND_PREPARE_AND_TRAINING_WAITING) {
+            //go to ROUND_PREPARE_AND_TRAINING
+            phaseManager.startNextPhase();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/stopTraining")
+    public ResponseEntity<?> stopStaining() {
+        if (phaseManager.isActionNotPermitted(GamePhase.ROUND_PREPARE_AND_TRAINING)) {
+            return ResponseEntity.badRequest().body(
+                    String.format("This action not permitted now. Current game phase is %s", phaseManager.getCurrentPhase()));
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.TRAINING_COMPLETED);
+        webSocketMessageSender.sendMessage(List.of("/soldier/messages", "/glavniy/messages"), notificationMessage);
+        notifyParticipateInGamePlayers(notificationMessage);
+
         return ResponseEntity.ok().build();
     }
 
