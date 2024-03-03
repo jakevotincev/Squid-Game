@@ -90,8 +90,13 @@ public class GlavniyController {
 
     @GetMapping("/startGame")
     public ResponseEntity<String> startGame() {
-        //todo: add check and change phase
+        if (phaseManager.isActionNotPermitted(GamePhase.ROUND_PREPARE_AND_TRAINING)) {
+            return ResponseEntity.badRequest().body("Start game is not permitted now. Current game phase is "
+                    + phaseManager.getCurrentPhase());
+        }
+
         phaseListener.gameStarted();
+        phaseManager.startNextPhase();
 
         return ResponseEntity.ok().body(GAME_STARTED_MESSAGE);
     }
