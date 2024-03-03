@@ -144,4 +144,8 @@ public class GlobalContext {
         //todo: подумать как защититься от ситуации, когда отправили больше форм чем надо
         return getShouldBeAcceptedPlayersCount() == acceptedForms.size();
     }
+
+    public int getAcceptedFormsCount() {
+        return acceptedForms.size();
+    }
 }
