@@ -96,6 +96,7 @@ public class GlavniyController {
         }
 
         phaseListener.gameStarted();
+        // go to GAME
         phaseManager.startNextPhase();
 
         return ResponseEntity.ok().body(GAME_STARTED_MESSAGE);

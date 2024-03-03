@@ -2,12 +2,15 @@ package ru.jakev.backend.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.jakev.backend.dto.ClickerScoreDTO;
 import ru.jakev.backend.dto.FormDTO;
 import ru.jakev.backend.game.GamePhase;
+import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.game.PhaseManager;
 import ru.jakev.backend.listeners.FormListener;
 import ru.jakev.backend.messages.SelectionMessage;
 import ru.jakev.backend.services.AccountService;
+import ru.jakev.backend.services.ScoreService;
 
 import java.util.List;
 
@@ -21,13 +24,17 @@ public class WorkerController {
     private final AccountService accountService;
     private final FormListener formListener;
     private final PhaseManager phaseManager;
+    private final ScoreService scoreService;
+    private final GlobalContext globalContext;
     private final String SUCCESS_RESPONSE_MESSAGE = "Forms successfully accepted";
     private final String VALIDATION_FAILED_RESPONSE_MESSAGE = "Wrong count of accepted forms";
 
-    public WorkerController(AccountService accountService, FormListener formListener, PhaseManager phaseManager) {
+    public WorkerController(AccountService accountService, FormListener formListener, PhaseManager phaseManager, ScoreService scoreService, GlobalContext globalContext) {
         this.accountService = accountService;
         this.formListener = formListener;
         this.phaseManager = phaseManager;
+        this.scoreService = scoreService;
+        this.globalContext = globalContext;
     }
 
     @PostMapping("/acceptForms")
@@ -49,6 +56,24 @@ public class WorkerController {
         } else {
             return ResponseEntity.badRequest().body(VALIDATION_FAILED_RESPONSE_MESSAGE);
         }
+    }
+
+    @PostMapping("/worker/{id}/score")
+    private ResponseEntity<?> saveClickerScore(@RequestBody ClickerScoreDTO score, @PathVariable("id") int accountId) {
+        //todo: нет защиты от сохранения результата после окончания клининга
+        //todo: check worker account
+        if (phaseManager.isActionNotPermitted(GamePhase.CLEANING)) {
+            return ResponseEntity.badRequest().body("Clicker results saving is not permitted now. Current game phase is "
+                    + phaseManager.getCurrentPhase());
+        }
+
+        if (globalContext.getKilledPlayersCount() == 0) {
+            return ResponseEntity.badRequest().body("Nobody died");
+        }
+
+        scoreService.addScore(accountId, score.getScore());
+
+        return ResponseEntity.ok().build();
     }
 
     //todo: пока валидация условная, фронт может отправить любую херню

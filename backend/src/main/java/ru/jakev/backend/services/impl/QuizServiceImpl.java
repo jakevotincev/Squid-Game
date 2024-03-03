@@ -104,7 +104,7 @@ public class QuizServiceImpl implements QuizService {
 
         while (iter.hasNext() && deleteCount < deleteQuestionsCount) {
             Map.Entry<String, Boolean> entry = iter.next();
-            if (!onlyIncorrectAnswers || entry.getValue()) {
+            if (!onlyIncorrectAnswers || !entry.getValue()) {
                 iter.remove();
                 deleteCount++;
             }

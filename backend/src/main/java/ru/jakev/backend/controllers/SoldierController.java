@@ -38,7 +38,7 @@ public class SoldierController {
         return success ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/account/{id}/score")
+    @PostMapping("/soldier/{id}/score")
     private ResponseEntity<?> saveClickerScore(@RequestBody ClickerScoreDTO score, @PathVariable("id") int accountId) {
         //todo: нет защиты от сохранения результата после окончания тренировки
         //todo: check soldier account
