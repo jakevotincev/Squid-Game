@@ -39,6 +39,9 @@ class Manager extends Component{
 
         this.client.configure({
             brokerURL: 'ws://localhost:8080/squid-game-socket?username=manager',
+            connectHeaders: {
+                Authorization: 'Bearer ' + localStorage.getItem('glavniy')
+            },
             onConnect: () => {
                 console.log('onConnect');
                 this.handleSend();
@@ -53,6 +56,7 @@ class Manager extends Component{
     }
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
+            const headers = { Authorization: 'Bearer ' + localStorage.getItem('manager')}
             this.client.subscribe('/manager/messages', message => {
 
                 console.log(JSON.parse(message.body));
@@ -69,10 +73,10 @@ class Manager extends Component{
                 if (sad.type === "ALL_FORMS_COLLECTED"){
                     this.setState({allAnketasIsCollected: true});
                 }
-            });
+            }, headers);
             this.client.subscribe('/user/worker/messages', message => {
                 console.log(JSON.parse(message.body));
-            })
+            }, headers)
 
         } else {
             // Queue a retry
@@ -90,13 +94,14 @@ class Manager extends Component{
             gameId: 1}
         }
 
-        this.client.publish({destination: '/app//sendCriteriaToGlavniy', body: JSON.stringify(criteriaMsg) });
+        this.client.publish({destination: '/app//sendCriteriaToGlavniy', headers: { Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(criteriaMsg) });
 
     }
     sendAnketasHandler = () => {
         fetch('http://localhost:8080/sendCriteriaAndFormsToWorkers',{
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
             },
             method: 'GET',
             mode: 'no-cors'

@@ -50,19 +50,19 @@ on conflict do nothing;
 -- create without roles
 
 insert into account (id, username, password, role, participates_in_game)
-values (3, 'Дедух', '$2a$10$e4RX/eA.G9GYCX.tiXWe0uNw7pTHXx7Phf2GbLSYykGSRHEJuYQO.', 'UNDEFINED', false)
+values (3, 'deduh', '$2a$10$e4RX/eA.G9GYCX.tiXWe0uNw7pTHXx7Phf2GbLSYykGSRHEJuYQO.', 'UNDEFINED', false)
 on conflict do nothing;
 
 insert into account (id, username, password, role, participates_in_game)
-values (4, 'Грудыгло', '$2a$10$3ZWZNrLKiVZe6WCxArCm8.fjL.D3InTi14KOc63QGCpgb/2R3JDjW', 'UNDEFINED', false)
+values (4, 'grudoglo', '$2a$10$3ZWZNrLKiVZe6WCxArCm8.fjL.D3InTi14KOc63QGCpgb/2R3JDjW', 'UNDEFINED', false)
 on conflict do nothing;
 
 insert into account (id, username, password, role, participates_in_game)
-values (7, 'Мышь', '$2a$10$YGYY1KVe5WzPTrvv3WP2huIllI1pUU/nb9QfVzn6N9rZ7NjQcVHcm', 'UNDEFINED', false)
+values (7, 'mice', '$2a$10$YGYY1KVe5WzPTrvv3WP2huIllI1pUU/nb9QfVzn6N9rZ7NjQcVHcm', 'UNDEFINED', false)
 on conflict do nothing;
 
 insert into account (id, username, password, role, participates_in_game)
-values (8, 'Чичеринда', '$2a$10$U2ynS/TwY7kW1T4a/5vjM.VadDIkJPNiBb4MgS/CCuiu70Lyw1LS2', 'UNDEFINED', false)
+values (8, 'chicherinda', '$2a$10$U2ynS/TwY7kW1T4a/5vjM.VadDIkJPNiBb4MgS/CCuiu70Lyw1LS2', 'UNDEFINED', false)
 on conflict do nothing;
 
 insert into account (id, username, password, role, participates_in_game)

@@ -15,7 +15,8 @@ class Glavniy extends Component {
     playersNumber: null,
     criteria: null,
     allAnketasIsCollected: false,
-    showInterruptionBtn: false
+    showInterruptionBtn: false,
+    showMapRolesBtn: false
   }
   handleChange = (event) => {
     // 👇 Get input value from "event"
@@ -31,6 +32,9 @@ class Glavniy extends Component {
 
     this.client.configure({
       brokerURL: 'ws://localhost:8080/squid-game-socket?username=glavniy',
+      connectHeaders: {
+        Authorization: 'Bearer ' + localStorage.getItem('glavniy')
+      },
       onConnect: () => {
         console.log('onConnect');
         this.handleSend();
@@ -50,7 +54,9 @@ class Glavniy extends Component {
 
 
   handleSend = () => {
+
     if (this.client.webSocket.readyState === WebSocket.OPEN) {
+      const headers = { Authorization: 'Bearer ' + localStorage.getItem('glavniy')}
       this.client.subscribe('/glavniy/messages', message => {
         console.log('message: ',JSON.parse(message.body));
 
@@ -59,7 +65,13 @@ class Glavniy extends Component {
           this.setState({criteriaMsgIsReceived: false});
           this.setState({showInterruptionBtn: false});
           this.setState({allAnketasIsCollected: true});
-        }else {
+        }
+        if (sad.type === 'USERS_STATUS_MESSAGE') {
+          if (sad.connectedUsers.length >= 10) {
+            this.setState({showMapRolesBtn: true})
+          }
+        }
+        else {
           this.setState({playersNumber: sad.criteria.playersNumber});
           this.setState({criteria: sad.criteria.criteria});
           console.log('playersNumber :',sad.criteria.playersNumber);
@@ -68,7 +80,7 @@ class Glavniy extends Component {
           this.setState({criteriaMsgIsReceived: true});
           console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
         }
-      });
+      }, headers);
 
     } else {
       // Queue a retry
@@ -78,23 +90,37 @@ class Glavniy extends Component {
   interuptPlayersSelection = () =>{
     fetch('http://localhost:8080/interruptPlayersSelection',{
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
       },
       method: 'GET',
-      mode: 'no-cors'
+      mode: 'cors'
     }).then(() => alert("И я кричу АСТАНАВИТЕСЬ"))
   }
 
   startGame = () =>{
     fetch('http://localhost:8080/startGame',{
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
       },
       method: 'GET',
-      mode: 'no-cors'
+      mode: 'cors'
     }).then(() => alert("Game has started)"))
   }
-
+  mapRole = () => {
+    fetch('http://localhost:8080/startRolesDistribution',{
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+      },
+      method: 'GET',
+      mode: 'cors'
+    }).then(res => {res.json().then(data =>{
+      console.log(JSON.stringify(data))
+    })
+    })
+    this.setState({showMapRolesBtn: false})
+  }
   clickHandler = () => {
     // const sad = JSON.parse(message.body);
     const confirmMessage ={
@@ -106,7 +132,7 @@ class Glavniy extends Component {
       },
       declineReason: null
     }
-    this.client.publish({destination: '/app/sendAnswer', body: JSON.stringify(confirmMessage)});
+    this.client.publish({destination: '/app/sendAnswer', headers: {Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(confirmMessage)});
     this.setState({showInterruptionBtn: true});
   }
   clickHandler2 = () => {
@@ -120,14 +146,18 @@ class Glavniy extends Component {
       },
       declineReason: this.state.decline
     }
-    this.client.publish({destination: '/app/sendAnswer', body: JSON.stringify(confirmMessage)});
+    this.client.publish({destination: '/app/sendAnswer', headers: {Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(confirmMessage)});
   }
 
   render() {
     return (
         <div className="App">
           <header className="App-header">
-
+            {this.state.showMapRolesBtn === true &&
+            <div>
+              <button onClick={this.mapRole}>Распределить роли и начать игру</button>
+            </div>
+            }
 
             {this.state.criteriaMsgIsReceived === true &&
                 <div className="ManagerMessagee" id="managerMessagee" align="center">

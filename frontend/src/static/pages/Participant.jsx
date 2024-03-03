@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
 import "./pagestyle.css"
-
+import {useLocation} from "react-router-dom";
+export function withRouter(Children) {
+    return(props)=>{
+        const location = useLocation()
+        return <Children {...props} location = {location}/>
+    }
+}
 class Participant extends Component{
     state = {
         nickname: "",
@@ -24,22 +30,24 @@ class Participant extends Component{
 
     }
 
-    getFromInputz(inputName){
-        return document.getElementById(inputName).value;
-    }
+    // getFromInputz(inputName){
+    //     return document.getElementById(inputName).value;
+    // }
     getNickname() {
-        let username = this.getFromInputz('nick');
-        console.log(username);
+        // let username = this.getFromInputz('nick');
+        // console.log(username);
+        this.setState({nickname: this.props.location.state})
         let url= 'ws://localhost:8080/squid-game-socket?username=';
-        url = url.concat(this.state.nickname);
+        url = url.concat(this.props.location.state);
         return url
     }
     componentDidMount = () => {
         let url = "http://localhost:8080/account/";
-        url = url.concat(this.state.nickname)
+        url = url.concat(this.props.location.state)
         fetch(url,{
             headers: {
                 // "Content-Type": "application/json"
+                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
             },
             method: 'GET',
             mode: 'cors'
@@ -53,7 +61,7 @@ class Participant extends Component{
 
         )
         console.log(this.state.playerId);
-        if (this.state.nickname !== ""){
+        if (this.props.location.state !== ""){
             // setTimeout(() => { this.componentDidMount() }, 2000);
             console.log('Component did mount');
             console.log(this.state.nickname);
@@ -63,6 +71,9 @@ class Participant extends Component{
 
             this.client.configure({
                 brokerURL: this.getNickname(),
+                connectHeaders: {
+                    Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                },
                 onConnect: () => {
                     console.log('onConnect');
                     this.handleSend();
@@ -78,9 +89,10 @@ class Participant extends Component{
     }
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
+            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
             this.client.subscribe('/glavniy/messages', message => {
                 console.log(JSON.parse(message.body));
-            });
+            }, headers);
 
             this.client.subscribe('/user/player/messages', message => {
                 console.log('message',JSON.parse(message.body));
@@ -90,7 +102,8 @@ class Participant extends Component{
                     this.setState({showQuiz: true});
                     fetch('http://localhost:8080/questions',{
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -155,6 +168,7 @@ class Participant extends Component{
                                 fetch(destination,{
                                     headers: {
                                         // "Content-Type": "application/json"
+                                        'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
                                     },
                                     method: 'GET',
                                     mode: 'cors'
@@ -196,11 +210,11 @@ class Participant extends Component{
                 if (sad.type === 'PLAYER_KILLED_MESSAGE') {
                     this.setState({quiz: 'ВАС убили, ВЫ проиграли'})
                 }
-            })
+            }, headers)
             this.client.subscribe('/player/messages', message => {
                 console.log('govnomapping',JSON.parse(message.body));
 
-            })
+            }, headers)
         } else {
             // Queue a retry
             setTimeout(() => { this.handleSend() }, 100)
@@ -217,7 +231,8 @@ class Participant extends Component{
         // this.client.publish({destination: '/app/sendCriteria', body: JSON.stringify(anketa) });
         fetch('http://localhost:8080/savePlayerForm', {  // Enter your IP address here
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
             },
             method: 'POST',
             mode: 'cors',
@@ -229,7 +244,7 @@ class Participant extends Component{
         <div id="participant_page" align="center">
 
             <h1>This is participant page</h1>
-            <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
+            {/*<button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>*/}
             {this.state.showAnketa === true &&
                 <div class="participant" id="anketa" align="center">
                     <h3>Пожалуйста, заполните анекту участника</h3>
@@ -254,4 +269,4 @@ class Participant extends Component{
     );
     }
 }
-export default Participant;
+export default withRouter(Participant)

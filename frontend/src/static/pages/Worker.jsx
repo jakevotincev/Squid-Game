@@ -3,6 +3,14 @@ import {Client} from "@stomp/stompjs";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import "./pagestyle.css";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+
+export function withRouter(Children) {
+    return(props)=>{
+        const location = useLocation()
+        return <Children {...props} location = {location}/>
+    }
+}
 
 class Worker extends Component{
     state = {
@@ -21,7 +29,43 @@ class Worker extends Component{
         this.setState({nickname : event.target.value});
 
     }
+    getNickname() {
+        this.setState({nickname: this.props.location.state})
+        let url= 'ws://localhost:8080/squid-game-socket?username=';
+        url = url.concat(this.props.location.state);
+        return url
+    }
+    componentDidMount = () => {
+        const trytest = this.props.location.state
+        const trytest1 = this.props.location.pathname
+        console.log(trytest, trytest1)
+        console.log('nick', this.props.location)
+        if (this.props.location.state !== ""){
+            console.log('Component did mount');
+            console.log(this.state.nickname);
+            // The compat mode syntax is totally different, converting to v5 syntax
+            // Client is imported from '@stomp/stompjs'
+            this.client = new Client();
 
+            this.client.configure({
+                brokerURL: this.getNickname(),
+                connectHeaders: {
+                    Authorization: 'Bearer ' + localStorage.getItem(`${this.state.nickname}`)
+                },
+                onConnect: () => {
+                    console.log('onConnect');
+                    this.handleSend();
+                },
+                // Helps during debugging, remove in production
+                debug: (str) => {
+                    console.log(new Date(), str);
+                }
+            });
+
+            this.client.activate();
+        }
+
+    }
     handleFinalClick = (event) =>{
         console.log(this.state.anketa);
          let acceptedformsCount = this.state.acceptedForms;
@@ -34,7 +78,8 @@ class Worker extends Component{
         console.log(datta);
         fetch('http://localhost:8080/acceptForms', {  // Enter your IP address here
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
             },
             method: 'POST',
             mode: 'cors',
@@ -44,41 +89,13 @@ class Worker extends Component{
         }).then(() => alert("работу кончил"))
     }
 
-    getFromInputz(inputName){
-        return document.getElementById(inputName).value;
-    }
-    getNickname() {
-        let username = this.getFromInputz('nick');
-        console.log(username);
-        let url= 'ws://localhost:8080/squid-game-socket?username=';
-        url = url.concat(this.state.nickname);
-        return url
-    }
-    componentDidMount = () => {
-        if (this.state.nickname !== ""){
-            console.log('Component did mount');
-            console.log(this.state.nickname);
-            // The compat mode syntax is totally different, converting to v5 syntax
-            // Client is imported from '@stomp/stompjs'
-            this.client = new Client();
+    // getFromInputz(inputName){
+    //     return document.getElementById(inputName).value;
+    // }
 
-            this.client.configure({
-                brokerURL: this.getNickname(),
-                onConnect: () => {
-                    console.log('onConnect');
-                    this.handleSend();
-                },
-                // Helps during debugging, remove in production
-                debug: (str) => {
-                    console.log(new Date(), str);
-                }
-            });
-
-            this.client.activate();}
-
-    }
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
+            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location}`)}
             this.client.subscribe('/user/worker/messages', message => {
 
                 console.log(JSON.parse(message.body));
@@ -134,10 +151,10 @@ class Worker extends Component{
 
                 }
                 return allAnketas
-            })
+            }, headers)
             this.client.subscribe('/worker/messages', message => {
                 console.log('govnomapping ',JSON.parse(message.body));
-            })
+            }, headers)
 
         } else {
             // Queue a retry
@@ -148,10 +165,10 @@ class Worker extends Component{
     render(){return(
         <div class="participant" align="center">
             <h1>This is worker page</h1>
-            <button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>
-            <h3>Пожалуйста, введите свой никнейм </h3>
-            <label>Никнейм: </label>
-            <input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>
+            {/*<button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>*/}
+            {/*<h3>Пожалуйста, введите свой никнейм </h3>*/}
+            {/*<label>Никнейм: </label>*/}
+            {/*<input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>*/}
             <br/>
 
             <div id="worker_interface">
@@ -180,4 +197,4 @@ class Worker extends Component{
         </div>
     );
 }}
-export default Worker;
+export default withRouter(Worker);
