@@ -11,6 +11,7 @@ import ru.jakev.backend.game.PhaseManager;
 import ru.jakev.backend.game.RoleDistributionManager;
 import ru.jakev.backend.listeners.FormListener;
 import ru.jakev.backend.listeners.PhaseListener;
+import ru.jakev.backend.listeners.PrepareRoundPhaseListener;
 import ru.jakev.backend.messages.ConfirmMessage;
 import ru.jakev.backend.services.CriteriaService;
 
@@ -26,27 +27,32 @@ public class GlavniyController {
     private final RoleDistributionManager roleDistributionManager;
     private final PhaseListener phaseListener;
     private final PhaseManager phaseManager;
+    private final PrepareRoundPhaseListener prepareRoundPhaseListener;
     private final static String INTERRUPT_SELECTION_ERROR_MESSAGE = "Error while interrupt form selection";
     private final static String GAME_STARTED_MESSAGE = "Game successfully started";
     private final static String INVALID_USERS_NUMBER_MESSAGE = "Invalid number of UNDEFINED users";
     private final static String ROLES_DISTRIBUTION_NOT_PERMITTED_MESSAGE = "Roles distribution is not permitted now. Current game phase is %s";
     private final static String FORMS_COLLECTION_INTERRUPT_NOT_PERMITTED_MESSAGE = "Forms collections interrupt is not permitted now. " +
             "Current game phase is %s";
+    private final static String ROUND_PREPARING_INTERRUPT_NOT_PERMITTED_MESSAGE = "Round preparing interrupt is not permitted now. " +
+            "Current game phase is %s";
+    private final static String INTERRUPT_ROUND_PREPARING_ERROR_MESSAGE = "Error while interrupt round preparing";
 
     public GlavniyController(CriteriaService criteriaService, FormListener formListener,
                              RoleDistributionManager roleDistributionManager, PhaseListener phaseListener,
-                             PhaseManager phaseManager) {
+                             PhaseManager phaseManager, PrepareRoundPhaseListener prepareRoundPhaseListener) {
         this.criteriaService = criteriaService;
         this.formListener = formListener;
         this.roleDistributionManager = roleDistributionManager;
         this.phaseListener = phaseListener;
         this.phaseManager = phaseManager;
+        this.prepareRoundPhaseListener = prepareRoundPhaseListener;
     }
 
     @MessageMapping("/sendAnswer")
     @SendTo("/manager/messages")
     public ConfirmMessage sendAnswer(ConfirmMessage message) {
-        if (phaseManager.isActionNotPermitted(GamePhase.CRITERIA_APPROVAL)){
+        if (phaseManager.isActionNotPermitted(GamePhase.CRITERIA_APPROVAL)) {
             return null;
         }
 
@@ -61,13 +67,24 @@ public class GlavniyController {
     //todo: + переделать везде нормальные коды респонсов и сообщения
     @GetMapping("/interruptPlayersSelection")
     public ResponseEntity<String> interruptPlayersSelection() {
-        if(phaseManager.isActionNotPermitted(GamePhase.FORMS_SELECTION)){
+        if (phaseManager.isActionNotPermitted(GamePhase.FORMS_SELECTION)) {
             return ResponseEntity.badRequest().body(String.format(FORMS_COLLECTION_INTERRUPT_NOT_PERMITTED_MESSAGE,
                     phaseManager.getCurrentPhase()));
         }
         //todo: пока нет ситуаций с ошибкой
         boolean stopped = formListener.stopFormSelection();
         return stopped ? ResponseEntity.ok().build() : ResponseEntity.badRequest().body(INTERRUPT_SELECTION_ERROR_MESSAGE);
+    }
+
+    @GetMapping("/interruptRoundPreparing")
+    public ResponseEntity<String> interruptRoundPreparing() {
+        if (phaseManager.isActionNotPermitted(GamePhase.ROUND_PREPARE_AND_TRAINING)) {
+            return ResponseEntity.badRequest().body(String.format(ROUND_PREPARING_INTERRUPT_NOT_PERMITTED_MESSAGE,
+                    phaseManager.getCurrentPhase()));
+        }
+
+        boolean isInterrupted = prepareRoundPhaseListener.interruptRoundPreparing();
+        return isInterrupted ? ResponseEntity.ok().build() : ResponseEntity.badRequest().body(INTERRUPT_ROUND_PREPARING_ERROR_MESSAGE);
     }
 
     @GetMapping("/startGame")

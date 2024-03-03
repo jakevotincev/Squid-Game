@@ -37,13 +37,11 @@ public class FormListener {
     }
 
     public void allFormsCollected() {
-        //todo: add change state
         webSocketMessageSender.sendMessage("/manager/messages",
                 new NotificationMessage(NotificationMessageType.ALL_FORMS_COLLECTED));
     }
 
     public void formAccepted(int playerId) {
-        //todo: add change state
         if (globalContext.acceptForm(playerId)) {
             sendFormsSelectionCompletedMessage();
             phaseManager.startNextPhase();

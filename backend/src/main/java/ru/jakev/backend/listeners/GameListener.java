@@ -47,6 +47,7 @@ public class GameListener {
         Principal principal = globalContext.getPrincipalById(playerId);
         //todo: нет защиты от отправки одного и того же ответа
         //todo: добавить переход в междуигровую фазу когда все юзеры сыграли и всех убили
+        //todo: add score here?
         if (isCorrect) {
             playerIdToAnswersMap.merge(playerId, 1, Integer::sum);
             if (playerIdToAnswersMap.get(playerId) == questionCount) {

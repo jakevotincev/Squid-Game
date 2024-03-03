@@ -31,7 +31,7 @@ public class AccountController {
         this.phaseManager = phaseManager;
     }
 
-    //todo: сделать защиту от получения данных других аккаунтов и убрать пароль из ответа
+    //todo: сделать защиту от получения данных других аккаунтов
     @GetMapping("/account/{username}")
     public ResponseEntity<?> getAccount(@PathVariable("username") String username) {
         if (username == null || username.isBlank()) {

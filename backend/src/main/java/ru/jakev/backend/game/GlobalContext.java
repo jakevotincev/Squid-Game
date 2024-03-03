@@ -110,6 +110,10 @@ public class GlobalContext {
         return principal;
     }
 
+    public AccountDTO getAccountById(int accountId) {
+        return connectedUsers.values().stream().filter(accountDTO -> accountDTO.getId() == accountId).findFirst().orElse(null);
+    }
+
 
     public AccountDTO getAccount(Principal userPrincipal) {
         return connectedUsers.get(userPrincipal);

@@ -7,7 +7,8 @@ package ru.jakev.backend.entities;
 public enum QuizType {
     GAME_QUIZ("GAME_TYPE"),
     MAKE_FOOD_QUIZ("MAKE_FOOD_QUIZ"),
-    EAT_FOOD_QUIZ("EAT_FOOD_QUIZ");
+    EAT_FOOD_QUIZ("EAT_FOOD_QUIZ"),
+    PREPARE_GAME_QUIZ("PREPARE_GAME_QUIZ");
 
     private final String type;
 

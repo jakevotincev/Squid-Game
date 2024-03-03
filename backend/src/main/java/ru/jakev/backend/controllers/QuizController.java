@@ -24,6 +24,12 @@ public class QuizController {
     private final QuizService quizService;
     private final PhaseManager phaseManager;
 
+    private final EnumSet<GamePhase> permittedPhases = EnumSet.of(
+            GamePhase.LUNCH_MAKING,
+            GamePhase.LUNCH_EATING,
+            GamePhase.GAME,
+            GamePhase.ROUND_PREPARE_AND_TRAINING);
+
     public QuizController(QuizService quizService, PhaseManager phaseManager) {
         this.quizService = quizService;
         this.phaseManager = phaseManager;
@@ -31,7 +37,7 @@ public class QuizController {
 
     @GetMapping("/account/{id}/questions")
     public ResponseEntity<List<QuizDTO>> getQuestions(@PathVariable ("id") int accountId) {
-        if (phaseManager.isActionNotPermitted(EnumSet.of(GamePhase.LUNCH_MAKING, GamePhase.LUNCH_EATING, GamePhase.GAME))) {
+        if (phaseManager.isActionNotPermitted(permittedPhases)) {
             return ResponseEntity.badRequest().body(List.of());
         }
 
@@ -42,7 +48,7 @@ public class QuizController {
     @GetMapping("/checkAnswer/{p_id}/{q_id}/{answer}")
     public ResponseEntity<Boolean> checkAnswer(@PathVariable("p_id") int playerId, @PathVariable("q_id") int id,
                                                @PathVariable("answer") String answer) {
-        if (phaseManager.isActionNotPermitted(EnumSet.of(GamePhase.LUNCH_MAKING, GamePhase.LUNCH_EATING, GamePhase.GAME))) {
+        if (phaseManager.isActionNotPermitted(permittedPhases)) {
             return ResponseEntity.badRequest().body(false);
         }
 

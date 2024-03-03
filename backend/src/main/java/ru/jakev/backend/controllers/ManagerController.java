@@ -23,6 +23,7 @@ import ru.jakev.backend.services.FormService;
 import ru.jakev.backend.services.GameService;
 
 import java.security.Principal;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -121,6 +122,22 @@ public class ManagerController {
         //todo: удалить сообщение для плэеров?
         webSocketMessageSender.sendMessage(List.of("/worker/messages", "/player/messages", "/glavniy/messages"), notificationMessage);
         phaseManager.startNextPhase();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/startPrepareRound")
+    public ResponseEntity<?> startPrepareRound() {
+        if (phaseManager.isActionNotPermitted(EnumSet.of(GamePhase.ROUND_PREPARE_AND_TRAINING_WAITING, GamePhase.ROUND_PREPARE_AND_TRAINING))) {
+            return ResponseEntity.badRequest().body(
+                    String.format("This action not permitted now. Current game phase is %s", phaseManager.getCurrentPhase()));
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.START_ROUND_PREPARING);
+        //todo: do we need to send it to glavniy?
+        webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
+        if (phaseManager.getCurrentPhase() == GamePhase.ROUND_PREPARE_AND_TRAINING_WAITING) {
+            phaseManager.startNextPhase();
+        }
         return ResponseEntity.ok().build();
     }
 }

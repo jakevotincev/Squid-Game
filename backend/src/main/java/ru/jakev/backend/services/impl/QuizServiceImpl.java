@@ -10,6 +10,7 @@ import ru.jakev.backend.entities.Score;
 import ru.jakev.backend.game.GamePhase;
 import ru.jakev.backend.listeners.GameListener;
 import ru.jakev.backend.listeners.LunchListener;
+import ru.jakev.backend.listeners.PrepareRoundPhaseListener;
 import ru.jakev.backend.mappers.QuizMapper;
 import ru.jakev.backend.repositories.QuizRepository;
 import ru.jakev.backend.services.QuizService;
@@ -30,14 +31,16 @@ public class QuizServiceImpl implements QuizService {
     private final QuizMapper quizMapper;
     private final GameListener gameListener;
     private final LunchListener lunchListener;
+    private final PrepareRoundPhaseListener prepareRoundPhaseListener;
     private final ScoreService scoreService;
 
     public QuizServiceImpl(QuizRepository quizRepository, QuizMapper quizMapper, GameListener gameListener,
-                           LunchListener lunchListener, ScoreService scoreService) {
+                           LunchListener lunchListener, PrepareRoundPhaseListener prepareRoundPhaseListener, ScoreService scoreService) {
         this.quizRepository = quizRepository;
         this.quizMapper = quizMapper;
         this.gameListener = gameListener;
         this.lunchListener = lunchListener;
+        this.prepareRoundPhaseListener = prepareRoundPhaseListener;
         this.scoreService = scoreService;
     }
 
@@ -66,10 +69,10 @@ public class QuizServiceImpl implements QuizService {
         Boolean isCorrect = quiz.getAnswers().get(answer);
 
         //todo: подумать как объединить листенеры
-        if (quizType == QuizType.GAME_QUIZ) {
-            gameListener.playerAnswered(userId, isCorrect != null && isCorrect, questionCount);
-        } else {
-            lunchListener.userAnswered(userId, isCorrect != null && isCorrect, questionCount);
+        switch (quizType) {
+            case MAKE_FOOD_QUIZ, EAT_FOOD_QUIZ -> lunchListener.userAnswered(userId, isCorrect != null && isCorrect, questionCount);
+            case PREPARE_GAME_QUIZ -> prepareRoundPhaseListener.userAnswered(userId, isCorrect != null && isCorrect, questionCount);
+            case GAME_QUIZ -> gameListener.playerAnswered(userId, isCorrect != null && isCorrect, questionCount);
         }
 
         return isCorrect != null && isCorrect;
@@ -105,12 +108,12 @@ public class QuizServiceImpl implements QuizService {
         }
     }
 
-
     private QuizType getQuizTypeByPhase(GamePhase phase) {
         return switch (phase) {
             case LUNCH_MAKING -> QuizType.MAKE_FOOD_QUIZ;
             case LUNCH_EATING -> QuizType.EAT_FOOD_QUIZ;
             case GAME -> QuizType.GAME_QUIZ;
+            case ROUND_PREPARE_AND_TRAINING -> QuizType.PREPARE_GAME_QUIZ;
             default -> throw new IllegalArgumentException("Unknown phase: " + phase);
         };
     }

@@ -137,6 +137,21 @@ values (9, 'Блюдо содержит ингредиенты: молоко, м
         '{"Сдобное печенье":false,"Пирожное картошка":false,"Блины":true,"Медовик":false}', 1, 1, 'EAT_FOOD_QUIZ')
 on conflict do nothing;
 
+insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+values (10, '88:8=?',
+        '{"11":true}', 1, 1, 'PREPARE_GAME_QUIZ')
+on conflict do nothing;
+
+insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+values (11, '560+256=?',
+        '{"816":true}', 1, 1, 'PREPARE_GAME_QUIZ')
+on conflict do nothing;
+
+insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+values (12, '190-74=?',
+        '{"116":true}', 1, 1, 'PREPARE_GAME_QUIZ')
+on conflict do nothing;
+
 delete
 from criteria;
 delete
