@@ -119,10 +119,11 @@ class Glavniy extends Component {
       },
       method: 'GET',
       mode: 'cors'
-    }).then(res => {res.json().then(data =>{
-      console.log(JSON.stringify(data))
     })
-    })
+    //     .then(res => {res.json().then(data =>{
+    //   console.log(JSON.stringify(data))
+    // })
+    // })
     this.setState({showMapRolesBtn: false})
   }
   clickHandler = () => {
