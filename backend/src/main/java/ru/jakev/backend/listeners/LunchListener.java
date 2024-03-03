@@ -60,7 +60,10 @@ public class LunchListener extends AbstractQuizListener {
 
     private void notifyLunchEnd() {
         NotificationMessage message = new NotificationMessage(NotificationMessageType.LUNCH_END);
-        webSocketMessageSender.sendMessage(List.of("/glavniy/messages", "/manager/messages","/player/messages", "/worker/messages"), message);
+        webSocketMessageSender.sendMessage(List.of("/glavniy/messages", "/manager/messages", "/worker/messages"), message);
+        globalContext.getParticipateInGamePlayers().keySet().forEach(player -> {
+            webSocketMessageSender.sendMessageToUser(player, "/player/messages", message);
+        });
     }
 
     @Override

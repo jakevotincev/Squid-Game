@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class PrepareRoundPhaseListener extends AbstractQuizListener {
     private final static Logger LOG = LoggerFactory.getLogger(PrepareRoundPhaseListener.class);
-    private volatile boolean isInterrupted = false;
+    private volatile boolean isComplete = false;
     private final WebSocketMessageSender webSocketMessageSender;
 
     public PrepareRoundPhaseListener(ScoreService scoreService, WebSocketMessageSender webSocketMessageSender,
@@ -29,8 +29,8 @@ public class PrepareRoundPhaseListener extends AbstractQuizListener {
 
     @Override
     public void userAnswered(int playerId, boolean isCorrect, int questionCount) {
-        if (isInterrupted) {
-            LOG.info("Round preparing is interrupted. Player with id: " + playerId + " can't answer.");
+        if (isComplete) {
+            LOG.info("Round preparing is end. Player with id: " + playerId + " can't answer.");
             return;
         }
 
@@ -39,17 +39,22 @@ public class PrepareRoundPhaseListener extends AbstractQuizListener {
 
     @Override
     protected void notifyAllUsersAnswered() {
-        notifyRoundPreparingEnd(List.of("/glavniy/messages", "/manager/messages"));
+        isComplete = true;
+        notifyRoundPreparingEnd(List.of("/glavniy/messages", "/manager/messages", "/worker/messages"));
     }
 
     public boolean interruptRoundPreparing() {
-        //todo: add notify
-        isInterrupted = true;
+        if (isComplete) {
+            return false;
+        }
+
+        isComplete = true;
         notifyRoundPreparingEnd(List.of("/worker/messages", "/manager/messages"));
-        return isInterrupted;
+        return true;
     }
 
     //todo: нужно ли отправлять уведомления о завершении подготовки раунда?
+    //todo: убрать воторную отправку когда уже все закончилось, игру можно начать когда главнй получит сообщения о конце тренировок и о конце раунд препаринга
     private void notifyRoundPreparingEnd(List<String> destinations) {
         NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.ROUND_PREPARING_COMPLETED);
         webSocketMessageSender.sendMessage(destinations, notificationMessage);

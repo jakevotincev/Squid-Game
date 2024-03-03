@@ -50,6 +50,9 @@ public class QuizServiceImpl implements QuizService {
 
         if (quizType == QuizType.GAME_QUIZ) {
             correctAnswersForUser(quizList, accountId);
+        } else if (quizType == QuizType.PREPARE_GAME_QUIZ) {
+            //todo: add change to empty quiz?
+            removeAllAnswers(quizList);
         }
 
         return quizList.stream().map(quizMapper::quizToQuizDTO).toList();
@@ -90,22 +93,35 @@ public class QuizServiceImpl implements QuizService {
         if (deleteQuestionsCount > 0) {
             quizList.forEach(quiz -> {
                 //todo: подумать как менять порядок элементов
-                removeIncorrectAnswers(quiz.getAnswers(), deleteQuestionsCount);
+                removeAnswers(quiz.getAnswers(), deleteQuestionsCount, true);
             });
         }
     }
 
-    public void removeIncorrectAnswers(Map<String, Boolean> answers, int deleteQuestionsCount) {
+    private void removeAnswers(Map<String, Boolean> answers, int deleteQuestionsCount, boolean onlyIncorrectAnswers) {
         Iterator<Map.Entry<String, Boolean>> iter = answers.entrySet().iterator();
         int deleteCount = 0;
 
         while (iter.hasNext() && deleteCount < deleteQuestionsCount) {
             Map.Entry<String, Boolean> entry = iter.next();
-            if (!entry.getValue()) {
+            if (!onlyIncorrectAnswers || entry.getValue()) {
                 iter.remove();
                 deleteCount++;
             }
         }
+    }
+
+    private void removeAllAnswers(List<Quiz> quizList) {
+        Quiz firstQuiz = quizList.get(0);
+        if (firstQuiz == null) {
+            throw new IllegalArgumentException("Quiz list is empty");
+        }
+
+        int answersCount = firstQuiz.getAnswers().size();
+        quizList.forEach(quiz -> {
+            //todo: подумать как менять порядок элементов
+            removeAnswers(quiz.getAnswers(), answersCount, false);
+        });
     }
 
     private QuizType getQuizTypeByPhase(GamePhase phase) {

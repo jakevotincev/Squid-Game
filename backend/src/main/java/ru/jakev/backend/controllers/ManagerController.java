@@ -120,7 +120,9 @@ public class ManagerController {
 
         NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.LUNCH_STARTED);
         //todo: удалить сообщение для плэеров?
-        webSocketMessageSender.sendMessage(List.of("/worker/messages", "/player/messages", "/glavniy/messages"), notificationMessage);
+        notifyParticipateInGamePlayers(notificationMessage);
+        webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
+        //go to LUNCH_MAKING
         phaseManager.startNextPhase();
         return ResponseEntity.ok().build();
     }
@@ -135,9 +137,18 @@ public class ManagerController {
         NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.START_ROUND_PREPARING);
         //todo: do we need to send it to glavniy?
         webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
+        notifyParticipateInGamePlayers(notificationMessage);
+
         if (phaseManager.getCurrentPhase() == GamePhase.ROUND_PREPARE_AND_TRAINING_WAITING) {
+            //go to ROUND_PREPARE_AND_TRAINING
             phaseManager.startNextPhase();
         }
         return ResponseEntity.ok().build();
+    }
+
+    private void notifyParticipateInGamePlayers(NotificationMessage message) {
+        globalContext.getParticipateInGamePlayers().forEach((principal, accountDTO) -> {
+            webSocketMessageSender.sendMessageToUser(principal, "/player/messages", message);
+        });
     }
 }

@@ -44,16 +44,20 @@ public class FormListener {
     public void formAccepted(int playerId) {
         if (globalContext.acceptForm(playerId)) {
             sendFormsSelectionCompletedMessage();
+            // go to LUNCH_START_WAITING
+            //todo: потенциальная ошибка если главнй прервет селекшон и воркеры доотправят, но по идее на фронте не должно воспроизводиться
             phaseManager.startNextPhase();
         }
     }
 
     public boolean stopFormSelection() {
+        // go to LUNCH_START_WAITING
         phaseManager.startNextPhase();
         sendFormsSelectionCompletedMessage();
         return true;
     }
 
+    //todo: пофиксить нулевое количество игроков при интеррапте
     private void sendFormsSelectionCompletedMessage() {
         Set<Map.Entry<Principal, AccountDTO>> connectedPlayers = globalContext.getConnectedUsers().entrySet().stream()
                 .filter(entry -> entry.getValue().getRole() == Role.PLAYER).collect(Collectors.toSet());

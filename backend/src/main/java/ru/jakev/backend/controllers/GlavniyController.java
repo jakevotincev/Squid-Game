@@ -36,7 +36,7 @@ public class GlavniyController {
             "Current game phase is %s";
     private final static String ROUND_PREPARING_INTERRUPT_NOT_PERMITTED_MESSAGE = "Round preparing interrupt is not permitted now. " +
             "Current game phase is %s";
-    private final static String INTERRUPT_ROUND_PREPARING_ERROR_MESSAGE = "Error while interrupt round preparing";
+    private final static String INTERRUPT_ROUND_PREPARING_ERROR_MESSAGE = "Round preparing already end";
 
     public GlavniyController(CriteriaService criteriaService, FormListener formListener,
                              RoleDistributionManager roleDistributionManager, PhaseListener phaseListener,
@@ -58,6 +58,7 @@ public class GlavniyController {
 
         if (message.isConfirm()) {
             criteriaService.saveCriteria(message.getCriteria());
+            // go to FORM_SELECTION
             phaseManager.startNextPhase();
         }
         return message;
@@ -104,6 +105,7 @@ public class GlavniyController {
 
         if (roleDistributionManager.distributeRoles()) {
             phaseListener.rolesDistributed();
+            // go to CRITERIA_APPROVAL
             phaseManager.startNextPhase();
             return ResponseEntity.ok().build();
         } else {
