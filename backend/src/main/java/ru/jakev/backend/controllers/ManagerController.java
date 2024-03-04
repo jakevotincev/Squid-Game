@@ -179,6 +179,33 @@ public class ManagerController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/startCleaning")
+    public ResponseEntity<?> startCleaning() {
+        if (phaseManager.isActionNotPermitted(GamePhase.CLEANING)) {
+            return ResponseEntity.badRequest().body(
+                    String.format("This action not permitted now. Current game phase is %s", phaseManager.getCurrentPhase()));
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.START_CLEANING);
+        webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/stopCleaning")
+    public ResponseEntity<?> stopCLeaning() {
+        if (phaseManager.isActionNotPermitted(GamePhase.CLEANING)) {
+            return ResponseEntity.badRequest().body(
+                    String.format("This action not permitted now. Current game phase is %s", phaseManager.getCurrentPhase()));
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.CLEANING_COMPLETED);
+        webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
+        phaseManager.startNextPhase();
+
+        return ResponseEntity.ok().build();
+    }
+
     private void notifyParticipateInGamePlayers(NotificationMessage message) {
         globalContext.getParticipateInGamePlayers().forEach((principal, accountDTO) -> {
             webSocketMessageSender.sendMessageToUser(principal, "/player/messages", message);

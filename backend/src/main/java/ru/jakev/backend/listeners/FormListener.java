@@ -53,12 +53,11 @@ public class FormListener {
     //todo: пофиксить нулевое количество игроков при интеррапте
     //todo: пофиксил но хз норм ли это будет работать
     public boolean stopFormSelection() {
-        // go to LUNCH_START_WAITING
-
         if (globalContext.getAcceptedFormsCount() == 0) {
             return false;
         }
 
+        // go to LUNCH_START_WAITING
         phaseManager.startNextPhase();
         sendFormsSelectionCompletedMessage();
         return true;

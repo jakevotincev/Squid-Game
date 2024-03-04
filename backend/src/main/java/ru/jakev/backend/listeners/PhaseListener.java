@@ -46,4 +46,14 @@ public class PhaseListener {
             }
         }));
     }
+
+    public void notifyResultsReady() {
+        NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.RESULTS_READY);
+        webSocketMessageSender.sendMessage(List.of("/manager/messages", "/soldier/messages", "/worker/messages"),
+                notificationMessage);
+
+        globalContext.getParticipateInGamePlayers().keySet().forEach(player -> {
+            webSocketMessageSender.sendMessageToUser(player, "/player/messages", notificationMessage);
+        });
+    }
 }

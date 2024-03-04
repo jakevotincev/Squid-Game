@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ public class GlobalContext {
     private final UsersStatusNotifier usersStatusNotifier;
     private final AccountService accountService;
     private final AccountMapper accountMapper;
+    private final AtomicInteger killedPlayersCount = new AtomicInteger(0);
 
     public GlobalContext(CriteriaService criteriaService,
                          @Value("${show_user_stats.enabled}") Boolean showUserStatsEnabled,
@@ -147,5 +149,13 @@ public class GlobalContext {
 
     public int getAcceptedFormsCount() {
         return acceptedForms.size();
+    }
+
+    public int getKilledPlayersCount() {
+        return killedPlayersCount.get();
+    }
+
+    public void incrementKilledPlayersCount() {
+        killedPlayersCount.incrementAndGet();
     }
 }

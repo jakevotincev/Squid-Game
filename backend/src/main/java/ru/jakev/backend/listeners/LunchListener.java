@@ -38,6 +38,7 @@ public class LunchListener extends AbstractQuizListener {
                     notifyLunchEnd();
                 }
                 //todo: проверить что с обнулением работает, вроде работает
+                // go to LUNCH_EATING or ROUND_PREPARE_AND_TRAINING_WAITING
                 onAllUsersReady.run();
                 readyPlayers = 0;
                 playerAnsweredQuestions.clear();

@@ -101,7 +101,10 @@ class Participant extends Component{
                 if (sad.type === 'GAME_STARTED'){
                     this.setState({showAnketa: false});
                     this.setState({showQuiz: true});
-                    fetch('http://localhost:8080/questions',{
+
+                    let url = 'http://localhost:8080/account/'.concat(this.state.playerId).concat('/questions');
+                    console.log(url);
+                    fetch(url,{
                         headers: {
                             "Content-Type": "application/json",
                             'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)

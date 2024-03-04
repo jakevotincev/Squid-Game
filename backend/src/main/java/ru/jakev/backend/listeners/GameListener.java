@@ -3,10 +3,10 @@ package ru.jakev.backend.listeners;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.jakev.backend.entities.Account;
 import ru.jakev.backend.entities.Score;
 import ru.jakev.backend.game.GlobalContext;
 import ru.jakev.backend.entities.Role;
+import ru.jakev.backend.game.PhaseManager;
 import ru.jakev.backend.messages.KillPlayerMessage;
 import ru.jakev.backend.messages.NotificationMessage;
 import ru.jakev.backend.messages.NotificationMessageType;
@@ -30,6 +30,7 @@ public class GameListener {
     //todo: think about thread safe
     private final Map<Integer, Integer> playerIdToAnswersMap = new ConcurrentHashMap<>();
     private final Map<Integer, Integer> soldierIdToScoreMap = new ConcurrentHashMap<>();
+    private Set<Integer> finishGamePlayers = new HashSet<>();
 //    private final ArrayBlockingQueue<Long> playersToKillQueue = new ArrayBlockingQueue<>(100);
 //    private final AtomicBoolean isNowKilling = new AtomicBoolean(false);
 
@@ -39,14 +40,16 @@ public class GameListener {
     private final GlobalContext globalContext;
     private final AccountService accountService;
     private final ScoreService scoreService;
+    private final PhaseManager phaseManager;
     private final int KILL_BONUS = 50;
 
     public GameListener(WebSocketMessageSender webSocketMessageSender, GlobalContext globalContext,
-                        AccountService accountService, ScoreService scoreService) {
+                        AccountService accountService, ScoreService scoreService, PhaseManager phaseManager) {
         this.webSocketMessageSender = webSocketMessageSender;
         this.globalContext = globalContext;
         this.accountService = accountService;
         this.scoreService = scoreService;
+        this.phaseManager = phaseManager;
     }
 
     //todo: refactor this method
@@ -58,9 +61,11 @@ public class GameListener {
         if (isCorrect) {
             playerIdToAnswersMap.merge(playerId, 1, Integer::sum);
             if (playerIdToAnswersMap.get(playerId) == questionCount) {
+                finishGamePlayers.add(playerId);
                 //todo: should connect to /user/player/messages!!!!!!!!!!!!!!!!!
                 webSocketMessageSender.sendMessageToUser(principal, "/player/messages",
                         new NotificationMessage(NotificationMessageType.QUALIFIED_TO_NEXT_ROUND_MESSAGE));
+                tryToNotifyGameEnded();
             }
         } else {
             playerIdToAnswersMap.remove(playerId);
@@ -97,8 +102,13 @@ public class GameListener {
                 NotificationMessage message = new NotificationMessage(NotificationMessageType.PLAYER_KILLED_MESSAGE);
                 webSocketMessageSender.sendMessageToUser(soldier, "/soldier/messages", message);
                 webSocketMessageSender.sendMessageToUser(killedPlayer, "/player/messages", message);
+                finishGamePlayers.add(playerId);
+                tryToNotifyGameEnded();
+
                 accountService.updateAccountParticipation(playerId, false);
                 globalContext.removeParticipateInGamePlayer(killedPlayer);
+
+                globalContext.incrementKilledPlayersCount();
 
 
                 isKillingNow = false;
@@ -131,5 +141,14 @@ public class GameListener {
         message.setPlayerId(playerId);
         message.setPlayerName(globalContext.getAccount(globalContext.getPrincipalById(playerId)).getUsername());
         webSocketMessageSender.sendMessage("/soldier/messages", message);
+    }
+
+    private void tryToNotifyGameEnded() {
+        if (globalContext.getParticipateInGamePlayers().size() == finishGamePlayers.size()){
+            NotificationMessage message = new NotificationMessage(NotificationMessageType.GAME_ENDED);
+            webSocketMessageSender.sendMessage(List.of("/manager/messages", "/glavniy/messages"), message);
+            // go to CLEANING
+            phaseManager.startNextPhase();
+        }
     }
 }

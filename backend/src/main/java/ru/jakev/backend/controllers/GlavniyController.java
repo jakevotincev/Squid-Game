@@ -96,6 +96,7 @@ public class GlavniyController {
         }
 
         phaseListener.gameStarted();
+        // go to GAME
         phaseManager.startNextPhase();
 
         return ResponseEntity.ok().body(GAME_STARTED_MESSAGE);
@@ -116,5 +117,18 @@ public class GlavniyController {
         } else {
             return ResponseEntity.badRequest().body(INVALID_USERS_NUMBER_MESSAGE);
         }
+    }
+
+    @GetMapping("/showResults")
+    public ResponseEntity<String> showResults() {
+        if (phaseManager.isActionNotPermitted(GamePhase.SHOW_RESULTS_WAIT)) {
+            return ResponseEntity.badRequest().body("Show results is not permitted now. Current game phase is "
+                    + phaseManager.getCurrentPhase());
+        }
+
+        // go to END
+        phaseListener.notifyResultsReady();
+        phaseManager.startNextPhase();
+        return ResponseEntity.ok().build();
     }
 }

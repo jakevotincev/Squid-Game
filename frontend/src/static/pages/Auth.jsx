@@ -148,7 +148,7 @@ class Auth extends Component {
             <div className={"inputContainer"}>
                 <input
                      value={this.state.login}
-                    placeholder="Enter your email here"
+                    placeholder="Enter your username here"
                      onChange={this.handleLoginChange}
                     className={"inputBox"} />
             </div>
