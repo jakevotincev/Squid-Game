@@ -18,7 +18,8 @@ class Soldier extends Component {
         preyName: null,
         score: null,
         killStatusMsg: '',
-        showKillStatusMsg: false
+        showKillStatusMsg: false,
+        showClicker: false
     }
 
     handleChange = (event) => {
@@ -93,9 +94,13 @@ class Soldier extends Component {
             this.client.subscribe('/soldier/messages', message => {
                 console.log('govnomapping ',JSON.parse(message.body));
                 let sad = JSON.parse(message.body)
-                this.setState({preyId: sad.playerId});
-                this.setState({preyName: sad.playerName});
-                this.setState({score: Math.floor(Math.random() * 100)});
+                if (sad.type === 'START_TRAINING') {
+                    this.setState({showClicker: true})
+                } else {
+                    this.setState({preyId: sad.playerId});
+                    this.setState({preyName: sad.playerName});
+                    this.setState({score: Math.floor(Math.random() * 100)});
+                }
             }, headers)
             this.client.subscribe('/user/soldier/messages', message => {
                 console.log('private ',JSON.parse(message.body));
@@ -105,7 +110,7 @@ class Soldier extends Component {
                     this.setState({showKillStatusMsg: true})
                 }
                 if (msg.type === 'MISS_MESSAGE') {
-                    this.setState({killStatusMsg: 'Вы промахнулись игрока '+ this.state.preyName} + 'бил кто-то другой')
+                    this.setState({killStatusMsg: 'Вы промахнулись, игрока '+ this.state.preyName} + 'убил кто-то другой')
                     this.setState({showKillStatusMsg: true})
                 }
             }, headers)
@@ -149,6 +154,8 @@ class Soldier extends Component {
             {/*<label class="participant">Никнейм: </label>*/}
             {/*<input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>*/}
             </div>
+            { this.state.showClicker === false &&
+            <div>
             <div class="participant" id="preys">
                 <p>
                     Имя жертвы: {this.state.preyName}
@@ -163,6 +170,7 @@ class Soldier extends Component {
                 <h4>{this.state.killStatusMsg}</h4>
             </div>
             }
+            </div>}
         </div>
 
     )}
