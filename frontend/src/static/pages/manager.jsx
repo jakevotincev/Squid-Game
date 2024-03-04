@@ -146,6 +146,24 @@ class Manager extends Component{
             mode: 'cors'
         })
     }
+    startCleaning = () => {
+        fetch('http://localhost:8080/startCleaning',{
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+            },
+            method: 'GET',
+            mode: 'cors'
+        })
+    }
+    stopCleaning = () => {
+        fetch('http://localhost:8080/stopCleaning',{
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+            },
+            method: 'GET',
+            mode: 'cors'
+        })
+    }
 
 
     render() {return(
@@ -194,6 +212,13 @@ class Manager extends Component{
         <br/>
         <div>
             <button type="submit" onClick={this.stopTraining}>Отдать приказ о прекращении тренировок солдат</button>
+        </div>
+        <div>
+            <button type="submit" onClick={this.startCleaning}>Отдать приказ о начале уборки рабочим</button>
+        </div>
+        <br/>
+        <div>
+            <button type="submit" onClick={this.stopCleaning}>Отдать приказ о прекращении уборки рабочих</button>
         </div>
       </div>
 
