@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
 import "./pagestyle.css";
 import {useLocation} from "react-router-dom";
+import Clicker from "./Clicker";
 
 export function withRouter(Children) {
     return(props)=>{
@@ -19,7 +20,9 @@ class Soldier extends Component {
         score: null,
         killStatusMsg: '',
         showKillStatusMsg: false,
-        showClicker: false
+        showClicker: false,
+        trainingScore: 0,
+        bonusScore: 0
     }
 
     handleChange = (event) => {
@@ -96,7 +99,12 @@ class Soldier extends Component {
                 let sad = JSON.parse(message.body)
                 if (sad.type === 'START_TRAINING') {
                     this.setState({showClicker: true})
-                } else {
+
+                }
+                if (sad.type === 'TRAINING_COMPLETED') {
+                    this.setState({showClicker: false})
+                }
+                else {
                     this.setState({preyId: sad.playerId});
                     this.setState({preyName: sad.playerName});
                     this.setState({score: Math.floor(Math.random() * 100)});
@@ -141,7 +149,34 @@ class Soldier extends Component {
             // body data type must match "Content-Type" header
 
         }).then(() => alert("Ya strelyau"))
+    }
+    addPoint = () => {
+    this.setState({trainingScore: this.state.trainingScore + 1})
+        if (this.state.trainingScore !== 0 && this.state.trainingScore % 5 === 0) {
+            let url = 'http://localhost:8080/soldier/'
+            url = url.concat(this.state.soldierId)
+            url = url.concat('/score')
+            if (this.state.trainingScore === 50) {
+                const bonus = (this.state.trainingScore / 13) + this.state.trainingScore * 1.2
+                this.setState({bonusScore: bonus + this.state.trainingScore})
+            } else {
+                this.setState({bonusScore:  this.state.trainingScore})
+            }
+            // this.setState({trainingScore: this.state.trainingScore + this.state.bonusScore})
+            const soldierScoreMsg = {
+                score: this.state.bonusScore
+            }
+            fetch(url,{
+                headers: {
+                     "Content-Type": "application/json",
 
+                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                },
+                method: 'POST',
+                mode: 'cors',
+                body: JSON.stringify(soldierScoreMsg)
+            })
+        }
     }
 
     render(){return(
@@ -171,6 +206,14 @@ class Soldier extends Component {
             </div>
             }
             </div>}
+            { this.state.showClicker === true &&
+                <div>
+                    <Clicker
+                    points={this.state.trainingScore}
+                    onClick={this.addPoint}
+                    name={'Сделано выстрелов : '}/>
+                </div>
+            }
         </div>
 
     )}
