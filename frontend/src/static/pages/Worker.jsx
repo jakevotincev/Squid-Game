@@ -4,6 +4,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import "./pagestyle.css";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
+import Clicker from "./Clicker";
 
 export function withRouter(Children) {
     return(props)=>{
@@ -26,7 +27,9 @@ class Worker extends Component{
         showPlayersAnketas: true,
         workerId: null,
         showQuiz: false,
-        showMath: false
+        showMath: false,
+        cleaningScore: 0,
+        showClicker: false
     }
     handleChange = (event) => {
         // 👇 Get input value from "event"
@@ -387,13 +390,44 @@ class Worker extends Component{
                         })
                     })
                 }
+                if (lunchMsg.type === 'ROUND_PREPARING_COMPLETED') {
+                    this.setState({showMath: false})
+                }
+                if (lunchMsg.type === 'START_CLEANING') {
+                    this.setState({showClicker: true})
+                }
+                if (lunchMsg.type === 'CLEANING_COMPLETED') {
+                    this.setState({showClicker: true})
+                }
+
             }, headers)
 
         } else {
             // Queue a retry
             setTimeout(() => { this.handleSend() }, 100)
         }
-    };
+    }
+    addPoint = () => {
+        this.setState({cleaningScore: this.state.cleaningScore + 1})
+        if (this.state.cleaningScore !== 0 && this.state.cleaningScore % 5 === 0) {
+            let url = 'http://localhost:8080/worker/'
+            url = url.concat(this.state.workerId)
+            url = url.concat('/score')
+            const workerScoreMsg = {
+                score: this.state.cleaningScore
+            }
+            fetch(url,{
+                headers: {
+                    "Content-Type": "application/json",
+
+                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                },
+                method: 'POST',
+                mode: 'cors',
+                body: JSON.stringify(workerScoreMsg)
+            })
+        }
+    }
 
     render(){return(
         <div class="participant" align="center">
@@ -430,6 +464,13 @@ class Worker extends Component{
             <div id='quiz'></div>}
             {this.state.showMath === true &&
                 <div id='math'></div>}
+            {this.state.showClicker === true &&
+            <div>
+                <Clicker
+                    points={this.state.cleaningScore}
+                    onClick={this.addPoint}
+                    name={'Убрано органов : '}/>
+            </div>}
         </div>
     );
 }}
