@@ -183,7 +183,7 @@ class Soldier extends Component {
         <div id="soldier_page" align="center">
             <div id="connect">
             
-            <h1>This is soldier page</h1>
+            <h1 id="page_title">This is soldier page</h1>
             {/*<button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>*/}
             <br/>
             {/*<label class="participant">Никнейм: </label>*/}

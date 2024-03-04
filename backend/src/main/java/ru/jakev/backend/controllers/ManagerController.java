@@ -201,6 +201,8 @@ public class ManagerController {
 
         NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.CLEANING_COMPLETED);
         webSocketMessageSender.sendMessage(List.of("/worker/messages", "/glavniy/messages"), notificationMessage);
+
+        //todo: go to SHOW_RESULTS_WAIT
         phaseManager.startNextPhase();
 
         return ResponseEntity.ok().build();

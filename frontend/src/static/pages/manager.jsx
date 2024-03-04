@@ -185,9 +185,9 @@ class Manager extends Component{
               <br/>
               <button type="submit"  onClick={this.clickHandler}>Отправить</button>
               <div class="bossmsg">
-            <Popup trigger={<button> Сообщение от босса </button>}
+            <Popup trigger={<button id="boss_msg_btn"> Сообщение от босса </button>}
                    position="right centre">
-            <p>
+            <p id="boss_message">
             Ваш босс ответил : {this.state.slovo}
             </p>
             </Popup>

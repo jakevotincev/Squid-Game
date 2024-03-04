@@ -107,7 +107,7 @@ class Worker extends Component{
             body: JSON.stringify(datta)
             // body data type must match "Content-Type" header
 
-        }).then(() => alert("работу кончил"))
+        }).then()
         this.setState({showPlayersAnketas: false})
     }
 
@@ -139,6 +139,7 @@ class Worker extends Component{
                     this.setState({anketa_Id: formsMsg.forms[i].playerId});
                     this.setState({anketa_content: formsMsg.forms[i].content});
                     let li = document.createElement("li");
+                    li.id = 'anketa';
                     let yesCheckBox = document.createElement('input');
                     let yesLabel = document.createElement('label');
                     let emptyStr = document.createElement('br');
@@ -431,7 +432,7 @@ class Worker extends Component{
 
     render(){return(
         <div class="participant" align="center">
-            <h1>This is worker page</h1>
+            <h1 id="page_title">This is worker page</h1>
             {/*<button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>*/}
             {/*<h3>Пожалуйста, введите свой никнейм </h3>*/}
             {/*<label>Никнейм: </label>*/}

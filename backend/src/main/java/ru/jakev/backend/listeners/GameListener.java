@@ -42,6 +42,7 @@ public class GameListener {
     private final ScoreService scoreService;
     private final PhaseManager phaseManager;
     private final int KILL_BONUS = 50;
+    private final int QUIZ_POINTS = 10;
 
     public GameListener(WebSocketMessageSender webSocketMessageSender, GlobalContext globalContext,
                         AccountService accountService, ScoreService scoreService, PhaseManager phaseManager) {
@@ -53,12 +54,16 @@ public class GameListener {
     }
 
     //todo: refactor this method
+    //todo: add bonus for good answer
     public void playerAnswered(int playerId, boolean isCorrect, int questionCount) {
         Principal principal = globalContext.getPrincipalById(playerId);
         //todo: нет защиты от отправки одного и того же ответа
         //todo: добавить переход в междуигровую фазу когда все юзеры сыграли и всех убили
-        //todo: add score here?
+
         if (isCorrect) {
+            //todo: check if it's work
+            scoreService.addScore(playerId, QUIZ_POINTS);
+
             playerIdToAnswersMap.merge(playerId, 1, Integer::sum);
             if (playerIdToAnswersMap.get(playerId) == questionCount) {
                 finishGamePlayers.add(playerId);
