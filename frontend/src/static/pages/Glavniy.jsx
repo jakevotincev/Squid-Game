@@ -77,7 +77,7 @@ class Glavniy extends Component {
         else {
           this.setState({showMapRolesBtn: false})
           this.setState({playersNumber: sad.criteria?.playersNumber});
-          this.setState({criteria: sad.criteria.criteria});
+          this.setState({criteria: sad.criteria?.criteria});
           console.log('playersNumber :',sad.criteria.playersNumber);
           console.log('criteria',sad.criteria.criteria);
           this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
@@ -131,10 +131,7 @@ class Glavniy extends Component {
       method: 'GET',
       mode: 'cors'
     })
-    //     .then(res => {res.json().then(data =>{
-    //   console.log(JSON.stringify(data))
-    // })
-    // })
+
     this.setState({showMapRolesBtn: false})
   }
   clickHandler = () => {
