@@ -85,72 +85,72 @@ on conflict do nothing;
 -- values (11, 'dima', '$2a$10$XATdzwtYfxFLBbqfjPjwAuCC4yTioYwytrC8WgD6YNQEVgbAecHzy', 'UNDEFINED', false)
 -- on conflict do nothing;
 
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (1, 'Как называется еврейский Новый год?',
-        '{"Ханука":false,"Йом Кипур":false,"Кванза":false,"Рош ха-Шана":true, "Караганда":false, "Хачундра":false, ' ||
-        '"Еврейка":false}', 1, 1, 'GAME_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (2, 'Сколько синих полос на флаге США?', '{"0":true,"3":false,"6":false,"13":false, "2":false, "52":false, ' ||
-                                                '"31":false}', 1, 1, 'GAME_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (3, 'Кто из этих персонажей не дружит с Гарри Поттером?',
-        '{"Драко Малфой":true,"Рон Уизли":false,"Гермиона Грейнджер":false,"Невил Долгопупс":false, "Луна Лавгуд":false,' ||
-        '"Фред Уизли":false, "Джордж Уизли":false}', 1, 1, 'GAME_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (4,
-        'Вам нужно приготовить блины. Для этого вам понадобится: молоко, мука, сахар, ?. Назовите недостающий ингредиент.',
-        '{"Какао":false,"Сгущенное молоко":false,"Яйца":true,"Творог":false}', 1, 1, 'MAKE_FOOD_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (5, 'Вам нужно приготовить салат Оливье. Для этого вам понадобится: картофель, морковь, яйца, огурцы, ' ||
-           'зеленый горошек, майонез, ?. Назовите недостающий ингредиент.',
-        '{"Курица":false,"Свекла":false,"Кукуруза":false,"Колбаса":true}', 1, 1, 'MAKE_FOOD_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (6, 'Вам нужно приготовить борщ. Для этого вам понадобится: вода, говядина, свекла, морковь, лук, ' ||
-           'картофель, лавровый лист, соль, ?. Назовите недостающий ингредиент.',
-        '{"Капуста":true,"Огурец":false,"Перец чили":false,"Редька":false}', 1, 1, 'MAKE_FOOD_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (7, 'Блюдо содержит ингредиенты: вода, говядина, свекла, морковь, лук, ' ||
-           'картофель, лавровый лист, соль, капуста. Назовите название блюда.',
-        '{"Солянка":false,"Борщ":true,"Рассольник":false,"Оливье":false}', 1, 1, 'EAT_FOOD_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (8, 'Блюдо содержит ингредиенты: картофель, морковь, яйца, огурцы, ' ||
-           'зеленый горошек, майонез, колбаса. Назовите название блюда.',
-        '{"Оливье":true,"Крабовый":false,"Мимоза":false,"Витаминный":false}', 1, 1, 'EAT_FOOD_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (9, 'Блюдо содержит ингредиенты: молоко, мука, сахар, яйца. Назовите название блюда.',
-        '{"Сдобное печенье":false,"Пирожное картошка":false,"Блины":true,"Медовик":false}', 1, 1, 'EAT_FOOD_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (10, '88:8=?',
-        '{"11":true}', 1, 1, 'PREPARE_GAME_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (11, '560+256=?',
-        '{"816":true}', 1, 1, 'PREPARE_GAME_QUIZ')
-on conflict do nothing;
-
-insert into quiz (id, question, answers, game_id, round_id, quiz_type)
-values (12, '190-74=?',
-        '{"116":true}', 1, 1, 'PREPARE_GAME_QUIZ')
-on conflict do nothing;
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (1, 'Как называется еврейский Новый год?',
+--         '{"Ханука":false,"Йом Кипур":false,"Кванза":false,"Рош ха-Шана":true, "Караганда":false, "Хачундра":false, ' ||
+--         '"Еврейка":false}', 1, 1, 'GAME_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (2, 'Сколько синих полос на флаге США?', '{"0":true,"3":false,"6":false,"13":false, "2":false, "52":false, ' ||
+--                                                 '"31":false}', 1, 1, 'GAME_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (3, 'Кто из этих персонажей не дружит с Гарри Поттером?',
+--         '{"Драко Малфой":true,"Рон Уизли":false,"Гермиона Грейнджер":false,"Невил Долгопупс":false, "Луна Лавгуд":false,' ||
+--         '"Фред Уизли":false, "Джордж Уизли":false}', 1, 1, 'GAME_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (4,
+--         'Вам нужно приготовить блины. Для этого вам понадобится: молоко, мука, сахар, ?. Назовите недостающий ингредиент.',
+--         '{"Какао":false,"Сгущенное молоко":false,"Яйца":true,"Творог":false}', 1, 1, 'MAKE_FOOD_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (5, 'Вам нужно приготовить салат Оливье. Для этого вам понадобится: картофель, морковь, яйца, огурцы, ' ||
+--            'зеленый горошек, майонез, ?. Назовите недостающий ингредиент.',
+--         '{"Курица":false,"Свекла":false,"Кукуруза":false,"Колбаса":true}', 1, 1, 'MAKE_FOOD_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (6, 'Вам нужно приготовить борщ. Для этого вам понадобится: вода, говядина, свекла, морковь, лук, ' ||
+--            'картофель, лавровый лист, соль, ?. Назовите недостающий ингредиент.',
+--         '{"Капуста":true,"Огурец":false,"Перец чили":false,"Редька":false}', 1, 1, 'MAKE_FOOD_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (7, 'Блюдо содержит ингредиенты: вода, говядина, свекла, морковь, лук, ' ||
+--            'картофель, лавровый лист, соль, капуста. Назовите название блюда.',
+--         '{"Солянка":false,"Борщ":true,"Рассольник":false,"Оливье":false}', 1, 1, 'EAT_FOOD_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (8, 'Блюдо содержит ингредиенты: картофель, морковь, яйца, огурцы, ' ||
+--            'зеленый горошек, майонез, колбаса. Назовите название блюда.',
+--         '{"Оливье":true,"Крабовый":false,"Мимоза":false,"Витаминный":false}', 1, 1, 'EAT_FOOD_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (9, 'Блюдо содержит ингредиенты: молоко, мука, сахар, яйца. Назовите название блюда.',
+--         '{"Сдобное печенье":false,"Пирожное картошка":false,"Блины":true,"Медовик":false}', 1, 1, 'EAT_FOOD_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (10, '88:8=?',
+--         '{"11":true}', 1, 1, 'PREPARE_GAME_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (11, '560+256=?',
+--         '{"816":true}', 1, 1, 'PREPARE_GAME_QUIZ')
+-- on conflict do nothing;
+--
+-- insert into quiz (id, question, answers, game_id, round_id, quiz_type)
+-- values (12, '190-74=?',
+--         '{"116":true}', 1, 1, 'PREPARE_GAME_QUIZ')
+-- on conflict do nothing;
 
 delete
 from criteria;

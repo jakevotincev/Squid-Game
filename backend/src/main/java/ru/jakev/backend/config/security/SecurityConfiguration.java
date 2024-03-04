@@ -41,7 +41,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).cors(CorsConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)
                 // Настройка доступа к конечным точкам
                 .authorizeHttpRequests(request -> request
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
