@@ -76,7 +76,7 @@ class Glavniy extends Component {
         }
         else {
           this.setState({showMapRolesBtn: false})
-          this.setState({playersNumber: sad.criteria.playersNumber});
+          this.setState({playersNumber: sad.criteria?.playersNumber});
           this.setState({criteria: sad.criteria.criteria});
           console.log('playersNumber :',sad.criteria.playersNumber);
           console.log('criteria',sad.criteria.criteria);
@@ -101,6 +101,17 @@ class Glavniy extends Component {
       mode: 'cors'
     }).then(() => alert("И я кричу АСТАНАВИТЕСЬ"))
   }
+  interuptRoundPreparing = () => {
+    fetch('http://localhost:8080/interruptRoundPreparing',{
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+      },
+      method: 'GET',
+      mode: 'cors'
+    })
+  }
+
 
   startGame = () =>{
     fetch('http://localhost:8080/startGame',{
@@ -186,6 +197,9 @@ class Glavniy extends Component {
             {this.state.showInterruptionBtn === true &&
                 <button type="submit" onClick={this.interuptPlayersSelection}>Прервать отбор анкет участников</button>
             }
+            <br/><div>
+              <button type="submit" onClick={this.interuptRoundPreparing}>Прервать подготовку раунда</button>
+            </div>
             {this.state.allAnketasIsCollected === true &&
             <div id="Start_of_the_game" align="center">
               <p>
