@@ -80,7 +80,7 @@ class Glavniy extends Component {
           this.setState({criteria: sad.criteria?.criteria});
           console.log('playersNumber :',sad.criteria.playersNumber);
           console.log('criteria',sad.criteria.criteria);
-          this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria.playersNumber + " Критерии отбора : " + sad.criteria.criteria});
+          this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria?.playersNumber + " Критерии отбора : " + sad.criteria?.criteria});
           this.setState({criteriaMsgIsReceived: true});
           console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
         }
@@ -99,7 +99,7 @@ class Glavniy extends Component {
       },
       method: 'GET',
       mode: 'cors'
-    }).then(() => alert("И я кричу АСТАНАВИТЕСЬ"))
+    }).then()
   }
   interuptRoundPreparing = () => {
     fetch('http://localhost:8080/interruptRoundPreparing',{
@@ -110,6 +110,17 @@ class Glavniy extends Component {
       method: 'GET',
       mode: 'cors'
     })
+  }
+  showResults = () => {
+    fetch('http://localhost:8080/showResults',{
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+      },
+      method: 'GET',
+      mode: 'cors'
+    })
+
   }
 
 
@@ -198,6 +209,9 @@ class Glavniy extends Component {
             }
             <br/><div>
               <button type="submit" onClick={this.interuptRoundPreparing}>Прервать подготовку раунда</button>
+            </div>
+            <div>
+              <button type="submit" onClick={this.showResults}>Отобразить итоговую таблицу</button>
             </div>
             {this.state.allAnketasIsCollected === true &&
             <div id="Start_of_the_game" align="center">
