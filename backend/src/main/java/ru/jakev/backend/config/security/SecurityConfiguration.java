@@ -2,7 +2,6 @@ package ru.jakev.backend.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.jakev.backend.services.AccountService;
-
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
@@ -26,6 +25,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 //@EnableMethodSecurity
 public class SecurityConfiguration {
+
     private final AccountService accountService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 

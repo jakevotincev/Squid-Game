@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Client} from "@stomp/stompjs";
 import "./pagestyle.css";
 import {useLocation} from "react-router-dom";
+import Clicker from "./Clicker";
 
 export function withRouter(Children) {
     return(props)=>{
@@ -18,7 +19,10 @@ class Soldier extends Component {
         preyName: null,
         score: null,
         killStatusMsg: '',
-        showKillStatusMsg: false
+        showKillStatusMsg: false,
+        showClicker: false,
+        trainingScore: 0,
+        bonusScore: 0
     }
 
     handleChange = (event) => {
@@ -93,9 +97,18 @@ class Soldier extends Component {
             this.client.subscribe('/soldier/messages', message => {
                 console.log('govnomapping ',JSON.parse(message.body));
                 let sad = JSON.parse(message.body)
-                this.setState({preyId: sad.playerId});
-                this.setState({preyName: sad.playerName});
-                this.setState({score: Math.floor(Math.random() * 100)});
+                if (sad.type === 'START_TRAINING') {
+                    this.setState({showClicker: true})
+
+                }
+                if (sad.type === 'TRAINING_COMPLETED') {
+                    this.setState({showClicker: false})
+                }
+                else {
+                    this.setState({preyId: sad.playerId});
+                    this.setState({preyName: sad.playerName});
+                    this.setState({score: Math.floor(Math.random() * 100)});
+                }
             }, headers)
             this.client.subscribe('/user/soldier/messages', message => {
                 console.log('private ',JSON.parse(message.body));
@@ -105,7 +118,7 @@ class Soldier extends Component {
                     this.setState({showKillStatusMsg: true})
                 }
                 if (msg.type === 'MISS_MESSAGE') {
-                    this.setState({killStatusMsg: 'Вы промахнулись игрока '+ this.state.preyName} + 'бил кто-то другой')
+                    this.setState({killStatusMsg: 'Вы промахнулись, игрока '+ this.state.preyName} + 'убил кто-то другой')
                     this.setState({showKillStatusMsg: true})
                 }
             }, headers)
@@ -136,7 +149,34 @@ class Soldier extends Component {
             // body data type must match "Content-Type" header
 
         }).then(() => alert("Ya strelyau"))
+    }
+    addPoint = () => {
+    this.setState({trainingScore: this.state.trainingScore + 1})
+        if (this.state.trainingScore !== 0 && this.state.trainingScore % 5 === 0) {
+            let url = 'http://localhost:8080/soldier/'
+            url = url.concat(this.state.soldierId)
+            url = url.concat('/score')
+            if (this.state.trainingScore === 50) {
+                const bonus = (this.state.trainingScore / 13) + this.state.trainingScore * 1.2
+                this.setState({bonusScore: bonus + this.state.trainingScore})
+            } else {
+                this.setState({bonusScore:  this.state.trainingScore})
+            }
+            // this.setState({trainingScore: this.state.trainingScore + this.state.bonusScore})
+            const soldierScoreMsg = {
+                score: this.state.bonusScore
+            }
+            fetch(url,{
+                headers: {
+                     "Content-Type": "application/json",
 
+                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                },
+                method: 'POST',
+                mode: 'cors',
+                body: JSON.stringify(soldierScoreMsg)
+            })
+        }
     }
 
     render(){return(
@@ -149,6 +189,8 @@ class Soldier extends Component {
             {/*<label class="participant">Никнейм: </label>*/}
             {/*<input type="text" id="nick" name="nick" placeholder="Введите ваш никнейм" onChange={this.handleChange}/>*/}
             </div>
+            { this.state.showClicker === false &&
+            <div>
             <div class="participant" id="preys">
                 <p>
                     Имя жертвы: {this.state.preyName}
@@ -162,6 +204,15 @@ class Soldier extends Component {
             <div>
                 <h4>{this.state.killStatusMsg}</h4>
             </div>
+            }
+            </div>}
+            { this.state.showClicker === true &&
+                <div>
+                    <Clicker
+                    points={this.state.trainingScore}
+                    onClick={this.addPoint}
+                    name={'Сделано выстрелов : '}/>
+                </div>
             }
         </div>
 

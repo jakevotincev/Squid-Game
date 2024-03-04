@@ -15,7 +15,8 @@ class Participant extends Component{
         playerId: null,
         showAnketa: true,
         showQuiz: false,
-        quiz: null
+        quiz: null,
+        showFoodQuiz: false
     }
     handleChange = (event) => {
         // 👇 Get input value from "event"
@@ -198,6 +199,117 @@ class Participant extends Component{
                     }))
                     console.log('quizzz',this.state.quiz)
                 }
+                if (sad.type === 'FOOD_PREPARED') {
+                    this.setState({showFoodQuiz: true})
+                    let answersCounter = 0
+                    let url = 'http://localhost:8080/account/'
+                    url = url.concat(this.state.playerId)
+                    url = url.concat('/questions')
+                    console.log(url, 'url')
+                    fetch(url,{
+                        headers: {
+                            "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                        },
+                        method: 'GET',
+                        mode: 'cors'
+                    }).then(res => {res.json().then(data =>{
+                        console.log(JSON.stringify(data))
+                        const questionsData = data
+                        let quizArea = document.getElementById('foodquiz');
+                        let counter = questionsData.length
+                        let isAnswerCorrect;
+                        for (let i=0; i<counter;i++) {
+                            let curr_id = questionsData[i].id;
+                            let curr_question = questionsData[i].question;
+                            let curr_answers = questionsData[i].answers;
+                            let curr_otvet;
+                            let str = "Вопрос №" + i + ".  " + curr_question;
+                            let emptyStr = document.createElement('br');
+                            let text = document.createTextNode(str);
+                            let radioBtnDiv = document.createElement('div');
+                            let checkAnswerBtn = document.createElement('button');
+                            checkAnswerBtn.type = "submit";
+                            checkAnswerBtn.innerHTML = "Отправить ответ";
+                            console.log("curr_answers", curr_answers);
+                            for (let i = 0; i < curr_answers.length; i++) {
+                                let label = document.createElement("label");
+                                label.innerText = curr_answers[i];
+                                let input = document.createElement("input");
+                                input.type = "radio";
+                                input.name = "colour";
+                                input.value = curr_answers[i];
+                                const radioButtons = document.querySelectorAll('input[name="colour"]');
+                                input.addEventListener('click', (event) => {
+                                    if (event.currentTarget.checked) {
+                                        curr_otvet = curr_answers[i];
+                                    }
+                                });
+
+                                label.appendChild(input)
+                                radioBtnDiv.appendChild(label)
+                                radioBtnDiv.appendChild(emptyStr)
+                                radioBtnDiv.appendChild(emptyStr)
+                                radioBtnDiv.appendChild(checkAnswerBtn)
+
+                            }
+                            quizArea.appendChild(text)
+                            quizArea.appendChild(emptyStr)
+                            quizArea.appendChild(radioBtnDiv)
+                            quizArea.appendChild(emptyStr)
+                            checkAnswerBtn.addEventListener('click', (ev) => {
+                                // answersCounter +=1
+                                console.log('curr_otvet', curr_otvet);
+                                let destination = "http://localhost:8080/checkAnswer/";
+                                destination = destination.concat(this.state.playerId);
+                                destination = destination.concat('/');
+                                let quest_id = curr_id.toString();
+                                quest_id = quest_id.concat('/');
+                                destination = destination.concat(quest_id);
+                                destination = destination.concat(curr_otvet);
+                                console.log("dist", destination);
+                                fetch(destination, {
+                                    headers: {
+                                        // "Content-Type": "application/json"
+                                        'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                    },
+                                    method: 'GET',
+                                    mode: 'cors'
+                                }).then(
+                                    res => res.text().then(resData => {
+                                        answersCounter = answersCounter + 1
+                                        isAnswerCorrect = resData;
+                                        console.log(isAnswerCorrect);
+                                        if (isAnswerCorrect === 'true') {
+                                            console.log('answer true')
+
+                                        } else if (isAnswerCorrect === 'false') {
+                                            console.log('answer false')
+
+                                        }
+                                        console.log(answersCounter, 'counter')
+                                        if (answersCounter === 3) {
+                                            console.log('tuta')
+                                            this.setState({showFoodQuiz: false})
+                                            let urlReady = 'http://localhost:8080/account/'
+                                            urlReady = urlReady.concat(this.state.playerId)
+                                            urlReady = urlReady.concat('/readyToGame')
+                                            fetch(urlReady, {
+                                                headers: {
+                                                    // "Content-Type": "application/json"
+                                                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                                },
+                                                method: 'GET',
+                                                mode: 'cors'
+                                            })
+                                        }
+                                    })
+                                )
+                            })
+                        }
+                    })
+                    })
+                }
                 if (sad.type === 'QUALIFIED_TO_NEXT_ROUND_MESSAGE'){
                     this.setState({quiz: 'Вы прошли в следующий раунд'})
                     this.setState({showQuiz: false})
@@ -268,6 +380,8 @@ class Participant extends Component{
                 <div>
                     {this.state.quiz}
                 </div>}
+            {this.state.showFoodQuiz === true &&
+                <div id="foodquiz"></div>}
         </div>
     );
     }

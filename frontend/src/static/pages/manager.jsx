@@ -62,6 +62,19 @@ class Manager extends Component{
                 console.log(JSON.parse(message.body));
                 this.setState({glavniyAnswer: message.body});
                 let sad = JSON.parse(message.body);
+                if (sad.type === "ALL_FORMS_COLLECTED"){
+                    this.setState({allAnketasIsCollected: true});
+                }
+                if (sad.type === 'FORMS_SELECTION_COMPLETED') {
+                    fetch('http://localhost:8080/startLunch',{
+                        headers: {
+                            // "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                        },
+                        method: 'GET',
+                        mode: 'cors'
+                    })
+                }
                 this.setState({answerStatus: sad.confirm});
                 // console.log(this.state.answerStatus);
                 if (sad.confirm) {
@@ -70,9 +83,7 @@ class Manager extends Component{
                     this.state.slovo = 'Переделывай, причина отказа : ';
                     this.state.slovo=  this.state.slovo.concat(sad.declineReason);
                 }
-                if (sad.type === "ALL_FORMS_COLLECTED"){
-                    this.setState({allAnketasIsCollected: true});
-                }
+
             }, headers);
             this.client.subscribe('/user/worker/messages', message => {
                 console.log(JSON.parse(message.body));
@@ -101,12 +112,39 @@ class Manager extends Component{
         fetch('http://localhost:8080/sendCriteriaAndFormsToWorkers',{
             headers: {
                 // "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
             },
             method: 'GET',
             mode: 'cors'
         }).then(() => alert("Все пиздато"))
 
+    }
+    startRoundPreparation = () => {
+        fetch('http://localhost:8080/startPrepareRound',{
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+            },
+            method: 'GET',
+            mode: 'cors'
+        })
+}
+    startTraining = () => {
+        fetch('http://localhost:8080/startTraining',{
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+            },
+            method: 'GET',
+            mode: 'cors'
+        })
+    }
+    stopTraining = () => {
+        fetch('http://localhost:8080/stopTraining',{
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+            },
+            method: 'GET',
+            mode: 'cors'
+        })
     }
 
 
@@ -144,7 +182,19 @@ class Manager extends Component{
             <div>
                 <button type="submit" onClick={this.sendAnketasHandler}>Отправить анкеты рабочим</button>
             </div>
+
         }
+        <div>
+            <button type="submit" onClick={this.startRoundPreparation}>Отдать приказ о старте подготовки раунда</button>
+        </div>
+        <br/>
+        <div>
+            <button type="submit" onClick={this.startTraining}>Отдать приказ о начале тренировок солдат</button>
+        </div>
+        <br/>
+        <div>
+            <button type="submit" onClick={this.stopTraining}>Отдать приказ о прекращении тренировок солдат</button>
+        </div>
       </div>
 
     );
