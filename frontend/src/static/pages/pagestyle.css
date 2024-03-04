@@ -75,3 +75,17 @@ input[type="button"] {
     border-radius: 8px;
     cursor: pointer;
 }
+.ClickerBtn {
+    background-color: lightcoral;
+    border: none;
+    color: white;
+    height: 150px;
+    padding: 15px 32px;
+    text-align: center;
+    display: inline-block;
+    font-size: 26px;
+    margin: 4px 2px;
+    -webkit-border-radius: 25px; /* for Safari */
+    -moz-border-radius: 25px;
+    border-radius: 45px;
+}
