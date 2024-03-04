@@ -36,6 +36,7 @@ public class FunctionalTest {
             }
     }
 
+    //todo: add tests for interrupts
     @Test
     public void testBusinessCycle() {
         //login all
@@ -107,13 +108,53 @@ public class FunctionalTest {
         });
 
         //check if accepted players qualified and not accepted kicked
-        playerPages.forEach((form, page) -> {
+        Iterator<Map.Entry<String, PlayerPage>> iterator = playerPages.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, PlayerPage> entry = iterator.next();
+            String form = entry.getKey();
+            PlayerPage page = entry.getValue();
+
             if (acceptedForms.contains(form)) {
                 Assertions.assertTrue(page.isPassedSelectionMessageVisible());
             } else {
                 Assertions.assertTrue(page.isFailedSelectionMessageVisible());
+
+                page.close();
+                iterator.remove();
             }
+        }
+
+        //start lunch
+        Assertions.assertTrue(managerPage.isStartLunchButtonVisible());
+        managerPage.startLunch();
+
+        //answer lunch questions
+        //todo: добавить не ол коррект квесчонс
+        workerPages.forEach((page, username) -> {
+            page.answerFoodQuestions(true);
         });
+
+        //answer player lunch questions
+        //todo: добавить не ол коррект квесчонс
+        playerPages.forEach((form, page) -> {
+            page.answerFoodQuestions(true);
+        });
+
+        //start prepare round
+        Assertions.assertTrue(managerPage.isStartPrepareRoundButtonVisible());
+        managerPage.startPrepareRound();
+
+        //answer prepare round questions
+        //todo: добавить не ол коррект квесчонс
+        workerPages.forEach((page, username) -> {
+            page.answerPrepareRoundQuestions(true);
+        });
+
+        // start training
+        Assertions.assertTrue(managerPage.isStartTrainingButtonVisible());
+        managerPage.startTraining();
+
+
     }
 
     private void extractPages() {

@@ -3,6 +3,10 @@ package pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import pages.utils.QuizUtils;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author evotintsev
@@ -14,6 +18,17 @@ public class PlayerPage extends Page {
     private WebElement formInput;
     @FindBy(xpath = "//button[text()='Отправить']")
     private WebElement sendFormButton;
+    private List<String> allCorrectAnswers= List.of(
+            "Борщ",
+            "Оливье",
+            "Блины"
+    );
+
+    private List<String> oneIncorrectAnswer = List.of(
+            "Борщ",
+            "Оливье",
+            "Медовик"
+    );
 
     public PlayerPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
@@ -46,5 +61,10 @@ public class PlayerPage extends Page {
 
     public void setForm(String form) {
         this.form = form;
+    }
+
+    public void answerFoodQuestions(boolean allCorrect) {
+        driver.switchTo().window(getHandle());
+        QuizUtils.answerQuestions(driver, allCorrect ? allCorrectAnswers : oneIncorrectAnswer, false);
     }
 }
