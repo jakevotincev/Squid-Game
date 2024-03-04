@@ -246,7 +246,7 @@ class Participant extends Component{
     render(){return(
         <div id="participant_page" align="center">
 
-            <h1>This is participant page</h1>
+            <h1 id="page_title">This is player page</h1>
             {/*<button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>*/}
             {this.state.showAnketa === true &&
                 <div class="participant" id="anketa" align="center">

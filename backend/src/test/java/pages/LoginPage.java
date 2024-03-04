@@ -31,7 +31,6 @@ public class LoginPage extends Page {
         //todo: нужно ли это?
         this.driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
         this.driver.manage().window().maximize();
-        PageFactory.initElements(this.driver, this);
 
 //        String currentHandle = this.driver.getWindowHandle();
 //        Set<String> handles = this.driver.getWindowHandles();

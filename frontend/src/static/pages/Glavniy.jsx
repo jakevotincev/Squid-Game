@@ -119,10 +119,8 @@ class Glavniy extends Component {
       },
       method: 'GET',
       mode: 'cors'
-    }).then(res => {res.json().then(data =>{
-      console.log(JSON.stringify(data))
     })
-    })
+
     this.setState({showMapRolesBtn: false})
   }
   clickHandler = () => {
@@ -166,7 +164,7 @@ class Glavniy extends Component {
 
             {this.state.criteriaMsgIsReceived === true &&
                 <div className="ManagerMessagee" id="managerMessagee" align="center">
-                  <p>
+                  <p id="manager_message">
                     Сообщение от менеджера : {this.state.criteriaMsg ? this.state.criteriaMsg : 'no data'}
                   </p><p>
                   Вы согласны с такими условиями старта игры?
