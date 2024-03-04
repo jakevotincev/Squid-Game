@@ -27,6 +27,8 @@ public class ManagerPage extends Page {
     private WebElement startPrepareRoundButton;
     @FindBy(xpath = "//button[text()='Отдать приказ о начале тренировок солдат']")
     private WebElement startTrainingButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о прекращении тренировок солдат']")
+    private WebElement stopTrainingButton;
 
     public ManagerPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
@@ -98,5 +100,15 @@ public class ManagerPage extends Page {
     public void startTraining() {
         driver.switchTo().window(getHandle());
         startTrainingButton.click();
+    }
+
+    public void stopTraining() {
+        driver.switchTo().window(getHandle());
+        stopTrainingButton.click();
+    }
+
+    public boolean isStopTrainingButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о прекращении тренировок солдат']");
     }
 }

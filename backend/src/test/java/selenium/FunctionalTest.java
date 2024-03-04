@@ -154,7 +154,23 @@ public class FunctionalTest {
         Assertions.assertTrue(managerPage.isStartTrainingButtonVisible());
         managerPage.startTraining();
 
+        // train
+        final int[] score = {5};
 
+        soldierPages.forEach((page, username) -> {
+            Assertions.assertTrue(page.isClickerButtonVisible());
+            try {
+                page.click(score[0]);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            page.checkClickerResult(score[0]);
+            score[0] = score[0] + 5;
+        });
+
+        // stop training
+        Assertions.assertTrue(managerPage.isStopTrainingButtonVisible());
+        managerPage.stopTraining();
     }
 
     private void extractPages() {

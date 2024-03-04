@@ -121,7 +121,9 @@ class Glavniy extends Component {
       },
       method: 'GET',
       mode: 'cors'
-    }).then(() => alert("Game has started)"))
+    }).then(
+        //todo: добавить что нибудь
+    )
   }
   mapRole = () => {
     fetch('http://localhost:8080/startRolesDistribution',{
