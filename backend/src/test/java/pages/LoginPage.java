@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import utils.CredentialsReader;
 
 import java.util.Map;
@@ -27,7 +26,7 @@ public class LoginPage extends Page {
 
 
     public LoginPage(WebDriver driver) {
-        super(driver);
+        super(driver, "", "");
         //todo: нужно ли это?
         this.driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
         this.driver.manage().window().maximize();
@@ -41,7 +40,7 @@ public class LoginPage extends Page {
     //todo: should login first
     public GlavniyPage loginAsGlavniy(String glavniyLogin) {
         this.driver.get(URL);
-        GlavniyPage glavniyPage = new GlavniyPage(driver, driver.getWindowHandle());
+        GlavniyPage glavniyPage = new GlavniyPage(driver, driver.getWindowHandle(), glavniyLogin);
         login(glavniyLogin);
         return glavniyPage;
     }
@@ -49,7 +48,7 @@ public class LoginPage extends Page {
     public ManagerPage loginAsManager(String managerLogin) {
         driver.switchTo().newWindow(WindowType.TAB);
         this.driver.get(URL);
-        ManagerPage managerPage = new ManagerPage(driver, driver.getWindowHandle());
+        ManagerPage managerPage = new ManagerPage(driver, driver.getWindowHandle(), managerLogin);
         login(managerLogin);
         return managerPage;
     }

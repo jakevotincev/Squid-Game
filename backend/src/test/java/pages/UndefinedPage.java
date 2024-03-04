@@ -10,29 +10,25 @@ import ru.jakev.backend.entities.Role;
  * @since 04.03.2024
  */
 public class UndefinedPage extends Page {
-    private final String handle;
-    private final String username;
     @FindBy(xpath = "//h1[@id='page_title']")
     private WebElement pageTitle;
 
     public UndefinedPage(WebDriver driver, String handle, String username) {
-        super(driver);
-        this.handle = handle;
-        this.username = username;
+        super(driver, handle, username);
     }
 
     public Page getRolePage() {
         Role role = getRole();
         return switch (role) {
-            case PLAYER -> new PlayerPage(driver, handle, username);
-            case WORKER -> new WorkerPage(driver, handle, username);
-            case SOLDIER -> new SoldierPage(driver, handle, username);
+            case PLAYER -> new PlayerPage(driver, getHandle(), getUsername());
+            case WORKER -> new WorkerPage(driver, getHandle(), getUsername());
+            case SOLDIER -> new SoldierPage(driver, getHandle(), getUsername());
             default -> this;
         };
     }
 
     public Role getRole() {
-        driver.switchTo().window(handle);
+        driver.switchTo().window(getHandle());
         String titleText = pageTitle.getText();
         if (titleText.contains("player")) {
             return Role.PLAYER;

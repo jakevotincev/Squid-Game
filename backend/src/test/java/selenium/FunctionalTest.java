@@ -7,11 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.*;
-import ru.jakev.backend.entities.Role;
 import utils.CredentialsReader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author evotintsev
@@ -22,7 +21,9 @@ public class FunctionalTest {
     private GlavniyPage glavniyPage;
     private ManagerPage managerPage;
     private List<UndefinedPage> undefinedPages = new ArrayList<>();
-    private List<PlayerPage> playerPages = new ArrayList<>();
+    private Map<String, PlayerPage> playerPages = new HashMap<>();
+    private Map<WorkerPage, String> workerPages = new HashMap<>();
+    private Map<SoldierPage, String> soldierPages = new HashMap<>();
     public WebDriver webDriver;
     //todo: add automatic system start
 
@@ -70,15 +71,70 @@ public class FunctionalTest {
         String bossMessage = managerPage.getBossMessage();
         Assertions.assertTrue(bossMessage.contains("Критерии утверждены"));
 
-        //extract player pages
-        undefinedPages.stream().filter(page -> page.getRole().equals(Role.PLAYER)).forEach(page -> {
-            playerPages.add((PlayerPage) page.getRolePage());
-        });
+        //extract pages
+        extractPages();
 
         //send forms
-        playerPages.forEach(page -> {
+        playerPages.forEach((form, page) -> {
             Assertions.assertTrue(page.isFormInputVisible());
-            page.sendForm("form");
+            page.setForm(form);
+            page.sendForm();
         });
+
+        //send criteria to workers
+        Assertions.assertTrue(managerPage.isSendCriteriaToWorkersButtonVisible());
+        managerPage.sendCriteriaToWorkers();
+
+        //check criteria, forms go to workers and acceptForms
+        playerPages.forEach((form, page) -> {
+            AtomicBoolean isFormSendToWorkers = new AtomicBoolean(false);
+            workerPages.forEach((workerPage, username) -> {
+                List<String> forms = workerPage.getForms();
+                forms.forEach(f -> {
+                    if (f.contains(form)) {
+                        isFormSendToWorkers.set(true);
+                    }
+                });
+            });
+
+            Assertions.assertTrue(isFormSendToWorkers.get());
+        });
+
+        List<String> acceptedForms = new ArrayList<>();
+        workerPages.forEach((page, username) -> {
+            String acceptForm = page.acceptForm();
+            acceptedForms.add(acceptForm);
+        });
+
+        //check if accepted players qualified and not accepted kicked
+        playerPages.forEach((form, page) -> {
+            if (acceptedForms.contains(form)) {
+                Assertions.assertTrue(page.isPassedSelectionMessageVisible());
+            } else {
+                Assertions.assertTrue(page.isFailedSelectionMessageVisible());
+            }
+        });
+    }
+
+    private void extractPages() {
+        Iterator<UndefinedPage> iterator = undefinedPages.iterator();
+        while (iterator.hasNext()) {
+            UndefinedPage page = iterator.next();
+
+            switch (page.getRole()) {
+                case PLAYER -> {
+                    String playerForm = "form".concat("-").concat(page.getUsername());
+                    playerPages.put(playerForm, (PlayerPage) page.getRolePage());
+                }
+                case WORKER -> {
+                    workerPages.put((WorkerPage) page.getRolePage(), page.getUsername());
+                }
+                case SOLDIER -> {
+                    soldierPages.put((SoldierPage) page.getRolePage(), page.getUsername());
+                }
+            }
+            iterator.remove();
+
+        }
     }
 }

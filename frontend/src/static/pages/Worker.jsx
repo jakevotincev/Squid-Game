@@ -82,7 +82,9 @@ class Worker extends Component{
             body: JSON.stringify(datta)
             // body data type must match "Content-Type" header
 
-        }).then(() => alert("работу кончил"))
+        }).then(
+            //todo: добавить что нибудь
+        )
     }
 
     // getFromInputz(inputName){
@@ -112,6 +114,7 @@ class Worker extends Component{
                     this.setState({anketa_Id: formsMsg.forms[i].playerId});
                     this.setState({anketa_content: formsMsg.forms[i].content});
                     let li = document.createElement("li");
+                    li.id = 'anketa';
                     let yesCheckBox = document.createElement('input');
                     let yesLabel = document.createElement('label');
                     let emptyStr = document.createElement('br');
