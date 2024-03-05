@@ -49,7 +49,8 @@ public class PhaseListener {
 
     public void notifyResultsReady() {
         NotificationMessage notificationMessage = new NotificationMessage(NotificationMessageType.RESULTS_READY);
-        webSocketMessageSender.sendMessage(List.of("/manager/messages", "/soldier/messages", "/worker/messages"),
+        webSocketMessageSender.sendMessage(List.of("/manager/messages", "/soldier/messages", "/worker/messages",
+                        "/glavniy/messages"),
                 notificationMessage);
 
         globalContext.getParticipateInGamePlayers().keySet().forEach(player -> {

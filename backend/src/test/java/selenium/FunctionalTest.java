@@ -258,6 +258,24 @@ public class FunctionalTest {
         //stop cleaning
         Assertions.assertTrue(managerPage.isStopCleaningButtonVisible());
         managerPage.stopCleaning();
+
+        //show results
+        Assertions.assertTrue(glavniyPage.isShowResultsButtonVisible());
+        glavniyPage.showResults();
+
+        //check results tables
+        Assertions.assertTrue(glavniyPage.isResultsTableVisible());
+        Assertions.assertTrue(managerPage.isResultsTableVisible());
+        playerPages.forEach((form, page) -> {
+            Assertions.assertTrue(page.isResultsTableVisible());
+        });
+        workerPages.forEach((page, username) -> {
+            Assertions.assertTrue(page.isResultsTableVisible());
+        });
+        soldierPages.forEach((page, username) -> {
+            Assertions.assertTrue(page.isResultsTableVisible());
+        });
+        //todo: add check score points?
     }
 
     @AfterEach

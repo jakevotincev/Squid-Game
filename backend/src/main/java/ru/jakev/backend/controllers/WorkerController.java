@@ -12,6 +12,7 @@ import ru.jakev.backend.messages.SelectionMessage;
 import ru.jakev.backend.services.AccountService;
 import ru.jakev.backend.services.ScoreService;
 
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public class WorkerController {
     private ResponseEntity<?> saveClickerScore(@RequestBody ClickerScoreDTO score, @PathVariable("id") int accountId) {
         //todo: нет защиты от сохранения результата после окончания клининга
         //todo: check worker account
-        if (phaseManager.isActionNotPermitted(GamePhase.CLEANING)) {
+        if (phaseManager.isActionNotPermitted(EnumSet.of(GamePhase.CLEANING, GamePhase.SHOW_RESULTS_WAIT))) {
             return ResponseEntity.badRequest().body("Clicker results saving is not permitted now. Current game phase is "
                     + phaseManager.getCurrentPhase());
         }

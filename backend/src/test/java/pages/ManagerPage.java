@@ -33,6 +33,8 @@ public class ManagerPage extends Page {
     private WebElement startCleaningButton;
     @FindBy(xpath = "//button[text()='Отдать приказ о прекращении уборки рабочих']")
     private WebElement stopCleaningButton;
+    @FindBy(xpath = "//table")
+    private WebElement resultsTable;
 
     public ManagerPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
@@ -134,5 +136,10 @@ public class ManagerPage extends Page {
     public boolean isStopCleaningButtonVisible() {
         driver.switchTo().window(getHandle());
         return checkElementVisible("//button[text()='Отдать приказ о прекращении уборки рабочих']");
+    }
+
+    public boolean isResultsTableVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//table");
     }
 }

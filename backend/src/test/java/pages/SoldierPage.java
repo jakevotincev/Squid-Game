@@ -21,6 +21,8 @@ public class SoldierPage extends Page {
     private WebElement shootScore;
     @FindBy(xpath = "//h4")
     private WebElement shootResultMessage;
+    @FindBy(xpath = "//table")
+    private WebElement resultsTable;
 
     public SoldierPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
@@ -85,5 +87,10 @@ public class SoldierPage extends Page {
     public boolean isMissed() {
         driver.switchTo().window(getHandle());
         return shootResultMessage.getText().contains("Вы промахнулись");
+    }
+
+    public boolean isResultsTableVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//table");
     }
 }

@@ -103,7 +103,6 @@ class Soldier extends Component {
                 if (sad.type === 'TRAINING_COMPLETED') {
                     this.setState({showClicker: false})
                     if (this.state.trainingScore !== 0) {
-                        console.log(this.state.trainingScore)
                         let url = 'http://localhost:8080/soldier/'
                         url = url.concat(this.state.soldierId)
                         url = url.concat('/score')

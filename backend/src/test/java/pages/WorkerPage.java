@@ -25,6 +25,8 @@ public class WorkerPage extends Page {
     private WebElement clickerButton;
     @FindBy(xpath = "//h4[contains(text(), 'Убрано органов')]")
     private WebElement clickerResult;
+    @FindBy(xpath = "//table")
+    private WebElement resultsTable;
     private List<String> allCorrectFoodAnswers = List.of(
             "Яйца",
             "Колбаса",
@@ -109,5 +111,10 @@ public class WorkerPage extends Page {
     public boolean checkClickerResult(int score) {
         driver.switchTo().window(getHandle());
         return clickerResult.getText().contains(String.valueOf(score));
+    }
+
+    public boolean isResultsTableVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//table");
     }
 }

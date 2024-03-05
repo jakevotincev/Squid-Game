@@ -23,6 +23,8 @@ public class PlayerPage extends Page {
     private WebElement qualifiedMessage;
     @FindBy(xpath = "//div[text()='ВАС убили, ВЫ проиграли']")
     private WebElement killedMessage;
+    @FindBy(xpath = "//table")
+    private WebElement resultsTable;
 
     private List<String> allCorrectFoodAnswers = List.of(
             "Борщ",
@@ -104,5 +106,10 @@ public class PlayerPage extends Page {
     public boolean isKilledMessageVisible() {
         driver.switchTo().window(getHandle());
         return checkElementVisible("//div[text()='ВАС убили, ВЫ проиграли']");
+    }
+
+    public boolean isResultsTableVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//table");
     }
 }

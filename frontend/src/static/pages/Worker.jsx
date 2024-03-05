@@ -522,7 +522,8 @@ class Worker extends Component{
                     this.setState({showClicker: true})
                 }
                 if (lunchMsg.type === 'CLEANING_COMPLETED') {
-                    if (this.state.cleaningScore !== 0 && this.state.cleaningScore % 5 === 0) {
+                    this.setState({showClicker: false})
+                    if (this.state.cleaningScore !== 0) {
                         let url = 'http://localhost:8080/worker/'
                         url = url.concat(this.state.workerId)
                         url = url.concat('/score')
@@ -540,7 +541,6 @@ class Worker extends Component{
                             body: JSON.stringify(workerScoreMsg)
                         })
                     }
-                    this.setState({showClicker: false})
                 }
 
             }, headers)
@@ -552,24 +552,6 @@ class Worker extends Component{
     }
     addPoint = () => {
         this.setState({cleaningScore: this.state.cleaningScore + 1})
-        if (this.state.cleaningScore !== 0 && this.state.cleaningScore % 5 === 0) {
-            let url = 'http://localhost:8080/worker/'
-            url = url.concat(this.state.workerId)
-            url = url.concat('/score')
-            const workerScoreMsg = {
-                score: this.state.cleaningScore
-            }
-            fetch(url,{
-                headers: {
-                    "Content-Type": "application/json",
-
-                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
-                },
-                method: 'POST',
-                mode: 'cors',
-                body: JSON.stringify(workerScoreMsg)
-            })
-        }
     }
 
     render(){return(
