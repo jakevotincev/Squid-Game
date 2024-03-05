@@ -353,9 +353,9 @@ class Participant extends Component{
                                     soldiersResultArr.push(account)
                                 }
                             })
-                            workersResultArr.sort((a, b) => a.score > b.score ? 1 : -1)
-                            soldiersResultArr.sort((a, b) => a.score > b.score ? 1 : -1)
-                            playersResultArr.sort(a => a?.participatesInGame ? 1 : -1).sort((a, b) => a.score > b.score ? 1 : -1)
+                            workersResultArr.sort((a, b) => a.score > b.score ? -1 : 1)
+                            soldiersResultArr.sort((a, b) => a.score > b.score ? -1 : 1)
+                            playersResultArr.sort(a => a?.participatesInGame ? -1 : 1).sort((a, b) => a.score > b.score ? -1 : 1)
                             console.log(workersResultArr, 'worker')
                             console.log(soldiersResultArr, 'soldier')
                             console.log(playersResultArr, 'player')
@@ -435,7 +435,9 @@ class Participant extends Component{
                                     row.insertCell(0).innerText = playersResultArr[i].id
                                     row.insertCell(1).innerText = playersResultArr[i].username
                                     row.insertCell(2).innerText = playersResultArr[i].role
-                                    row.insertCell(3).innerText = playersResultArr[i]?.participatesInGame
+                                    if (playersResultArr[i]?.participatesInGame) {
+                                        row.insertCell(3).innerText = 'Выжил'
+                                    } else { row.insertCell(3).innerText = 'Мертв' }
                                     row.insertCell(4).innerText = playersResultArr[i].score
                                 }
                                 return tablePlayer
