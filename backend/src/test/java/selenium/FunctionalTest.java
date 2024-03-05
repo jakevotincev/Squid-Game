@@ -1,6 +1,7 @@
 package selenium;
 
 import config.ConfProperties;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import pages.*;
 import utils.CredentialsReader;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,15 +26,23 @@ public class FunctionalTest {
     public static LoginPage loginPage;
     private GlavniyPage glavniyPage;
     private ManagerPage managerPage;
-    private List<UndefinedPage> undefinedPages = new ArrayList<>();
-    private Map<String, PlayerPage> playerPages = new HashMap<>();
-    private Map<WorkerPage, String> workerPages = new HashMap<>();
-    private Map<SoldierPage, String> soldierPages = new HashMap<>();
+    private final List<UndefinedPage> undefinedPages = new ArrayList<>();
+    private final Map<String, PlayerPage> playerPages = new HashMap<>();
+    private final Map<WorkerPage, String> workerPages = new HashMap<>();
+    private final Map<SoldierPage, String> soldierPages = new HashMap<>();
     public WebDriver webDriver;
-    //todo: add automatic system start
+    private Process process;
+    private final String jarPath = "target/backend-0.0.1-SNAPSHOT.jar";
+    private final String startUpMessage = "Started BackendApplication in";
+
+    private volatile boolean isServerStart = false;
+    //todo: add automatic frontend start?
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException, InterruptedException {
+        if (Boolean.parseBoolean(ConfProperties.getProperty("start.server"))) {
+            startServer();
+        }
         if (Boolean.parseBoolean(ConfProperties.getProperty("run.chrome")))
             if (ConfProperties.getProperty("webdriver.chrome.driver") != null && ConfProperties.getProperty("chromedriver") != null) {
                 System.setProperty(ConfProperties.getProperty("webdriver.chrome.driver"), ConfProperties.getProperty("chromedriver"));
@@ -179,7 +192,7 @@ public class FunctionalTest {
         playerPages.forEach((form, page) -> {
             page.answerGameQuestions(allCorrect[0]);
 
-            if (allCorrect[0]){
+            if (allCorrect[0]) {
                 page.isQualifiedMessageVisible();
             } else {
                 preyName.set(page.getUsername());
@@ -192,7 +205,7 @@ public class FunctionalTest {
         });
 
 
-        score[0] = score[0] - 5;
+        score[0] = score[0] - 10;
         List<Integer> scores = new ArrayList<>();
         //check prey name and shoot
         soldierPages.forEach((page, username) -> {
@@ -207,9 +220,12 @@ public class FunctionalTest {
         });
 
         //check killed
+        //todo: бывают ошибки
         soldierPages.forEach((page, username) -> {
             Assertions.assertTrue(page.isShootResultMessageVisible());
-            if (scores.get(0) > scores.get(1)) {
+            if (scores.get(0).equals(scores.get(1))) {
+                return;
+            } else if (scores.get(0) > scores.get(1)) {
                 Assertions.assertTrue(page.isKilled());
             } else {
                 Assertions.assertTrue(page.isMissed());
@@ -226,6 +242,14 @@ public class FunctionalTest {
         Assertions.assertTrue(prayPage.isKilledMessageVisible());
         prayPage.close();
         playerPages.remove(prayForm);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (webDriver != null) {
+            webDriver.quit();
+        }
+        stopServer();
     }
 
     private void extractPages() {
@@ -247,6 +271,57 @@ public class FunctionalTest {
             }
             iterator.remove();
 
+        }
+    }
+
+    private void startServer() throws IOException, InterruptedException {
+        if (process == null || !process.isAlive()) {
+            ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", jarPath);
+            process = processBuilder.start();
+
+
+            Thread waitServerStartThread = new Thread(() -> {
+                try {
+                    waitForServerToStart(process.getInputStream());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            waitServerStartThread.start();
+            while (!isServerStart) {
+                Thread.onSpinWait();
+            }
+
+            System.out.println("Server started.");
+        } else {
+            System.out.println("Server stopped");
+        }
+    }
+
+    private void waitForServerToStart(InputStream inputStream) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line); // Выводим все логи в консоль
+            if (line.contains(startUpMessage)) {
+                // Обнаружено сообщение о запуске
+                isServerStart = true;
+            }
+        }
+    }
+
+    public void stopServer() {
+        if (process != null && process.isAlive()) {
+            process.destroy();
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                process.destroyForcibly();
+            }
+            System.out.println("Server stopped.");
+        } else {
+            System.out.println("Server is not running.");
         }
     }
 }

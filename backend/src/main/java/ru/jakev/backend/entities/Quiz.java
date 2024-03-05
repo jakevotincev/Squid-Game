@@ -19,6 +19,7 @@ public class Quiz {
     @JoinColumn(name= "game_id", referencedColumnName = "id", nullable = false)
     private Game game;
     private Integer roundId;
+    @Column(columnDefinition = "text")
     private String question;
     @Column(columnDefinition = "text")
     @Convert(converter = JsonConverter.class)
