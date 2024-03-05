@@ -11,6 +11,7 @@ import utils.CredentialsReader;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author evotintsev
@@ -159,11 +160,7 @@ public class FunctionalTest {
 
         soldierPages.forEach((page, username) -> {
             Assertions.assertTrue(page.isClickerButtonVisible());
-            try {
-                page.click(score[0]);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            page.click(score[0]);
             page.checkClickerResult(score[0]);
             score[0] = score[0] + 5;
         });
@@ -175,6 +172,60 @@ public class FunctionalTest {
         //start game
         Assertions.assertTrue(glavniyPage.isStartGameButtonVisible());
         glavniyPage.startGame();
+
+        //play game
+        final boolean[] allCorrect = {true};
+        AtomicReference<String> preyName = new AtomicReference<>("");
+        playerPages.forEach((form, page) -> {
+            page.answerGameQuestions(allCorrect[0]);
+
+            if (allCorrect[0]){
+                page.isQualifiedMessageVisible();
+            } else {
+                preyName.set(page.getUsername());
+
+                //check kill message visible
+                Assertions.assertTrue(page.isWrongAnswerMessageVisible());
+            }
+
+            allCorrect[0] = !allCorrect[0];
+        });
+
+
+        score[0] = score[0] - 5;
+        List<Integer> scores = new ArrayList<>();
+        //check prey name and shoot
+        soldierPages.forEach((page, username) -> {
+            Assertions.assertTrue(page.isPreysVisible());
+            Assertions.assertTrue(page.isContainsPrayName(preyName.get()));
+
+            Assertions.assertTrue(page.isShootButtonVisible());
+            page.isShootScoreVisible();
+            scores.add(page.getShootScore() + score[0]);
+            score[0] = score[0] + 5;
+            page.shoot();
+        });
+
+        //check killed
+        soldierPages.forEach((page, username) -> {
+            Assertions.assertTrue(page.isShootResultMessageVisible());
+            if (scores.get(0) > scores.get(1)) {
+                Assertions.assertTrue(page.isKilled());
+            } else {
+                Assertions.assertTrue(page.isMissed());
+            }
+            //:D
+            int saveScore = -scores.get(0);
+            scores.remove(0);
+            scores.add(saveScore);
+        });
+
+        //check killed message
+        String prayForm = "form".concat("-").concat(preyName.get());
+        PlayerPage prayPage = playerPages.get(prayForm);
+        Assertions.assertTrue(prayPage.isKilledMessageVisible());
+        prayPage.close();
+        playerPages.remove(prayForm);
     }
 
     private void extractPages() {

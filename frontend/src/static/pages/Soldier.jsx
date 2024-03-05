@@ -141,7 +141,7 @@ class Soldier extends Component {
                     this.setState({showKillStatusMsg: true})
                 }
                 if (msg.type === 'MISS_MESSAGE') {
-                    this.setState({killStatusMsg: 'Вы промахнулись, игрока '+ this.state.preyName} + 'убил кто-то другой')
+                    this.setState({killStatusMsg: 'Вы промахнулись'})
                     this.setState({showKillStatusMsg: true})
                 }
             }, headers)
@@ -171,7 +171,9 @@ class Soldier extends Component {
             body: JSON.stringify(soldierMsg)
             // body data type must match "Content-Type" header
 
-        }).then(() => alert("Ya strelyau"))
+        }).then(
+            //todo: add something
+        )
     }
     addPoint = () => {
         this.setState({trainingScore: this.state.trainingScore + 1})
@@ -194,7 +196,7 @@ class Soldier extends Component {
                     Имя жертвы: {this.state.preyName}
                 </p>
                 <p>
-                    Ваш счет выстрела: {this.state.score}
+                    Ваш счет выстрела: <label id="shoot_score">{this.state.score}</label>
                 </p>
                 <button type="submit" onClick={this.clickHandler}>Сделать выстрел</button>
             </div>
