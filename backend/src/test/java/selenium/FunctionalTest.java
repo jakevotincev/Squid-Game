@@ -231,7 +231,7 @@ public class FunctionalTest {
                 Assertions.assertTrue(page.isMissed());
             }
             //:D
-            int saveScore = -scores.get(0);
+            int saveScore = scores.get(0);
             scores.remove(0);
             scores.add(saveScore);
         });
