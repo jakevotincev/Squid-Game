@@ -126,6 +126,126 @@ class Soldier extends Component {
                             body: JSON.stringify(soldierScoreMsg)
                         })
                     }
+                } if (sad.type === 'RESULTS_READY') {
+                    this.setState({showResults: true})
+                    fetch('http://localhost:8080/account/2/results', {
+                        headers: {
+                            "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                        },
+                        method: 'GET',
+                        mode: 'cors'
+                    }).then(res => {
+                        res.json().then(data => {
+                            let finulResultsArr = [{}]
+                            let playersResultArr = []
+                            let workersResultArr = []
+                            let soldiersResultArr = []
+                            finulResultsArr = data
+                            finulResultsArr.forEach(account => {
+                                if (account.role === 'PLAYER') {
+                                    playersResultArr.push(account)
+                                }
+                                if (account.role === 'WORKER') {
+                                    workersResultArr.push(account)
+                                }
+                                if (account.role === 'SOLDIER') {
+                                    soldiersResultArr.push(account)
+                                }
+                            })
+                            workersResultArr.sort((a, b) => a.score > b.score ? -1 : 1)
+                            soldiersResultArr.sort((a, b) => a.score > b.score ? -1 : 1)
+                            playersResultArr.sort(a => a?.participatesInGame ? -1 : 1).sort((a, b) => a.score > b.score ? -1 : 1)
+                            console.log(workersResultArr, 'worker')
+                            console.log(soldiersResultArr, 'soldier')
+                            console.log(playersResultArr, 'player')
+
+                            const resultsArea = document.getElementById('results')
+
+                            function createSoldierTable() {
+
+                                const tableSoldier = document.createElement('table')
+                                tableSoldier.style.padding = "15px"
+                                tableSoldier.style.border = "2px solid coral"
+                                tableSoldier.style.textAlign = "center"
+                                const headerRow = tableSoldier.insertRow(0)
+                                headerRow.innerText = 'Итоги солдат'
+                                const columnHeaderRow = tableSoldier.insertRow(1)
+                                columnHeaderRow.insertCell(0).innerText = 'id'
+                                columnHeaderRow.insertCell(1).innerText = 'имя'
+                                columnHeaderRow.insertCell(2).innerText = 'роль'
+                                // columnHeaderRow.insertCell(3).innerText = 'живой'
+                                columnHeaderRow.insertCell(3).innerText = 'счет'
+                                for (let i = 0; i < soldiersResultArr.length; i++) {
+                                    const row = tableSoldier.insertRow(i + 2)
+                                    row.insertCell(0).innerText = soldiersResultArr[i].id
+                                    row.insertCell(1).innerText = soldiersResultArr[i].username
+                                    row.insertCell(2).innerText = soldiersResultArr[i].role
+                                    // row.insertCell(3).innerText = soldiersResultArr[i]?.participatesInGame
+                                    row.insertCell(3).innerText = soldiersResultArr[i].score
+
+                                }
+
+                                return tableSoldier
+                            }
+
+                            function createWorkersTable() {
+                                const tableWorker = document.createElement('table')
+                                tableWorker.style.padding = "15px"
+                                tableWorker.style.border = "2px solid coral"
+                                tableWorker.style.textAlign = "center"
+                                // tableWorker.style={border: "5px", padding: '15px', textAlign: 'center' }
+                                const headerRow = tableWorker.insertRow(0)
+                                headerRow.innerText = 'Итоги рабочих'
+                                const columnHeaderRow = tableWorker.insertRow(1)
+                                columnHeaderRow.insertCell(0).innerText = 'id'
+                                columnHeaderRow.insertCell(1).innerText = 'имя'
+                                columnHeaderRow.insertCell(2).innerText = 'роль'
+                                // columnHeaderRow.insertCell(3).innerText = 'живой'
+                                columnHeaderRow.insertCell(3).innerText = 'счет'
+                                for (let i = 0; i < soldiersResultArr.length; i++) {
+                                    const row = tableWorker.insertRow(i + 2)
+                                    row.insertCell(0).innerText = workersResultArr[i].id
+                                    row.insertCell(1).innerText = workersResultArr[i].username
+                                    row.insertCell(2).innerText = workersResultArr[i].role
+                                    // row.insertCell(3).innerText = workersResultArr[i]?.participatesInGame
+                                    row.insertCell(3).innerText = workersResultArr[i].score
+
+                                }
+                                return tableWorker
+                            }
+
+                            function createPlayersTable() {
+                                const tablePlayer = document.createElement('table')
+                                tablePlayer.style.padding = "15px"
+                                tablePlayer.style.border = "2px solid coral"
+                                tablePlayer.style.textAlign = "center"
+
+                                // ={border: "5px", padding: '15px', textAlign: 'center' }
+                                const headerRow = tablePlayer.insertRow(0)
+                                headerRow.innerText = 'Итоги игроков'
+                                const columnHeaderRow = tablePlayer.insertRow(1)
+                                columnHeaderRow.insertCell(0).innerText = 'id'
+                                columnHeaderRow.insertCell(1).innerText = 'имя'
+                                columnHeaderRow.insertCell(2).innerText = 'роль'
+                                columnHeaderRow.insertCell(3).innerText = 'живой'
+                                columnHeaderRow.insertCell(4).innerText = 'счет'
+                                for (let i = 0; i < soldiersResultArr.length; i++) {
+                                    const row = tablePlayer.insertRow(i + 2)
+                                    row.insertCell(0).innerText = workersResultArr[i].id
+                                    row.insertCell(1).innerText = workersResultArr[i].username
+                                    row.insertCell(2).innerText = workersResultArr[i].role
+                                    row.insertCell(3).innerText = workersResultArr[i]?.participatesInGame
+                                    row.insertCell(4).innerText = workersResultArr[i].score
+                                }
+                                return tablePlayer
+                            }
+
+                             resultsArea.appendChild(createSoldierTable())
+                            // resultsArea.appendChild(createWorkersTable())
+                            // resultsArea.appendChild(createPlayersTable())
+                        })
+                    })
                 }
                 else {
                     this.setState({preyId: sad.playerId});
