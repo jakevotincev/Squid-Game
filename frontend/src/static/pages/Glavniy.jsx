@@ -78,8 +78,8 @@ class Glavniy extends Component {
           this.setState({showMapRolesBtn: false})
           this.setState({playersNumber: sad.criteria?.playersNumber});
           this.setState({criteria: sad.criteria?.criteria});
-          console.log('playersNumber :',sad.criteria.playersNumber);
-          console.log('criteria',sad.criteria.criteria);
+          // console.log('playersNumber :',sad.criteria.playersNumber);
+          // console.log('criteria',sad.criteria.criteria);
           this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria?.playersNumber + " Критерии отбора : " + sad.criteria?.criteria});
           this.setState({criteriaMsgIsReceived: true});
           console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
