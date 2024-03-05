@@ -333,6 +333,9 @@ class Soldier extends Component {
                     name={'Сделано выстрелов : '}/>
                 </div>
             }
+            {this.state.showResults === true &&
+                <div id="results" style={{display: "flex", marginLeft: '300px', marginTop: '100px'}}>
+                </div>}
         </div>
 
     )}
