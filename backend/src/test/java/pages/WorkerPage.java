@@ -21,6 +21,10 @@ public class WorkerPage extends Page {
     private List<WebElement> formInputs;
     @FindBy(xpath = "//button[text()='Завершить отбор анкет']")
     private WebElement acceptFormButton;
+    @FindBy(xpath = "//button[@class='ClickerBtn']")
+    private WebElement clickerButton;
+    @FindBy(xpath = "//h4[contains(text(), 'Убрано органов')]")
+    private WebElement clickerResult;
     private List<String> allCorrectFoodAnswers = List.of(
             "Яйца",
             "Колбаса",
@@ -88,5 +92,22 @@ public class WorkerPage extends Page {
     public boolean isFormListVisible() {
         driver.switchTo().window(getHandle());
         return checkElementVisible("//ul[@id='anketas_list']");
+    }
+
+    public void click(int score) {
+        driver.switchTo().window(getHandle());
+        for (int i = 0; i < score; i++) {
+            clickerButton.click();
+        }
+    }
+
+    public boolean isClickerButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[@class='ClickerBtn']");
+    }
+
+    public boolean checkClickerResult(int score) {
+        driver.switchTo().window(getHandle());
+        return clickerResult.getText().contains(String.valueOf(score));
     }
 }

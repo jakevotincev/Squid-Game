@@ -169,13 +169,13 @@ public class FunctionalTest {
         managerPage.startTraining();
 
         // train
-        final int[] score = {5};
+        final int[] soldierScore = {5};
 
         soldierPages.forEach((page, username) -> {
             Assertions.assertTrue(page.isClickerButtonVisible());
-            page.click(score[0]);
-            page.checkClickerResult(score[0]);
-            score[0] = score[0] + 5;
+            page.click(soldierScore[0]);
+            page.checkClickerResult(soldierScore[0]);
+            soldierScore[0] = soldierScore[0] + 5;
         });
 
         // stop training
@@ -205,7 +205,7 @@ public class FunctionalTest {
         });
 
 
-        score[0] = score[0] - 10;
+        soldierScore[0] = soldierScore[0] - 10;
         List<Integer> scores = new ArrayList<>();
         //check prey name and shoot
         soldierPages.forEach((page, username) -> {
@@ -214,13 +214,12 @@ public class FunctionalTest {
 
             Assertions.assertTrue(page.isShootButtonVisible());
             page.isShootScoreVisible();
-            scores.add(page.getShootScore() + score[0]);
-            score[0] = score[0] + 5;
+            scores.add(page.getShootScore() + soldierScore[0]);
+            soldierScore[0] = soldierScore[0] + 5;
             page.shoot();
         });
 
         //check killed
-        //todo: бывают ошибки
         soldierPages.forEach((page, username) -> {
             Assertions.assertTrue(page.isShootResultMessageVisible());
             if (scores.get(0).equals(scores.get(1))) {
@@ -242,6 +241,23 @@ public class FunctionalTest {
         Assertions.assertTrue(prayPage.isKilledMessageVisible());
         prayPage.close();
         playerPages.remove(prayForm);
+
+        //start cleaning
+        Assertions.assertTrue(managerPage.isStartCleaningButtonVisible());
+        managerPage.startCleaning();
+
+        //cleaning
+        final int[] workerScore = {5};
+        workerPages.forEach((page, username) -> {
+            Assertions.assertTrue(page.isClickerButtonVisible());
+            page.click(workerScore[0]);
+            page.checkClickerResult(workerScore[0]);
+            workerScore[0] = workerScore[0] + 5;
+        });
+
+        //stop cleaning
+        Assertions.assertTrue(managerPage.isStopCleaningButtonVisible());
+        managerPage.stopCleaning();
     }
 
     @AfterEach

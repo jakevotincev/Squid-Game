@@ -29,6 +29,10 @@ public class ManagerPage extends Page {
     private WebElement startTrainingButton;
     @FindBy(xpath = "//button[text()='Отдать приказ о прекращении тренировок солдат']")
     private WebElement stopTrainingButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о начале уборки рабочим']")
+    private WebElement startCleaningButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о прекращении уборки рабочих']")
+    private WebElement stopCleaningButton;
 
     public ManagerPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
@@ -110,5 +114,25 @@ public class ManagerPage extends Page {
     public boolean isStopTrainingButtonVisible() {
         driver.switchTo().window(getHandle());
         return checkElementVisible("//button[text()='Отдать приказ о прекращении тренировок солдат']");
+    }
+
+    public void startCleaning() {
+        driver.switchTo().window(getHandle());
+        startCleaningButton.click();
+    }
+
+    public boolean isStartCleaningButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о начале уборки рабочим']");
+    }
+
+    public void stopCleaning() {
+        driver.switchTo().window(getHandle());
+        stopCleaningButton.click();
+    }
+
+    public boolean isStopCleaningButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о прекращении уборки рабочих']");
     }
 }
