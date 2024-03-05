@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
+import pages.utils.QuizUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +15,40 @@ import java.util.List;
  * @since 04.03.2024
  */
 public class WorkerPage extends Page {
-
-    public WorkerPage(WebDriver driver, String handle, String username) {
-        super(driver, handle, username);
-    }
-
     @FindBy(id = "//ul[@id='anketas_list']")
     private WebElement formList;
     @FindAll({@FindBy(xpath = "//li[@id='anketa']")})
     private List<WebElement> formInputs;
     @FindBy(xpath = "//button[text()='Завершить отбор анкет']")
     private WebElement acceptFormButton;
+    private List<String> allCorrectFoodAnswers = List.of(
+            "Яйца",
+            "Колбаса",
+            "Капуста"
+    );
+
+    private List<String> oneIncorrectFoodAnswer = List.of(
+            "Яйца",
+            "Колбаса",
+            "Огурец"
+    );
+
+    private List<String> allCorrectPrepareRoundAnswers = List.of(
+            "11",
+            "816",
+            "116"
+    );
+
+    private List<String> oneIncorrectPrepareRoundAnswers = List.of(
+            "11",
+            "816",
+            "1164"
+    );
+
+    public WorkerPage(WebDriver driver, String handle, String username) {
+        super(driver, handle, username);
+    }
+
 
     public List<String> getForms() {
         List<String> forms = new ArrayList<>();
@@ -49,6 +73,16 @@ public class WorkerPage extends Page {
         acceptFormButton.click();
 
         return playerFormContent;
+    }
+
+    public void answerFoodQuestions(boolean allCorrect) {
+        driver.switchTo().window(getHandle());
+        QuizUtils.answerQuestions(driver, allCorrect ? allCorrectFoodAnswers : oneIncorrectFoodAnswer, false);
+    }
+
+    public void answerPrepareRoundQuestions(boolean allCorrect) {
+        driver.switchTo().window(getHandle());
+        QuizUtils.answerQuestions(driver, allCorrect ? allCorrectPrepareRoundAnswers : oneIncorrectPrepareRoundAnswers, true);
     }
 
     public boolean isFormListVisible() {

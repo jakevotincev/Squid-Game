@@ -21,6 +21,14 @@ public class ManagerPage extends Page {
     private WebElement bossMessage;
     @FindBy(xpath = "//button[text()='Отправить анкеты рабочим']")
     private WebElement sendCriteriaToWorkersButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о начале обеда']")
+    private WebElement startLunchButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о старте подготовки раунда']")
+    private WebElement startPrepareRoundButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о начале тренировок солдат']")
+    private WebElement startTrainingButton;
+    @FindBy(xpath = "//button[text()='Отдать приказ о прекращении тренировок солдат']")
+    private WebElement stopTrainingButton;
 
     public ManagerPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
@@ -62,5 +70,45 @@ public class ManagerPage extends Page {
     public void sendCriteriaToWorkers() {
         driver.switchTo().window(getHandle());
         sendCriteriaToWorkersButton.click();
+    }
+
+    public boolean isStartLunchButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о начале обеда']");
+    }
+
+    public boolean isStartPrepareRoundButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о старте подготовки раунда']");
+    }
+
+    public void startPrepareRound() {
+        driver.switchTo().window(getHandle());
+        startPrepareRoundButton.click();
+    }
+
+    public void startLunch() {
+        driver.switchTo().window(getHandle());
+        startLunchButton.click();
+    }
+
+    public boolean isStartTrainingButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о начале тренировок солдат']");
+    }
+
+    public void startTraining() {
+        driver.switchTo().window(getHandle());
+        startTrainingButton.click();
+    }
+
+    public void stopTraining() {
+        driver.switchTo().window(getHandle());
+        stopTrainingButton.click();
+    }
+
+    public boolean isStopTrainingButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Отдать приказ о прекращении тренировок солдат']");
     }
 }

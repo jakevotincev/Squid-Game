@@ -107,7 +107,9 @@ class Worker extends Component{
             body: JSON.stringify(datta)
             // body data type must match "Content-Type" header
 
-        }).then()
+        }).then(
+            //todo: add something
+        )
         this.setState({showPlayersAnketas: false})
     }
 

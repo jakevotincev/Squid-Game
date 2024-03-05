@@ -43,9 +43,9 @@ class Soldier extends Component {
         return url
     }
     componentDidMount = () => {
-        console.log(this.props.location.state)
+        // console.log(this.props.location.state)
         this.setState({nickname: this.props.location.state})
-        console.log(this.state.nickname)
+        // console.log(this.state.nickname)
         let url = "http://localhost:8080/account/";
         url = url.concat(this.props.location.state)
         fetch(url,{
@@ -60,16 +60,16 @@ class Soldier extends Component {
             res => {res.json().then(data =>{
 
                 this.setState({soldierId: data.id})
-                console.log(JSON.stringify(data))
+                // console.log(JSON.stringify(data))
             })
             }
 
         )
-        console.log(this.state.soldierId);
+        // console.log(this.state.soldierId);
         if (this.props.location.state !== ""){
             // setTimeout(() => { this.componentDidMount() }, 2000);
-            console.log('Component did mount');
-            console.log(this.state.nickname);
+            // console.log('Component did mount');
+            // console.log(this.state.nickname);
             // The compat mode syntax is totally different, converting to v5 syntax
             // Client is imported from '@stomp/stompjs'
             this.client = new Client();
@@ -79,12 +79,11 @@ class Soldier extends Component {
                     Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
                 },
                 onConnect: () => {
-                    console.log('onConnect');
                     this.handleSend();
                 },
                 // Helps during debugging, remove in production
                 debug: (str) => {
-                    console.log(new Date(), str);
+                    // console.log(new Date(), str);
                 }
             });
 
@@ -95,7 +94,7 @@ class Soldier extends Component {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
             const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
             this.client.subscribe('/soldier/messages', message => {
-                console.log('govnomapping ',JSON.parse(message.body));
+                // console.log('govnomapping ',JSON.parse(message.body));
                 let sad = JSON.parse(message.body)
                 if (sad.type === 'START_TRAINING') {
                     this.setState({showClicker: true})
@@ -103,6 +102,30 @@ class Soldier extends Component {
                 }
                 if (sad.type === 'TRAINING_COMPLETED') {
                     this.setState({showClicker: false})
+                    if (this.state.trainingScore !== 0) {
+                        console.log(this.state.trainingScore)
+                        let url = 'http://localhost:8080/soldier/'
+                        url = url.concat(this.state.soldierId)
+                        url = url.concat('/score')
+                        if (this.state.trainingScore === 15) {
+                            const bonus = (this.state.trainingScore / 13) + this.state.trainingScore * 1.2
+                            this.setState({trainingScore: bonus + this.state.trainingScore})
+                        }
+                        // this.setState({trainingScore: this.state.trainingScore + this.state.bonusScore})
+                        const soldierScoreMsg = {
+                            score: this.state.trainingScore
+                        }
+                        fetch(url,{
+                            headers: {
+                                "Content-Type": "application/json",
+
+                                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                            },
+                            method: 'POST',
+                            mode: 'cors',
+                            body: JSON.stringify(soldierScoreMsg)
+                        })
+                    }
                 }
                 else {
                     this.setState({preyId: sad.playerId});
@@ -111,14 +134,14 @@ class Soldier extends Component {
                 }
             }, headers)
             this.client.subscribe('/user/soldier/messages', message => {
-                console.log('private ',JSON.parse(message.body));
+                // console.log('private ',JSON.parse(message.body));
                 let msg = JSON.parse((message.body))
                 if (msg.type === 'PLAYER_KILLED_MESSAGE') {
                     this.setState({killStatusMsg: 'Вы убили игрока '+ this.state.preyName})
                     this.setState({showKillStatusMsg: true})
                 }
                 if (msg.type === 'MISS_MESSAGE') {
-                    this.setState({killStatusMsg: 'Вы промахнулись, игрока '+ this.state.preyName} + 'убил кто-то другой')
+                    this.setState({killStatusMsg: 'Вы промахнулись'})
                     this.setState({showKillStatusMsg: true})
                 }
             }, headers)
@@ -148,35 +171,12 @@ class Soldier extends Component {
             body: JSON.stringify(soldierMsg)
             // body data type must match "Content-Type" header
 
-        }).then(() => alert("Ya strelyau"))
+        }).then(
+            //todo: add something
+        )
     }
     addPoint = () => {
-    this.setState({trainingScore: this.state.trainingScore + 1})
-        if (this.state.trainingScore !== 0 && this.state.trainingScore % 5 === 0) {
-            let url = 'http://localhost:8080/soldier/'
-            url = url.concat(this.state.soldierId)
-            url = url.concat('/score')
-            if (this.state.trainingScore === 50) {
-                const bonus = (this.state.trainingScore / 13) + this.state.trainingScore * 1.2
-                this.setState({bonusScore: bonus + this.state.trainingScore})
-            } else {
-                this.setState({bonusScore:  this.state.trainingScore})
-            }
-            // this.setState({trainingScore: this.state.trainingScore + this.state.bonusScore})
-            const soldierScoreMsg = {
-                score: this.state.bonusScore
-            }
-            fetch(url,{
-                headers: {
-                     "Content-Type": "application/json",
-
-                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
-                },
-                method: 'POST',
-                mode: 'cors',
-                body: JSON.stringify(soldierScoreMsg)
-            })
-        }
+        this.setState({trainingScore: this.state.trainingScore + 1})
     }
 
     render(){return(
@@ -196,7 +196,7 @@ class Soldier extends Component {
                     Имя жертвы: {this.state.preyName}
                 </p>
                 <p>
-                    Ваш счет выстрела: {this.state.score}
+                    Ваш счет выстрела: <label id="shoot_score">{this.state.score}</label>
                 </p>
                 <button type="submit" onClick={this.clickHandler}>Сделать выстрел</button>
             </div>

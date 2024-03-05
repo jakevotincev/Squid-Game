@@ -15,7 +15,8 @@ class Manager extends Component{
         numb: '',
         slovo: '',
         allAnketasIsCollected: false,
-        answerStatus: null
+        answerStatus: null,
+        showLunch: false
     }
 
 
@@ -97,14 +98,7 @@ class Manager extends Component{
                     this.setState({allAnketasIsCollected: true});
                 }
                 if (sad.type === 'FORMS_SELECTION_COMPLETED') {
-                    fetch('http://localhost:8080/startLunch',{
-                        headers: {
-                            // "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
-                        },
-                        method: 'GET',
-                        mode: 'cors'
-                    })
+                    this.setState({showLunch: true});
                 }
                 this.setState({answerStatus: sad.confirm});
                 // console.log(this.state.answerStatus);
@@ -147,9 +141,23 @@ class Manager extends Component{
             },
             method: 'GET',
             mode: 'cors'
-        }).then()
+        }).then(
+            //todo: добавить что нибудь
+        )
 
     }
+
+    startLunch = () => {
+        fetch('http://localhost:8080/startLunch',{
+            headers: {
+                // "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+            },
+            method: 'GET',
+            mode: 'cors'
+        })
+    }
+
     startRoundPreparation = () => {
         fetch('http://localhost:8080/startPrepareRound',{
             headers: {
@@ -196,7 +204,6 @@ class Manager extends Component{
         })
     }
 
-
     render() {return(
 
     <div id="manager_page">
@@ -233,6 +240,19 @@ class Manager extends Component{
             </div>
 
         }
+
+        {
+            this.state.showLunch &&
+            <div>
+                <div>
+                    <h2>Все игроки отобраны</h2>
+                </div>
+                <div>
+                    <button type="submit" onClick={this.startLunch}>Отдать приказ о начале обеда</button>
+                </div>
+            </div>
+        }
+
         <div>
             <button type="submit" onClick={this.startRoundPreparation}>Отдать приказ о старте подготовки раунда</button>
         </div>

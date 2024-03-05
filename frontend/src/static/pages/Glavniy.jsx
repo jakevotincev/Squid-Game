@@ -59,7 +59,7 @@ class Glavniy extends Component {
     if (this.client.webSocket.readyState === WebSocket.OPEN) {
       const headers = { Authorization: 'Bearer ' + localStorage.getItem('glavniy')}
       this.client.subscribe('/glavniy/messages', message => {
-        console.log('message: ',JSON.parse(message.body));
+        // console.log('message: ',JSON.parse(message.body));
 
         let sad = JSON.parse(message.body);
         if (sad.type === 'FORMS_SELECTION_COMPLETED'){
@@ -82,7 +82,7 @@ class Glavniy extends Component {
           // console.log('criteria',sad.criteria.criteria);
           this.setState({criteriaMsg: 'Предложенное количество участников : ' + sad.criteria?.playersNumber + " Критерии отбора : " + sad.criteria?.criteria});
           this.setState({criteriaMsgIsReceived: true});
-          console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
+          // console.log('Criteria msg is recieved: ',this.state.criteriaMsgIsReceived);
         }
       }, headers);
 
@@ -132,7 +132,9 @@ class Glavniy extends Component {
       },
       method: 'GET',
       mode: 'cors'
-    }).then()
+    }).then(
+        //todo: добавить что нибудь
+    )
   }
   mapRole = () => {
     fetch('http://localhost:8080/startRolesDistribution',{

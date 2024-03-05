@@ -89,7 +89,7 @@ public class GameListener {
     public boolean killPlayer(int playerId, int soldierId, int score) {
         int soldierCount = globalContext.getConnectedUsersByCriteria(accountDTO -> accountDTO.getRole() == Role.SOLDIER).size();
 
-        Score trainingScore =  scoreService.getScoreByUserId(soldierId).orElse(null);
+        Score trainingScore = scoreService.getScoreByUserId(soldierId).orElse(null);
         int finalScore = trainingScore == null ? score : score + trainingScore.getScore();
 
         soldierIdToScoreMap.put(soldierId, finalScore);

@@ -36,4 +36,8 @@ public abstract class Page {
     public String getUsername() {
         return username;
     }
+
+    public void close() {
+        driver.close();
+    }
 }
