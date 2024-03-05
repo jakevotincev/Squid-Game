@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import ru.jakev.backend.services.AccountService;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
+import org.springframework.http.HttpMethod;
 /**
  * @author evotintsev
  * @since 18.02.2024
