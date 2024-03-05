@@ -11,6 +11,8 @@ import ru.jakev.backend.game.GamePhase;
 import ru.jakev.backend.game.PhaseManager;
 import ru.jakev.backend.services.ScoreService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,8 +37,17 @@ public class ScoreController {
         }
 
         Map<AccountDTO, Integer> results = scoreService.getResultsForUser(id);
-        ResultDTO resultDTO = new ResultDTO(results);
-        return ResponseEntity.ok().body(resultDTO);
+        List<ResultDTO> resultsDTO = new ArrayList<>();
+        results.forEach((account, score) -> {
+            ResultDTO resultDTO = new ResultDTO();
+            resultDTO.setId(account.getId());
+            resultDTO.setUsername(account.getUsername());
+            resultDTO.setRole(account.getRole());
+            resultDTO.setParticipatesInGame(account.getParticipatesInGame());
+            resultDTO.setScore(score);
+            resultsDTO.add(resultDTO);
+        });
+        return ResponseEntity.ok().body(resultsDTO);
 
     }
 }

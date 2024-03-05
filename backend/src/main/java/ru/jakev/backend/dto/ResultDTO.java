@@ -1,5 +1,7 @@
 package ru.jakev.backend.dto;
 
+import ru.jakev.backend.entities.Role;
+
 import java.util.Map;
 
 /**
@@ -7,17 +9,49 @@ import java.util.Map;
  * @since 04.03.2024
  */
 public class ResultDTO {
-    private Map<AccountDTO, Integer> results;
+    private int id;
+    private String username;
+    private Role role;
+    private boolean participatesInGame;
+    private int score;
 
-    public ResultDTO(Map<AccountDTO, Integer> results) {
-        this.results = results;
+    public int getId() {
+        return id;
     }
 
-    public Map<AccountDTO, Integer> getResults() {
-        return results;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setResults(Map<AccountDTO, Integer> results) {
-        this.results = results;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean isParticipatesInGame() {
+        return participatesInGame;
+    }
+
+    public void setParticipatesInGame(boolean participatesInGame) {
+        this.participatesInGame = participatesInGame;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }
