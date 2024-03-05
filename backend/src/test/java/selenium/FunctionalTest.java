@@ -171,6 +171,10 @@ public class FunctionalTest {
         // stop training
         Assertions.assertTrue(managerPage.isStopTrainingButtonVisible());
         managerPage.stopTraining();
+
+        //start game
+        Assertions.assertTrue(glavniyPage.isStartGameButtonVisible());
+        glavniyPage.startGame();
     }
 
     private void extractPages() {

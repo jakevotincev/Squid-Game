@@ -15,6 +15,8 @@ public class GlavniyPage extends Page {
     private WebElement acceptCriterionButton;
     @FindBy(xpath = "//p[@id='manager_message']")
     private WebElement managerMessage;
+    @FindBy(xpath = "//button[text()='Начать игру']")
+    private WebElement startGameButton;
     public GlavniyPage(WebDriver driver, String handle, String username) {
         super(driver, handle, username);
     }
@@ -47,5 +49,15 @@ public class GlavniyPage extends Page {
     public boolean isManagerMessageVisible() {
         driver.switchTo().window(getHandle());
         return checkElementVisible("//p[@id='manager_message']");
+    }
+
+    public void startGame() {
+        driver.switchTo().window(getHandle());
+        startGameButton.click();
+    }
+
+    public boolean isStartGameButtonVisible() {
+        driver.switchTo().window(getHandle());
+        return checkElementVisible("//button[text()='Начать игру']");
     }
 }

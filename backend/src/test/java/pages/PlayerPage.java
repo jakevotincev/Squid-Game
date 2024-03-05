@@ -6,7 +6,6 @@ import org.openqa.selenium.support.FindBy;
 import pages.utils.QuizUtils;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author evotintsev
@@ -18,13 +17,13 @@ public class PlayerPage extends Page {
     private WebElement formInput;
     @FindBy(xpath = "//button[text()='Отправить']")
     private WebElement sendFormButton;
-    private List<String> allCorrectAnswers= List.of(
+    private List<String> allCorrectFoodAnswers = List.of(
             "Борщ",
             "Оливье",
             "Блины"
     );
 
-    private List<String> oneIncorrectAnswer = List.of(
+    private List<String> oneIncorrectFoodAnswer = List.of(
             "Борщ",
             "Оливье",
             "Медовик"
@@ -65,6 +64,6 @@ public class PlayerPage extends Page {
 
     public void answerFoodQuestions(boolean allCorrect) {
         driver.switchTo().window(getHandle());
-        QuizUtils.answerQuestions(driver, allCorrect ? allCorrectAnswers : oneIncorrectAnswer, false);
+        QuizUtils.answerQuestions(driver, allCorrect ? allCorrectFoodAnswers : oneIncorrectFoodAnswer, false);
     }
 }

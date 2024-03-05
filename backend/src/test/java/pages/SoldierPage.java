@@ -28,7 +28,7 @@ public class SoldierPage extends Page {
         driver.switchTo().window(getHandle());
         for (int i = 0; i < score; i++) {
             clickerButton.click();
-            Thread.sleep(500);
+            Thread.sleep(100);
         }
     }
 
