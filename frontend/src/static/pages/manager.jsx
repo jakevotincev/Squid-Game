@@ -62,6 +62,37 @@ class Manager extends Component{
                 console.log(JSON.parse(message.body));
                 this.setState({glavniyAnswer: message.body});
                 let sad = JSON.parse(message.body);
+                if (sad.type === 'RESULTS_READY'){
+                    fetch('http://localhost:8080/account/2/results',{
+                        headers: {
+                             "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                        },
+                        method: 'GET',
+                        mode: 'cors'
+                    }).then(res => {res.json().then( data=>{
+                       let rawStr = JSON.stringify(data)
+                        let f = JSON.parse(data)
+                        rawStr = rawStr.substring(1)
+                        rawStr = rawStr.substring(0,rawStr.length-1)
+                        console.log(rawStr)
+                        let test = JSON.parse(rawStr)
+                        console.log(test, 'test')
+                        for(let key in data.results) {
+                            const account = key.replace(/\{|\}/g, '');
+                            console.log(account);
+                        }
+                        for (let value in data.results) {
+                            console.log(value)
+                        }
+                        // let finalResultsArr = []
+                        // finalResultsArr = data.results
+                        // finalResultsArr.forEach(result => {
+                        //     console.log(result)
+                        // })
+                    })
+                    })
+                }
                 if (sad.type === "ALL_FORMS_COLLECTED"){
                     this.setState({allAnketasIsCollected: true});
                 }
@@ -116,7 +147,7 @@ class Manager extends Component{
             },
             method: 'GET',
             mode: 'cors'
-        }).then(() => alert("Все пиздато"))
+        }).then()
 
     }
     startRoundPreparation = () => {
