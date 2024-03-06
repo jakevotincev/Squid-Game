@@ -25,6 +25,8 @@ public class LoginPage extends Page {
     private WebElement loginButton;
     @FindBy(xpath = "//a[text()='Auth']")
     private WebElement authButton;
+    @FindBy(xpath = "//input[@class='inputButton' and @value='Sign Up']")
+    private WebElement registerButton;
 
 
     public LoginPage(WebDriver driver) {
@@ -57,12 +59,18 @@ public class LoginPage extends Page {
         return managerPage;
     }
 
-    public UndefinedPage loginAsUser(String userLogin) {
+    public UndefinedPage loginAsUser(String userLogin, boolean withRegistration) throws InterruptedException {
         driver.switchTo().newWindow(WindowType.TAB);
         this.driver.get(URL);
         clickAuthButton();
         UndefinedPage undefinedPage = new UndefinedPage(driver, driver.getWindowHandle(), userLogin);
-        login(userLogin);
+        if (withRegistration) {
+            register(userLogin);
+            Thread.sleep(300);
+            clickLogin();
+        } else {
+            login(userLogin);
+        }
         return undefinedPage;
     }
 
@@ -70,6 +78,12 @@ public class LoginPage extends Page {
         loginInput.sendKeys(username);
         passwordInput.sendKeys(creds.get(username));
         loginButton.click();
+    }
+
+    public void register(String username) {
+        loginInput.sendKeys(username);
+        passwordInput.sendKeys(creds.get(username));
+        registerButton.click();
     }
 
     public void clickLogin() {

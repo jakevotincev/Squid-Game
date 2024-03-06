@@ -36,7 +36,6 @@ public class FunctionalTest {
     private final String startUpMessage = "Started BackendApplication in";
 
     private volatile boolean isServerStart = false;
-    //todo: add automatic frontend start?
 
     @BeforeEach
     void setUp() throws IOException, InterruptedException {
@@ -53,13 +52,17 @@ public class FunctionalTest {
     //todo: add tests for interrupts
     @Test
     public void testBusinessCycle() {
+        List<String> creds = CredentialsReader.getLogins(ConfProperties.getProperty("creds.path"));
         //login all
         loginPage = new LoginPage(webDriver);
         glavniyPage = loginPage.loginAsGlavniy("glavniy");
         managerPage = loginPage.loginAsManager("manager");
-        List<String> creds = CredentialsReader.getLogins(ConfProperties.getProperty("creds.path"));
         creds.stream().skip(2).forEach(user -> {
-            undefinedPages.add(loginPage.loginAsUser(user));
+            try {
+                undefinedPages.add(loginPage.loginAsUser(user, true));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         //distribute roles

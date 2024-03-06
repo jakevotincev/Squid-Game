@@ -127,7 +127,7 @@ class Auth extends Component {
             body: JSON.stringify(credentialsMsg)
             // body data type must match "Content-Type" header
 
-        }).then(() => alert("Зарегался"))
+        }).then()
         // this.client.publish({destination: '/auth/register', body: JSON.stringify(credentialsMsg)})
     }
     showLoginBtn = () => {
