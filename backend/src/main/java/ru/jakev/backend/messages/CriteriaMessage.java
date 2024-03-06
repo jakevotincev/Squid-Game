@@ -17,6 +17,11 @@ import ru.jakev.backend.dto.CriteriaDTO;
 public class CriteriaMessage {
 
     private CriteriaDTO criteria;
+    private NotificationMessageType type;
+
+    public CriteriaMessage() {
+        this.type = NotificationMessageType.CRITERIA_MESSAGE;
+    }
 
     public CriteriaDTO getCriteria() {
         return criteria;
@@ -24,6 +29,14 @@ public class CriteriaMessage {
 
     public void setCriteria(CriteriaDTO criteria) {
         this.criteria = criteria;
+    }
+
+    public NotificationMessageType getType() {
+        return type;
+    }
+
+    public void setType(NotificationMessageType type) {
+        this.type = type;
     }
 
     @Override

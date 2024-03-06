@@ -8,7 +8,6 @@ import Glavniy from './static/pages/Glavniy';
 import Manager from "./static/pages/manager";
 import Layout from "./static/pages/layout";
 import Participant from "./static/pages/Participant";
-import reportWebVitals from './reportWebVitals';
 import $ from 'https://code.jquery.com/jquery-3.7.0.js';
 import SockJS from 'https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js';
 import Stomp from 'https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js';
@@ -43,4 +42,3 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

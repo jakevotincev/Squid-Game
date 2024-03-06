@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @since 04.03.2024
  */
 public class LoginPage extends Page {
-    private final static String URL = "http://localhost:3000/Auth";
+    private final static String URL = "http://localhost:8080";
     private final Map<String, String> creds;
     @FindBy(xpath = "//input[contains(@placeholder, 'username')]")
     private WebElement loginInput;
@@ -23,12 +23,14 @@ public class LoginPage extends Page {
     private WebElement passwordInput;
     @FindBy(xpath = "//input[@class='inputButton' and @value='Login']")
     private WebElement loginButton;
+    @FindBy(xpath = "//a[text()='Auth']")
+    private WebElement authButton;
 
 
     public LoginPage(WebDriver driver) {
         super(driver, "", "");
         //todo: нужно ли это?
-        this.driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
+        this.driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         this.driver.manage().window().maximize();
 
 //        String currentHandle = this.driver.getWindowHandle();
@@ -40,6 +42,7 @@ public class LoginPage extends Page {
     //todo: should login first
     public GlavniyPage loginAsGlavniy(String glavniyLogin) {
         this.driver.get(URL);
+        clickAuthButton();
         GlavniyPage glavniyPage = new GlavniyPage(driver, driver.getWindowHandle(), glavniyLogin);
         login(glavniyLogin);
         return glavniyPage;
@@ -48,6 +51,7 @@ public class LoginPage extends Page {
     public ManagerPage loginAsManager(String managerLogin) {
         driver.switchTo().newWindow(WindowType.TAB);
         this.driver.get(URL);
+        clickAuthButton();
         ManagerPage managerPage = new ManagerPage(driver, driver.getWindowHandle(), managerLogin);
         login(managerLogin);
         return managerPage;
@@ -56,6 +60,7 @@ public class LoginPage extends Page {
     public UndefinedPage loginAsUser(String userLogin) {
         driver.switchTo().newWindow(WindowType.TAB);
         this.driver.get(URL);
+        clickAuthButton();
         UndefinedPage undefinedPage = new UndefinedPage(driver, driver.getWindowHandle(), userLogin);
         login(userLogin);
         return undefinedPage;
@@ -67,5 +72,15 @@ public class LoginPage extends Page {
         loginButton.click();
     }
 
+    public void clickLogin() {
+        loginButton.click();
+    }
 
+    public boolean isAuthButtonVisible() {
+        return checkElementVisible("//li[text()='Auth']");
+    }
+
+    public void clickAuthButton() {
+        authButton.click();
+    }
 }

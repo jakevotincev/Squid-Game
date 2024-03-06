@@ -130,9 +130,9 @@ class Glavniy extends Component {
                   soldiersResultArr.push(account)
                 }
               })
-              workersResultArr.sort((a, b) => a.score > b.score ? 1 : -1)
-              soldiersResultArr.sort((a, b) => a.score > b.score ? 1 : -1)
-              playersResultArr.sort(a => a?.participatesInGame ? 1 : -1).sort((a, b) => a.score > b.score ? 1 : -1)
+              workersResultArr.sort((a, b) => a.score > b.score ? -1 : 1)
+              soldiersResultArr.sort((a, b) => a.score > b.score ? -1 : 1)
+              playersResultArr.sort(a => a?.participatesInGame ? -1 : 1).sort((a, b) => a.score > b.score ? -1 : 1)
               console.log(workersResultArr, 'worker')
               console.log(soldiersResultArr, 'soldier')
               console.log(playersResultArr, 'player')
@@ -227,7 +227,7 @@ class Glavniy extends Component {
           })
           this.setState({info: 'Итоговая таблица результатов'})
         }
-        else {
+        else if(sad.type === 'CRITERIA_MESSAGE'){
           this.setState({info: 'Получены критерии игры от манагера'})
           this.setState({showMapRolesBtn: false})
           this.setState({playersNumber: sad.criteria?.playersNumber});

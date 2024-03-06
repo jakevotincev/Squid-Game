@@ -45,7 +45,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         // Можно указать конкретный путь, * - 1 уровень вложенности, ** - любое количество уровней вложенности
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket", "/phase/**").permitAll()
+                        //todo: cehck security
+                        .requestMatchers("/auth/**", "/index.html", "/app.js", "/squid-game-socket",
+                                "/phase/**","/", "/*", "/js/**", "/css/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
