@@ -43,6 +43,7 @@ class Soldier extends Component {
         return url
     }
     componentDidMount = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         // console.log(this.props.location.state)
         this.setState({nickname: this.props.location.state})
         // console.log(this.state.nickname)
@@ -52,7 +53,7 @@ class Soldier extends Component {
             headers: {
                 // "Content-Type": "application/json"
 
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
@@ -76,7 +77,7 @@ class Soldier extends Component {
             this.client.configure({
                 brokerURL: this.getNickname(),
                 connectHeaders: {
-                    Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                    Authorization: 'Bearer ' + token
                 },
                 onConnect: () => {
                     this.handleSend();
@@ -91,8 +92,9 @@ class Soldier extends Component {
 
     }
     handleSend = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
-            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
+            const headers = { Authorization: 'Bearer ' + token}
             this.client.subscribe('/soldier/messages', message => {
                 // console.log('govnomapping ',JSON.parse(message.body));
                 let sad = JSON.parse(message.body)
@@ -118,7 +120,7 @@ class Soldier extends Component {
                             headers: {
                                 "Content-Type": "application/json",
 
-                                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                'Authorization': 'Bearer ' + token
                             },
                             method: 'POST',
                             mode: 'cors',
@@ -130,7 +132,7 @@ class Soldier extends Component {
                     fetch('http://localhost:8080/account/2/results', {
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -271,6 +273,7 @@ class Soldier extends Component {
         }
     };
     clickHandler =()=>{
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
 
         const soldierMsg =
              {
@@ -283,7 +286,7 @@ class Soldier extends Component {
         fetch('http://localhost:8080/killPlayer', {  // Enter your IP address here
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                'Authorization': 'Bearer ' + token
             },
             method: 'POST',
             mode: 'cors',
@@ -298,8 +301,15 @@ class Soldier extends Component {
         this.setState({trainingScore: this.state.trainingScore + 1})
     }
 
+    logout = () => {
+        localStorage.removeItem('userData');
+        this.props.history.push('/auth');
+    }
+
     render(){return(
         <div id="soldier_page" align="center">
+
+            <button onClick={this.logout}>Logout</button>
             <div id="connect">
             
             <h1 id="page_title">This is soldier page</h1>

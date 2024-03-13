@@ -6,6 +6,7 @@ import {useState} from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import "./pagestyle.css";
+import { useNavigate } from "react-router-dom";
 
 class Manager extends Component {
 
@@ -39,11 +40,11 @@ class Manager extends Component {
         // The compat mode syntax is totally different, converting to v5 syntax
         // Client is imported from '@stomp/stompjs'
         this.client = new Client();
-
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         this.client.configure({
             brokerURL: 'ws://localhost:8080/squid-game-socket?username=manager',
             connectHeaders: {
-                Authorization: 'Bearer ' + localStorage.getItem('manager')
+                Authorization: 'Bearer ' + token
             },
             onConnect: () => {
                 console.log('onConnect');
@@ -60,7 +61,8 @@ class Manager extends Component {
 
     handleSend = () => {
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
-            const headers = {Authorization: 'Bearer ' + localStorage.getItem('manager')}
+            let token = JSON.parse(localStorage.getItem(`userData`))?.token
+            const headers = {Authorization: 'Bearer ' + token}
             this.client.subscribe('/manager/messages', message => {
 
                 console.log(JSON.parse(message.body));
@@ -71,7 +73,7 @@ class Manager extends Component {
                     fetch('http://localhost:8080/account/2/results', {
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -227,19 +229,21 @@ class Manager extends Component {
                 gameId: 1
             }
         }
-
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         this.client.publish({
             destination: '/app/sendCriteriaToGlavniy',
-            headers: {Authorization: 'Bearer ' + localStorage.getItem('glavniy')},
+            headers: {Authorization: 'Bearer ' + token},
             body: JSON.stringify(criteriaMsg)
         });
 
     }
     sendAnketasHandler = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/sendCriteriaAndFormsToWorkers', {
             headers: {
                 // "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
@@ -250,10 +254,12 @@ class Manager extends Component {
     }
 
     startLunch = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/startLunch', {
             headers: {
                 // "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
@@ -261,49 +267,65 @@ class Manager extends Component {
     }
 
     startRoundPreparation = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/startPrepareRound', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
         })
     }
     startTraining = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/startTraining', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
         })
     }
     stopTraining = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/stopTraining', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
         })
     }
     startCleaning = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/startCleaning', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
         })
     }
     stopCleaning = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         fetch('http://localhost:8080/stopCleaning', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
         })
+    }
+
+    logout = () => {
+        localStorage.removeItem('userData');
+        const navigate = useNavigate();
+        navigate("/Auth");
     }
 
     render() {
@@ -311,6 +333,7 @@ class Manager extends Component {
 
             <div id="manager_page">
                 <h1>This is manager page</h1>
+                <button onClick={this.logout}>Logout</button>
                 {this.state.showResults === false &&
                     <div>
                         <div className="Criteria_Message" id="criteria_message">

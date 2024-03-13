@@ -32,11 +32,11 @@ class Glavniy extends Component {
     // The compat mode syntax is totally different, converting to v5 syntax
     // Client is imported from '@stomp/stompjs'
     this.client = new Client();
-
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
     this.client.configure({
       brokerURL: 'ws://localhost:8080/squid-game-socket?username=glavniy',
       connectHeaders: {
-        Authorization: 'Bearer ' + localStorage.getItem('glavniy')
+        Authorization: 'Bearer ' + token
       },
       onConnect: () => {
         this.setState({info: 'Ожидание подключения игроков'})
@@ -60,7 +60,9 @@ class Glavniy extends Component {
   handleSend = () => {
 
     if (this.client.webSocket.readyState === WebSocket.OPEN) {
-      const headers = { Authorization: 'Bearer ' + localStorage.getItem('glavniy')}
+      let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
+      const headers = { Authorization: 'Bearer ' + token}
       this.client.subscribe('/glavniy/messages', message => {
         // console.log('message: ',JSON.parse(message.body));
 
@@ -108,7 +110,7 @@ class Glavniy extends Component {
           fetch('http://localhost:8080/account/1/results', {
             headers: {
               "Content-Type": "application/json",
-              'Authorization': 'Bearer ' + localStorage.getItem('manager')
+              'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
@@ -246,10 +248,12 @@ class Glavniy extends Component {
     }
   };
   interuptPlayersSelection = () =>{
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     fetch('http://localhost:8080/interruptPlayersSelection',{
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+        'Authorization': 'Bearer ' + token
       },
       method: 'GET',
       mode: 'cors'
@@ -257,10 +261,12 @@ class Glavniy extends Component {
     this.setState({info: 'Отбор анкет участников прерван'})
   }
   interuptRoundPreparing = () => {
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     fetch('http://localhost:8080/interruptRoundPreparing',{
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+        'Authorization': 'Bearer ' + token
       },
       method: 'GET',
       mode: 'cors'
@@ -268,10 +274,12 @@ class Glavniy extends Component {
     this.setState({info: 'Подготовка раунда игры прервана'})
   }
   showResults = () => {
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     fetch('http://localhost:8080/showResults',{
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+        'Authorization': 'Bearer ' + token
       },
       method: 'GET',
       mode: 'cors'
@@ -282,10 +290,12 @@ class Glavniy extends Component {
 
 
   startGame = () =>{
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     fetch('http://localhost:8080/startGame',{
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+        'Authorization': 'Bearer ' + token
       },
       method: 'GET',
       mode: 'cors'
@@ -295,9 +305,11 @@ class Glavniy extends Component {
     this.setState({info: 'Начался раунд игры'})
   }
   mapRole = () => {
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     fetch('http://localhost:8080/startRolesDistribution',{
       headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem('glavniy')
+        'Authorization': 'Bearer ' + token
       },
       method: 'GET',
       mode: 'cors'
@@ -306,6 +318,8 @@ class Glavniy extends Component {
     this.setState({showMapRolesBtn: false})
   }
   clickHandler = () => {
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     // const sad = JSON.parse(message.body);
     const confirmMessage ={
       confirm: true,
@@ -316,11 +330,13 @@ class Glavniy extends Component {
       },
       declineReason: null
     }
-    this.client.publish({destination: '/app/sendAnswer', headers: {Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(confirmMessage)});
+    this.client.publish({destination: '/app/sendAnswer', headers: {Authorization: 'Bearer ' + token}, body: JSON.stringify(confirmMessage)});
     this.setState({showInterruptionBtn: true});
     this.setState({info: 'Критерии игры утверждены, начинается отбор игроков'})
   }
   clickHandler2 = () => {
+    let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
     // const sad = JSON.parse(message.body);
     const confirmMessage ={
       confirm: false,
@@ -331,13 +347,18 @@ class Glavniy extends Component {
       },
       declineReason: this.state.decline
     }
-    this.client.publish({destination: '/app/sendAnswer', headers: {Authorization: 'Bearer ' + localStorage.getItem('glavniy')}, body: JSON.stringify(confirmMessage)});
+    this.client.publish({destination: '/app/sendAnswer', headers: {Authorization: 'Bearer ' + token}, body: JSON.stringify(confirmMessage)});
     this.setState({info: 'Критерии игры не утверждены'})
+  }
+
+  logout = () => {
+    localStorage.removeItem('userData');
   }
 
   render() {
     return (
         <div className="App">
+          <button onClick={this.logout}>Logout</button>
           <header className="App-header">
               <div>
                 <button onClick={this.mapRole}>Распределить роли и начать игру</button>

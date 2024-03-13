@@ -44,12 +44,14 @@ class Worker extends Component{
         return url
     }
     componentDidMount = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         let url = "http://localhost:8080/account/";
         url = url.concat(this.props.location.state)
         fetch(url,{
             headers: {
                 // "Content-Type": "application/json"
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
@@ -72,7 +74,7 @@ class Worker extends Component{
             this.client.configure({
                 brokerURL: this.getNickname(),
                 connectHeaders: {
-                    Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                    Authorization: 'Bearer ' + token
                 },
                 onConnect: () => {
                     console.log('onConnect');
@@ -89,6 +91,7 @@ class Worker extends Component{
 
     }
     handleFinalClick = (event) =>{
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         console.log(this.state.anketa);
          let acceptedformsCount = this.state.acceptedForms;
            let criteria = {playersNumber: this.state.playersNumber, criteria: this.state.criteria, gameId: this.state.gameId};
@@ -101,7 +104,7 @@ class Worker extends Component{
         fetch('http://localhost:8080/acceptForms', {  // Enter your IP address here
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                'Authorization': 'Bearer ' + token
             },
             method: 'POST',
             mode: 'cors',
@@ -119,8 +122,9 @@ class Worker extends Component{
     // }
 
     handleSend = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
-            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
+            const headers = { Authorization: 'Bearer ' + token}
             this.client.subscribe('/user/worker/messages', message => {
 
                 console.log(JSON.parse(message.body));
@@ -192,7 +196,7 @@ class Worker extends Component{
                     fetch(url,{
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -256,7 +260,7 @@ class Worker extends Component{
                                     fetch(destination, {
                                         headers: {
                                             // "Content-Type": "application/json"
-                                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                            'Authorization': 'Bearer ' + token
                                         },
                                         method: 'GET',
                                         mode: 'cors'
@@ -282,7 +286,7 @@ class Worker extends Component{
                                                     fetch(urlReady,{
                                                         headers: {
                                                             // "Content-Type": "application/json"
-                                                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                                            'Authorization': 'Bearer ' + token
                                                         },
                                                         method: 'GET',
                                                         mode: 'cors'
@@ -322,7 +326,7 @@ class Worker extends Component{
                     fetch(url, {
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -370,7 +374,7 @@ class Worker extends Component{
                                     fetch(destination, {
                                         headers: {
                                             // "Content-Type": "application/json"
-                                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                            'Authorization': 'Bearer ' + token
                                         },
                                         method: 'GET',
                                         mode: 'cors'
@@ -399,7 +403,7 @@ class Worker extends Component{
                     fetch('http://localhost:8080/account/2/results', {
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -534,7 +538,7 @@ class Worker extends Component{
                             headers: {
                                 "Content-Type": "application/json",
 
-                                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                'Authorization': 'Bearer ' + token
                             },
                             method: 'POST',
                             mode: 'cors',
@@ -554,8 +558,14 @@ class Worker extends Component{
         this.setState({cleaningScore: this.state.cleaningScore + 1})
     }
 
+    logout = () => {
+        localStorage.removeItem('userData');
+        this.props.history.push('/auth');
+    }
+
     render(){return(
         <div class="participant" align="center">
+            <button onClick={this.logout}>Logout</button>
             <h1 id="page_title">This is worker page</h1>
             {/*<button id="connect" className="btn btn-default" type="submit" onClick={this.componentDidMount}>Connect</button>*/}
             {/*<h3>Пожалуйста, введите свой никнейм </h3>*/}

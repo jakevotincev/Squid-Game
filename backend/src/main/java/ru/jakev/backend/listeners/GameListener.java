@@ -107,8 +107,7 @@ public class GameListener {
                 NotificationMessage message = new NotificationMessage(NotificationMessageType.PLAYER_KILLED_MESSAGE);
                 webSocketMessageSender.sendMessageToUser(soldier, "/soldier/messages", message);
                 webSocketMessageSender.sendMessageToUser(killedPlayer, "/player/messages", message);
-                finishGamePlayers.add(playerId);
-                tryToNotifyGameEnded();
+
 
                 accountService.updateAccountParticipation(playerId, false);
                 globalContext.removeParticipateInGamePlayer(killedPlayer);
@@ -123,6 +122,7 @@ public class GameListener {
 
                 sendMissMessages();
                 soldierIdToScoreMap.clear();
+                tryToNotifyGameEnded();
             }
         } catch (Exception e) {
             LOG.error(e.getMessage());

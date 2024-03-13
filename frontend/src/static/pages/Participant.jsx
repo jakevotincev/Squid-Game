@@ -44,12 +44,13 @@ class Participant extends Component{
         return url
     }
     componentDidMount = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         let url = "http://localhost:8080/account/";
         url = url.concat(this.props.location.state)
         fetch(url,{
             headers: {
                 // "Content-Type": "application/json"
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                'Authorization': 'Bearer ' + token
             },
             method: 'GET',
             mode: 'cors'
@@ -74,7 +75,7 @@ class Participant extends Component{
             this.client.configure({
                 brokerURL: this.getNickname(),
                 connectHeaders: {
-                    Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                    Authorization: 'Bearer ' + token
                 },
                 onConnect: () => {
                     console.log('onConnect');
@@ -90,8 +91,9 @@ class Participant extends Component{
 
     }
     handleSend = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
         if (this.client.webSocket.readyState === WebSocket.OPEN) {
-            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)}
+            const headers = { Authorization: 'Bearer ' + token}
             // this.client.subscribe('/glavniy/messages', message => {
             //     console.log(JSON.parse(message.body));
             // }, headers);
@@ -108,7 +110,7 @@ class Participant extends Component{
                     fetch(url,{
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -173,7 +175,7 @@ class Participant extends Component{
                                 fetch(destination,{
                                     headers: {
                                         // "Content-Type": "application/json"
-                                        'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                        'Authorization': 'Bearer ' + token
                                     },
                                     method: 'GET',
                                     mode: 'cors'
@@ -210,7 +212,7 @@ class Participant extends Component{
                     fetch(url,{
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -272,7 +274,7 @@ class Participant extends Component{
                                 fetch(destination, {
                                     headers: {
                                         // "Content-Type": "application/json"
-                                        'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                        'Authorization': 'Bearer ' + token
                                     },
                                     method: 'GET',
                                     mode: 'cors'
@@ -298,7 +300,7 @@ class Participant extends Component{
                                             fetch(urlReady, {
                                                 headers: {
                                                     // "Content-Type": "application/json"
-                                                    'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                                                    'Authorization': 'Bearer ' + token
                                                 },
                                                 method: 'GET',
                                                 mode: 'cors'
@@ -331,7 +333,7 @@ class Participant extends Component{
                     fetch('http://localhost:8080/account/2/results', {
                         headers: {
                             "Content-Type": "application/json",
-                            'Authorization': 'Bearer ' + localStorage.getItem('manager')
+                            'Authorization': 'Bearer ' + token
                         },
                         method: 'GET',
                         mode: 'cors'
@@ -460,6 +462,8 @@ class Participant extends Component{
         }
     };
     clickHandler = () => {
+        let token = JSON.parse(localStorage.getItem(`userData`))?.token
+
         console.log(this.state.nickname);
         console.log(this.state.content);
         console.log(this.state.playerId);
@@ -471,7 +475,7 @@ class Participant extends Component{
         fetch('http://localhost:8080/savePlayerForm', {  // Enter your IP address here
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.props.location.state}`)
+                'Authorization': 'Bearer ' + token
             },
             method: 'POST',
             mode: 'cors',
@@ -479,8 +483,15 @@ class Participant extends Component{
 
         })
     }
+
+    logout = () => {
+        localStorage.removeItem('userData');
+        this.props.history.push('/auth');
+    }
+
     render(){return(
         <div id="participant_page" align="center">
+            <button onClick={this.logout}>Logout</button>
             {/*{this.state.showQuiz === false &&*/}
             <div>
             <h1 id="page_title">This is player page</h1>

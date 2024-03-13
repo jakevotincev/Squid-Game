@@ -14,6 +14,14 @@ class Auth extends Component {
         isLogin: true,
         role: ''
     }
+
+    componentDidMount() {
+        let userData = JSON.parse(localStorage.getItem(`userData`));
+        if (userData) {
+            this.setState({login: userData.login})
+                this.getAccount(userData.login);
+        }
+    }
     handleLoginChange = (event) => {
         // 👇 Get input value from "event"
         this.setState({login : event.target.value});
@@ -40,27 +48,32 @@ class Auth extends Component {
 
         }).then(res => res.json().then(data => {
             console.log(data?.token);
-            localStorage.setItem(this.state.login,data?.token)
-            return this.getAccount()
+            let userData = {
+                login: this.state.login,
+                token: data?.token
+            }
+            localStorage.setItem('userData',JSON.stringify(userData))
+            return this.getAccount(this.state.login)
         } ))
 
          // this.getAccount()
     }
-        async getAccount () {
-         console.log(localStorage.getItem(`${this.state.login}`), 'token here')
+        async getAccount (username) {
+         console.log(localStorage.getItem(`userData`), 'token here')
          let url = "http://localhost:8080/account/";
-         url = url.concat(this.state.login)
+         url = url.concat(username)
             const tokentest= this.state.login
+            let token = JSON.parse(localStorage.getItem(`userData`))?.token
         fetch(url,{
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem(`${this.state.login}`)
+                'Authorization': 'Bearer ' + token
                 // "Content-Type": "application/json"
             },
             method: 'GET',
             mode: 'cors'
         }).then(res => {res.json().then(data =>{
             console.log(JSON.stringify(data))
-            const headers = { Authorization: 'Bearer ' + localStorage.getItem(`${this.state.login}`)}
+            const headers = { Authorization: 'Bearer ' + token}
             if (data.role === "UNDEFINED") {
                 console.log('if proshel')
                 if (this.client.webSocket.readyState === WebSocket.OPEN) {
@@ -93,10 +106,10 @@ class Auth extends Component {
     })
             this.client = new Client();
             let url2= 'ws://localhost:8080/squid-game-socket?username=';
-            url2 = url2.concat(this.state.login);
+            url2 = url2.concat(username);
             this.client.configure({
                 connectHeaders: {
-                    Authorization: 'Bearer ' + localStorage.getItem(`${this.state.login}`)
+                    Authorization: 'Bearer ' + token
                 },
                 brokerURL: url2,
                 onConnect: () => {
