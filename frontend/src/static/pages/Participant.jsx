@@ -486,7 +486,7 @@ class Participant extends Component{
 
     logout = () => {
         localStorage.removeItem('userData');
-        this.props.history.push('/auth');
+        window.location.replace("/Auth")
     }
 
     render(){return(

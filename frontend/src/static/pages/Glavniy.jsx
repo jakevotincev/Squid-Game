@@ -351,8 +351,10 @@ class Glavniy extends Component {
     this.setState({info: 'Критерии игры не утверждены'})
   }
 
+
   logout = () => {
     localStorage.removeItem('userData');
+    window.location.replace("/Auth")
   }
 
   render() {

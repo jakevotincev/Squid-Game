@@ -1,8 +1,8 @@
-import React ,{ useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 // import io from 'socket.io-client';
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import './index.css';
 import Glavniy from './static/pages/Glavniy';
 import Manager from "./static/pages/manager";
@@ -19,14 +19,13 @@ export default function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Layout />}>
-                    <Route path="glavniy" element={<Glavniy />} />
-                    <Route path="manager" element={<Manager />} />
-                    <Route path="Participant" element={<Participant />} />
-                    <Route path="Worker" element={<Worker />} />
-                    <Route path="Soldier" element={<Soldier />} />
-                    <Route path="Auth" element={<Auth />} />
-                </Route>
+                <Route path="/" element={<Auth/>}/>
+                <Route path="Glavniy" element={<Glavniy/>}/>
+                <Route path="Manager" element={<Manager/>}/>
+                <Route path="Participant" element={<Participant/>}/>
+                <Route path="Worker" element={<Worker/>}/>
+                <Route path="Soldier" element={<Soldier/>}/>
+                <Route path="Auth" element={<Auth/>}/>
             </Routes>
         </BrowserRouter>
     );
@@ -34,9 +33,9 @@ export default function App() {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
+    // <React.StrictMode>
+    <App/>
+    // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

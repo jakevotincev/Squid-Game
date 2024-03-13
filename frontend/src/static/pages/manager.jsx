@@ -324,8 +324,7 @@ class Manager extends Component {
 
     logout = () => {
         localStorage.removeItem('userData');
-        const navigate = useNavigate();
-        navigate("/Auth");
+        window.location.replace("/Auth")
     }
 
     render() {
